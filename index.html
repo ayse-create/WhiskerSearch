@@ -601,7 +601,7 @@ let historyIndex = -1;
 let currentTab = 'all';
 
 // 👉 BURAYA WORKER URLİNİ KOY
-const AI_ENDPOINT = "https://YOUR-WORKER-URL.workers.dev";
+const AI_ENDPOINT = "https://whiskersearch-ai.ayse-akcin42.workers.dev";
 
 function goHome() {
   history = [];
@@ -709,6 +709,7 @@ function handleAIKey(event) {
 }
 
 async function sendAIMessage() {
+  async function sendAIMessage() {
   const input = document.getElementById('aiInput');
   const message = input.value.trim();
   if (!message) return;
@@ -723,10 +724,11 @@ async function sendAIMessage() {
 
   input.value = '';
 
-  // loading hissi
+  const loadingId = "loading-" + Date.now();
+
   container.innerHTML += `
-    <div class="message ai" id="loading">
-      <div class="message-bubble">...</div>
+    <div class="message ai" id="${loadingId}">
+      <div class="message-bubble">Yazıyor...</div>
     </div>
   `;
 
@@ -738,6 +740,28 @@ async function sendAIMessage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message })
     });
+
+    const data = await res.json();
+
+    document.getElementById(loadingId).remove();
+
+    container.innerHTML += `
+      <div class="message ai">
+        <div class="message-bubble">${data.answer}</div>
+      </div>
+    `;
+  } catch (e) {
+    document.getElementById(loadingId).remove();
+
+    container.innerHTML += `
+      <div class="message ai">
+        <div class="message-bubble">Bağlantı hatası</div>
+      </div>
+    `;
+  }
+
+  container.scrollTop = container.scrollHeight;
+}});
 
     const data = await res.json();
 
