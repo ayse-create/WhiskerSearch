@@ -13,40 +13,53 @@ body{
   overflow:hidden;
   font-family:'Patrick Hand', cursive;
   background:#d9d9d9;
+  position:relative;
 }
 
-/* PATİ DESENİ */
-.paws{
+/* GERÇEK DOKU HİSSİ (MÜREKKEP PATİ BASKISI GİBİ) */
+body::before{
+  content:"";
   position:fixed;
   inset:0;
-  background-image:url("https://upload.wikimedia.org/wikipedia/commons/3/3f/Paw_print.svg");
+
+  background-image:url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Paw_print.svg/512px-Paw_print.svg.png");
   background-repeat:repeat;
-  background-size:100px;
-  opacity:0.2;
+  background-size:110px;
+
+  opacity:0.12;
+  transform:rotate(-5deg);
 }
 
-/* ORTADA TEMİZ ALAN */
+/* ORTA TEMİZ ALAN (KAĞITTA BOŞ BIRAKILMIŞ YER GİBİ) */
 .center{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
+
   width:460px;
-  padding:40px;
+  padding:45px;
+
   background:#d9d9d9;
   text-align:center;
+  border-radius:20px;
 }
 
+/* 404 */
 h1{
   font-size:120px;
   margin:0;
+  color:#333;
 }
 
+/* SENİN METİN */
 p{
-  font-size:26px;
+  font-size:28px;
+  color:#444;
   line-height:1.4;
 }
 
+/* BUTON */
 button{
   margin-top:20px;
   padding:12px 20px;
@@ -63,10 +76,9 @@ button{
 
 <body>
 
-<div class="paws"></div>
-
 <div class="center">
   <h1>404</h1>
+
   <p>
     Belki bu sayfa patilerin arasında kaybolmuştur…<br>
     Belki de hiç var olmamıştır…
