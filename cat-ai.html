@@ -1,0 +1,66 @@
+<div id="ai-content" class="tab-content">
+
+  <div class="ai-chat-container">
+
+    <!-- MESAJ ALANI -->
+    <div class="ai-messages" id="aiMessages">
+      <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:20px;">
+        <div style="font-size:80px;">🤖</div>
+        <div style="font-size:32px;font-weight:700;color:#333;">CatAI</div>
+        <div style="font-size:16px;color:#666;max-width:400px;text-align:center;">
+          ProfessorCat’ın yapay zeka asistanı ile sohbet edin. Bir soru sorun ve hazır olun!
+        </div>
+      </div>
+    </div>
+
+    <!-- INPUT + GÖNDER (BİRLEŞİK) -->
+    <div class="ai-input-area" style="
+      display:flex;
+      align-items:stretch;
+      gap:10px;
+      border-top:1px solid #e0e0e0;
+      padding-top:15px;
+    ">
+
+      <input
+        type="text"
+        id="aiInput"
+        placeholder="Bir soru sor..."
+        onkeypress="handleAIMessage(event)"
+        style="
+          flex:1;
+          height:46px;
+          padding:0 14px;
+          border:1px solid #ddd;
+          border-radius:10px;
+          font-size:14px;
+          outline:none;
+          box-sizing:border-box;
+        "
+      >
+
+      <button
+        onclick="sendAIMessage()"
+        style="
+          height:46px;
+          padding:0 20px;
+          border:none;
+          border-radius:10px;
+          background:linear-gradient(135deg,#667eea,#764ba2);
+          color:white;
+          font-weight:600;
+          cursor:pointer;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          white-space:nowrap;
+        "
+      >
+        Gönder
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
