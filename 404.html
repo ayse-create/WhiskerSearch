@@ -1,1 +1,92 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>404-Lost Cat</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  overflow:hidden;
+  font-family:'Patrick Hand', cursive;
+  background:#d9d9d9;
+}
+
+/* TÜM SAYFA PATİ BASKISI */
+.paws{
+  position:fixed;
+  inset:0;
+  background-image:url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Paw_print.svg/512px-Paw_print.svg.png");
+  background-repeat:repeat;
+  background-size:90px;
+  opacity:0.18;
+  z-index:0;
+}
+
+/* ORTADA TEMİZ ALAN (SANKİ KÂĞIT ÜSTÜNDE BOŞ BÖLGE) */
+.center{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+
+  width:460px;
+  padding:45px;
+
+  background:#d9d9d9; /* arka planla aynı → “temiz silinmiş alan” hissi */
+  text-align:center;
+  z-index:1;
+  border-radius:20px;
+}
+
+/* 404 */
+h1{
+  font-size:120px;
+  margin:0;
+  color:#333;
+}
+
+/* SENİN CÜMLE */
+p{
+  font-size:28px;
+  color:#444;
+  line-height:1.4;
+}
+
+/* BUTON */
+button{
+  margin-top:20px;
+  padding:12px 20px;
+  border:none;
+  border-radius:12px;
+  background:#333;
+  color:white;
+  font-family:'Patrick Hand', cursive;
+  font-size:22px;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="paws"></div>
+
+<div class="center">
+  <h1>404</h1>
+
+  <p>
+    Belki bu sayfa patilerin arasında kaybolmuştur…<br>
+    Belki de hiç var olmamıştır…
+  </p>
+
+  <button onclick="window.location.href='/WhiskerSearch/'">
+    Ana sayfaya dön
+  </button>
+</div>
+
+</body>
+</html>
