@@ -271,3 +271,87 @@ document.getElementById("aiInput").addEventListener("keydown", function(e){
   }
 });
 </script>
+<script>
+(function(){
+
+  // eski listener'ları devre dışı bırakmak için clone tekniği
+  const oldBtn = document.getElementById("sendBtn");
+  const oldInput = document.getElementById("aiInput");
+
+  if(!oldBtn || !oldInput) return;
+
+  const btn = oldBtn.cloneNode(true);
+  oldBtn.parentNode.replaceChild(btn, oldBtn);
+
+  const input = oldInput.cloneNode(true);
+  oldInput.parentNode.replaceChild(input, oldInput);
+
+  const chat = document.getElementById("aiMessages");
+
+  let memory = JSON.parse(localStorage.getItem("ws_memory") || "{}");
+
+  function save(){
+    localStorage.setItem("ws_memory", JSON.stringify(memory));
+  }
+
+  function brain(text){
+
+    const t = text.toLowerCase();
+
+    if(t.includes("whisker")){
+      return "WhiskerSearch kedi temalı demo bir arama motorudur.";
+    }
+
+    if(t.includes("merhaba") || t.includes("selam")){
+      return "Merhaba 😺 nasıl yardımcı olabilirim?";
+    }
+
+    if(memory[t]){
+      return memory[t];
+    }
+
+    const answer = "Bunu tam anlayamadım 😺 ama WhiskerSearch içinde deneyebilirsin.";
+    memory[t] = answer;
+    save();
+
+    return answer;
+  }
+
+  function send(){
+
+    const text = input.value.trim();
+    if(!text) return;
+
+    const user = document.createElement("div");
+    user.className = "message user";
+    user.innerHTML = `<div class="message-bubble">${text}</div>`;
+    chat.appendChild(user);
+
+    input.value = "";
+
+    setTimeout(() => {
+
+      const reply = brain(text);
+
+      const ai = document.createElement("div");
+      ai.className = "message ai";
+      ai.innerHTML = `<div class="message-bubble">${reply}</div>`;
+      chat.appendChild(ai);
+
+      chat.scrollTop = chat.scrollHeight;
+
+    }, 250);
+
+  }
+
+  btn.addEventListener("click", send);
+
+  input.addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+      e.preventDefault();
+      send();
+    }
+  });
+
+})();
+</script>
