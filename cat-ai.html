@@ -204,29 +204,30 @@ function save(){
   localStorage.setItem("ws_memory", JSON.stringify(memory));
 }
 
-function getAnswer(text){
+function brain(text){
+
   const t = text.toLowerCase();
 
-  // WhiskerSearch bilgisi
   if(t.includes("whisker")){
-    return "WhiskerSearch, kedi temalı bir demo arama motoru ve sahte tarayıcı projesidir.";
+    return "WhiskerSearch, kedi temalı bir demo arama motorudur.";
   }
 
-  // basit hafıza
+  if(t.includes("merhaba") || t.includes("selam")){
+    return "Merhaba 😺 nasıl yardımcı olabilirim?";
+  }
+
   if(memory[t]){
     return memory[t];
   }
 
-  // genel cevap
-  let answer = "Bu konuda bilgim sınırlı 😺 ama WhiskerSearch içinde arama yapabilirsin.";
-
+  const answer = "Bunu tam anlayamadım ama WhiskerSearch içinde arama yapabilirsin 😺";
   memory[t] = answer;
   save();
 
   return answer;
 }
 
-function sendAIMessage(){
+function send(){
 
   const input = document.getElementById("aiInput");
   const chat = document.getElementById("aiMessages");
@@ -236,7 +237,7 @@ function sendAIMessage(){
   const text = input.value.trim();
   if(!text) return;
 
-  // USER MESSAGE
+  // USER (senin mevcut message CSS’ini kullanır)
   const user = document.createElement("div");
   user.className = "message user";
   user.innerHTML = `<div class="message-bubble">${text}</div>`;
@@ -244,10 +245,10 @@ function sendAIMessage(){
 
   input.value = "";
 
-  // AI MESSAGE
+  // AI
   setTimeout(() => {
 
-    const reply = getAnswer(text);
+    const reply = brain(text);
 
     const ai = document.createElement("div");
     ai.className = "message ai";
@@ -256,18 +257,17 @@ function sendAIMessage(){
 
     chat.scrollTop = chat.scrollHeight;
 
-  }, 300);
-
+  }, 250);
 }
 
-// ENTER desteği
-document.addEventListener("keydown", function(e){
-  const input = document.getElementById("aiInput");
-  if(!input) return;
+// BUTTON
+document.getElementById("sendBtn").onclick = send;
 
-  if(document.activeElement === input && e.key === "Enter"){
+// ENTER
+document.getElementById("aiInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
     e.preventDefault();
-    sendAIMessage();
+    send();
   }
 });
 </script>
