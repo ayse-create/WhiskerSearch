@@ -1,3 +1,4 @@
+
 <div id="ai-content" class="tab-content">
 
   <div class="ai-chat-container">
@@ -64,3 +65,45 @@
   </div>
 
 </div>
+<script>
+window.sendAIMessage = function(){
+
+  const input = document.getElementById("aiInput");
+  const chat = document.getElementById("aiMessages");
+
+  if(!input || !chat) return;
+
+  const text = input.value.trim();
+  if(!text) return;
+
+  // kullanıcı mesajı
+  const user = document.createElement("div");
+  user.className = "message user";
+  user.innerHTML = `<div class="message-bubble">${text}</div>`;
+  chat.appendChild(user);
+
+  input.value = "";
+
+  // bot mesajı
+  setTimeout(() => {
+    const ai = document.createElement("div");
+    ai.className = "message ai";
+    ai.innerHTML = `<div class="message-bubble">Bunu şu an işleyemiyorum 🤖</div>`;
+    chat.appendChild(ai);
+
+    chat.scrollTop = chat.scrollHeight;
+  }, 400);
+
+};
+
+// ENTER FIX (inline bozulsa bile çalışsın diye)
+document.addEventListener("keydown", function(e){
+  const input = document.getElementById("aiInput");
+  if(!input) return;
+
+  if(e.key === "Enter" && document.activeElement === input){
+    e.preventDefault();
+    window.sendAIMessage();
+  }
+});
+</script>
