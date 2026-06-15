@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>404-Lost Cat</title>
+<title>404</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 
@@ -15,48 +15,38 @@ body{
   background:#d9d9d9;
 }
 
-/* TÜM SAYFA PATİ BASKISI */
+/* PATİ DESENİ */
 .paws{
   position:fixed;
   inset:0;
-  background-image:url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Paw_print.svg/512px-Paw_print.svg.png");
+  background-image:url("https://upload.wikimedia.org/wikipedia/commons/3/3f/Paw_print.svg");
   background-repeat:repeat;
-  background-size:90px;
-  opacity:0.18;
-  z-index:0;
+  background-size:100px;
+  opacity:0.2;
 }
 
-/* ORTADA TEMİZ ALAN (SANKİ KÂĞIT ÜSTÜNDE BOŞ BÖLGE) */
+/* ORTADA TEMİZ ALAN */
 .center{
   position:absolute;
   top:50%;
   left:50%;
   transform:translate(-50%,-50%);
-
   width:460px;
-  padding:45px;
-
-  background:#d9d9d9; /* arka planla aynı → “temiz silinmiş alan” hissi */
+  padding:40px;
+  background:#d9d9d9;
   text-align:center;
-  z-index:1;
-  border-radius:20px;
 }
 
-/* 404 */
 h1{
   font-size:120px;
   margin:0;
-  color:#333;
 }
 
-/* SENİN CÜMLE */
 p{
-  font-size:28px;
-  color:#444;
+  font-size:26px;
   line-height:1.4;
 }
 
-/* BUTON */
 button{
   margin-top:20px;
   padding:12px 20px;
@@ -77,7 +67,6 @@ button{
 
 <div class="center">
   <h1>404</h1>
-
   <p>
     Belki bu sayfa patilerin arasında kaybolmuştur…<br>
     Belki de hiç var olmamıştır…
