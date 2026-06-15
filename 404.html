@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<title>404</title>
+<title>404 - WhiskerSearch</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
 
@@ -10,73 +10,97 @@
 body{
   margin:0;
   height:100vh;
-  overflow:hidden;
+  display:flex;
+  justify-content:center;
+  align-items:center;
   font-family:'Patrick Hand', cursive;
-  background:#d9d9d9;
-  position:relative;
+  color:#333;
+  overflow:hidden;
 }
 
-/* GERÇEK DOKU HİSSİ (MÜREKKEP PATİ BASKISI GİBİ) */
+/* PATİ ARKA PLAN */
 body::before{
-  content:"";
+  content:"🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾 🐾";
   position:fixed;
   inset:0;
-
-  background-image:url("https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Paw_print.svg/512px-Paw_print.svg.png");
-  background-repeat:repeat;
-  background-size:110px;
-
-  opacity:0.12;
-  transform:rotate(-5deg);
+  font-size:40px;
+  line-height:80px;
+  letter-spacing:20px;
+  opacity:0.08;
+  pointer-events:none;
 }
 
-/* ORTA TEMİZ ALAN (KAĞITTA BOŞ BIRAKILMIŞ YER GİBİ) */
-.center{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-
-  width:460px;
-  padding:45px;
-
-  background:#d9d9d9;
+/* KART */
+.card{
+  background:white;
+  padding:40px;
+  border-radius:18px;
   text-align:center;
-  border-radius:20px;
+  width:420px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+  z-index:1;
+}
+
+/* LOGO ALANI (BOŞ - SEN KOYACAKSIN) */
+.logo{
+  width:70px;
+  height:70px;
+  margin:0 auto 10px;
+  border-radius:50%;
+  background:#f2f2f2;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
 }
 
 /* 404 */
 h1{
-  font-size:120px;
-  margin:0;
-  color:#333;
+  font-size:90px;
+  margin:10px 0 0;
 }
 
-/* SENİN METİN */
 p{
-  font-size:28px;
-  color:#444;
-  line-height:1.4;
+  font-size:20px;
+  color:#555;
+  margin-top:10px;
+  line-height:1.5;
 }
 
 /* BUTON */
-button{
+a{
+  display:inline-block;
   margin-top:20px;
-  padding:12px 20px;
-  border:none;
-  border-radius:12px;
+  padding:10px 18px;
   background:#333;
   color:white;
-  font-family:'Patrick Hand', cursive;
-  font-size:22px;
-  cursor:pointer;
+  text-decoration:none;
+  border-radius:10px;
+  font-size:18px;
+}
+
+a:hover{
+  background:#000;
+}
+
+/* FOOTER */
+.footer{
+  margin-top:25px;
+  font-size:14px;
+  color:#888;
 }
 </style>
 </head>
 
 <body>
 
-<div class="center">
+<div class="card">
+
+  <!-- LOGO (BURAYA GERÇEK LOGO KOY) -->
+  <div class="logo">
+    <!-- örnek: <img src="logo.png" style="width:100%"> -->
+  </div>
+
   <h1>404</h1>
 
   <p>
@@ -84,9 +108,13 @@ button{
     Belki de hiç var olmamıştır…
   </p>
 
-  <button onclick="window.location.href='/WhiskerSearch/'">
-    Ana sayfaya dön
-  </button>
+  <!-- ANA SAYFA BUTONU -->
+  <a href="/WhiskerSearch/">Ana sayfaya dön</a>
+
+  <div class="footer">
+    WhiskerSearch • 2026
+  </div>
+
 </div>
 
 </body>
