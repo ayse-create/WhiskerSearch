@@ -163,3 +163,111 @@ document.addEventListener("keydown", function(e){
 
 })();
 </script>
+<style>
+#aiMessages{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.message.user{
+  justify-content:flex-end;
+  display:flex;
+}
+
+.message.ai{
+  justify-content:flex-start;
+  display:flex;
+}
+
+.message-bubble{
+  padding:10px 14px;
+  border-radius:12px;
+  max-width:70%;
+  font-size:14px;
+}
+
+.message.user .message-bubble{
+  background:linear-gradient(135deg,#667eea,#764ba2);
+  color:white;
+}
+
+.message.ai .message-bubble{
+  background:#eee;
+  color:#333;
+}
+</style>
+<script>
+let memory = JSON.parse(localStorage.getItem("ws_memory") || "{}");
+
+function save(){
+  localStorage.setItem("ws_memory", JSON.stringify(memory));
+}
+
+function getAnswer(text){
+  const t = text.toLowerCase();
+
+  // WhiskerSearch bilgisi
+  if(t.includes("whisker")){
+    return "WhiskerSearch, kedi temalı bir demo arama motoru ve sahte tarayıcı projesidir.";
+  }
+
+  // basit hafıza
+  if(memory[t]){
+    return memory[t];
+  }
+
+  // genel cevap
+  let answer = "Bu konuda bilgim sınırlı 😺 ama WhiskerSearch içinde arama yapabilirsin.";
+
+  memory[t] = answer;
+  save();
+
+  return answer;
+}
+
+function sendAIMessage(){
+
+  const input = document.getElementById("aiInput");
+  const chat = document.getElementById("aiMessages");
+
+  if(!input || !chat) return;
+
+  const text = input.value.trim();
+  if(!text) return;
+
+  // USER MESSAGE
+  const user = document.createElement("div");
+  user.className = "message user";
+  user.innerHTML = `<div class="message-bubble">${text}</div>`;
+  chat.appendChild(user);
+
+  input.value = "";
+
+  // AI MESSAGE
+  setTimeout(() => {
+
+    const reply = getAnswer(text);
+
+    const ai = document.createElement("div");
+    ai.className = "message ai";
+    ai.innerHTML = `<div class="message-bubble">${reply}</div>`;
+    chat.appendChild(ai);
+
+    chat.scrollTop = chat.scrollHeight;
+
+  }, 300);
+
+}
+
+// ENTER desteği
+document.addEventListener("keydown", function(e){
+  const input = document.getElementById("aiInput");
+  if(!input) return;
+
+  if(document.activeElement === input && e.key === "Enter"){
+    e.preventDefault();
+    sendAIMessage();
+  }
+});
+</script>
