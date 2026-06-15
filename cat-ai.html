@@ -1,34 +1,34 @@
 <div id="ai-content" class="tab-content">
 
-  <div class="ai-chat-container">
+  <div class="ai-chat-container" style="display:flex;flex-direction:column;height:100%;">
 
     <!-- MESAJ ALANI -->
-    <div class="ai-messages" id="aiMessages">
-      <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:20px;">
-        <div style="font-size:80px;">🤖</div>
-        <div style="font-size:32px;font-weight:700;color:#333;">CatAI</div>
-        <div style="font-size:16px;color:#666;max-width:400px;text-align:center;">
-          ProfessorCat’ın yapay zeka asistanı ile sohbet edin. Bir soru sorun ve hazır olun!
-        </div>
+    <div id="aiMessages" style="
+      flex:1;
+      overflow-y:auto;
+      padding:10px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    ">
+      <div style="text-align:center;color:#666;margin-top:40px;">
+        🤖 Whisker AI sohbet modunda
       </div>
     </div>
 
     <!-- INPUT -->
-    <div class="ai-input-area" style="display:flex;gap:10px;border-top:1px solid #e0e0e0;padding-top:15px;">
+    <div style="display:flex;gap:10px;border-top:1px solid #ddd;padding:10px;">
 
-      <input
-        id="aiInput"
+      <input id="aiInput"
         type="text"
-        placeholder="Bir soru sor..."
-        style="flex:1;height:46px;padding:0 14px;border:1px solid #ddd;border-radius:10px;outline:none;"
+        placeholder="Bir şey anlat..."
+        style="flex:1;height:44px;padding:0 12px;border:1px solid #ccc;border-radius:10px;outline:none;"
       />
 
-      <button
-        id="sendBtn"
-        style="height:46px;padding:0 20px;border:none;border-radius:10px;
+      <button id="sendBtn"
+        style="height:44px;padding:0 20px;border:none;border-radius:10px;
         background:linear-gradient(135deg,#667eea,#764ba2);
-        color:white;font-weight:600;cursor:pointer;"
-      >
+        color:white;font-weight:600;cursor:pointer;">
         Gönder
       </button>
 
@@ -40,24 +40,9 @@
 
 <!-- STİL -->
 <style>
-#aiMessages{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  padding:10px;
-}
-
-.message{
-  display:flex;
-}
-
-.message.user{
-  justify-content:flex-end;
-}
-
-.message.ai{
-  justify-content:flex-start;
-}
+.message{display:flex;}
+.message.user{justify-content:flex-end;}
+.message.ai{justify-content:flex-start;}
 
 .message-bubble{
   max-width:70%;
@@ -87,33 +72,94 @@
 
   if(!input || !chat || !btn) return;
 
-  let memory = JSON.parse(localStorage.getItem("ws_memory") || "{}");
+  function reply(text){
 
-  function save(){
-    localStorage.setItem("ws_memory", JSON.stringify(memory));
-  }
+    const t = text.trim().toLowerCase();
 
-  function brain(text){
+    // 🧮 HESAP MAKİNESİ
+    if(/^[0-9+\-*/().\s^]+$/.test(text)){
+      try {
+        const result = Function("return (" + text.replace(/\^/g,"**") + ")")();
+        return "🧮 Sonuç: " + result;
+      } catch {
+        return "Bunu hesaplayamadım 😺";
+      }
+    }
 
-    const t = text.toLowerCase();
+    // 👋 SELAM
+    if(t.includes("merhaba") || t.includes("selam")){
+      const r = [
+        "Selam 😺 bugün neler yapıyorsun?",
+        "Merhaba! Günün nasıl geçiyor?",
+        "Hey 😸 anlat bakalım",
+        "Selam 🐾 bir şey oldu mu bugün?"
+      ];
+      return r[Math.floor(Math.random()*r.length)];
+    }
 
+    // 🏫 OKUL / GÜN SOHBET
+    if(t.includes("okul") || t.includes("ders") || t.includes("bugün")){
+      const r = [
+        "Okul nasıldı 😺?",
+        "Bugün ilginç bir şey oldu mu?",
+        "En sevdiğin ders hangisi?",
+        "Yorucu bir gün müydü 🐾?",
+        "Anlat bakalım, dinliyorum 😸"
+      ];
+      return r[Math.floor(Math.random()*r.length)];
+    }
+
+    // 😄 OLUMLU DUYGU
+    if(t.includes("iyi") || t.includes("güzel") || t.includes("harika") || t.includes("süper")){
+      const r = [
+        "Hmm güzelmiş 😺 devam et",
+        "İlginç 😸 sonra ne oldu?",
+        "Bunu duymak iyi 🐾",
+        "Güzel gidiyor gibi, anlat bakalım",
+        "Hoş 😺 biraz daha detay verir misin?"
+      ];
+      return r[Math.floor(Math.random()*r.length)];
+    }
+
+    // 😐 BİLMİYORUM
+    if(t.includes("bilmiyorum") || t.includes("emin değilim")){
+      const r = [
+        "Sorun değil 😺 birlikte düşünebiliriz",
+        "Bilmemen normal 🐾",
+        "İstersen birlikte bulalım",
+        "Önemli değil, devam edelim 😸"
+      ];
+      return r[Math.floor(Math.random()*r.length)];
+    }
+
+    // 🎤 UZUN CÜMLELER = SOHBET DEVAM
+    if(text.length > 20){
+      const r = [
+        "Vay 😺 sonra ne oldu?",
+        "İlginçmiş 🐾 devam et",
+        "Bunu merak ettim 😸",
+        "Anladım gibi ama biraz daha anlat",
+        "Dinliyorum 😺 devam et"
+      ];
+      return r[Math.floor(Math.random()*r.length)];
+    }
+
+    // 🐱 WHISKER
     if(t.includes("whisker")){
       return "WhiskerSearch kedi temalı bir demo arama motorudur 😺";
     }
 
-    if(t.includes("merhaba") || t.includes("selam")){
-      return "Merhaba 😺 nasıl yardımcı olabilirim?";
-    }
+    // 💬 GENEL SOHBET AKIŞI
+    const fallback = [
+      "Hmm 😺 biraz daha anlatır mısın?",
+      "Devam et, dinliyorum 🐾",
+      "Bunu tam anlayamadım ama ilgimi çekti",
+      "Sonra ne oldu 😸?",
+      "Biraz daha detay verir misin?",
+      "İlginç 😺"
+    ];
 
-    if(memory[t]){
-      return memory[t];
-    }
-
-    const answer = "Bunu tam anlayamadım 😺 ama WhiskerSearch içinde arama yapabilirsin.";
-    memory[t] = answer;
-    save();
-
-    return answer;
+    return fallback[Math.floor(Math.random()*fallback.length)];
   }
 
   function send(){
@@ -121,25 +167,27 @@
     const text = input.value.trim();
     if(!text) return;
 
-    const user = document.createElement("div");
-    user.className = "message user";
-    user.innerHTML = `<div class="message-bubble">${text}</div>`;
-    chat.appendChild(user);
+    // USER
+    const u = document.createElement("div");
+    u.className = "message user";
+    u.innerHTML = `<div class="message-bubble">${text}</div>`;
+    chat.appendChild(u);
 
     input.value = "";
 
+    // AI
     setTimeout(() => {
 
-      const reply = brain(text);
+      const r = reply(text);
 
-      const ai = document.createElement("div");
-      ai.className = "message ai";
-      ai.innerHTML = `<div class="message-bubble">${reply}</div>`;
-      chat.appendChild(ai);
+      const a = document.createElement("div");
+      a.className = "message ai";
+      a.innerHTML = `<div class="message-bubble">${r}</div>`;
+      chat.appendChild(a);
 
       chat.scrollTop = chat.scrollHeight;
 
-    }, 250);
+    }, 200);
 
   }
 
