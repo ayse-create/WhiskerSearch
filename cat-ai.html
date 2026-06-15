@@ -107,3 +107,59 @@ document.addEventListener("keydown", function(e){
   }
 });
 </script>
+<script>
+(function(){
+
+  function get(){
+    return {
+      input: document.getElementById("aiInput"),
+      chat: document.getElementById("aiMessages")
+    };
+  }
+
+  function send(){
+    const {input, chat} = get();
+    if(!input || !chat) return;
+
+    const text = input.value.trim();
+    if(!text) return;
+
+    const user = document.createElement("div");
+    user.className = "message user";
+    user.innerHTML = `<div class="message-bubble">${text}</div>`;
+    chat.appendChild(user);
+
+    input.value = "";
+
+    setTimeout(() => {
+      const ai = document.createElement("div");
+      ai.className = "message ai";
+      ai.innerHTML = `<div class="message-bubble">Çalışıyor 👍</div>`;
+      chat.appendChild(ai);
+      chat.scrollTop = chat.scrollHeight;
+    }, 300);
+  }
+
+  // 🔥 KRİTİK: global'e zorla bağla
+  window.sendAIMessage = send;
+
+  // 🔥 ENTER garanti fix
+  document.addEventListener("keydown", function(e){
+    const {input} = get();
+    if(!input) return;
+
+    if(document.activeElement === input && e.key === "Enter"){
+      e.preventDefault();
+      send();
+    }
+  });
+
+  // 🔥 onclick bozulursa bile yakalasın
+  document.addEventListener("click", function(e){
+    if(e.target && e.target.getAttribute("onclick") === "sendAIMessage()"){
+      send();
+    }
+  });
+
+})();
+</script>
