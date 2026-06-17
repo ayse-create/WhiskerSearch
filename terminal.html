@@ -27,8 +27,12 @@ html, body {
   white-space: pre-wrap;
 }
 
-.cmd {
-  color: #ffd54a; /* sarı */
+.prompt-text {
+  color: #7CFF7C;
+}
+
+.command-text {
+  color: #ffd54a;
 }
 
 a {
@@ -90,10 +94,25 @@ function linkify(text){
   );
 }
 
-function addLine(text, className = ""){
+function addLine(text){
   const div = document.createElement("div");
-  div.className = "line " + className;
+  div.className = "line";
   div.innerHTML = linkify(text);
+  output.appendChild(div);
+
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function addCommandLine(command){
+  const div = document.createElement("div");
+  div.className = "line";
+
+  div.innerHTML =
+    '<span class="prompt-text">whiskersearch@system ~ %</span> ' +
+    '<span class="command-text">' +
+    command.replace(/</g,"&lt;").replace(/>/g,"&gt;") +
+    '</span>';
+
   output.appendChild(div);
 
   window.scrollTo(0, document.body.scrollHeight);
@@ -156,23 +175,13 @@ function run(cmdText, saveCommand = true){
 
     case "website":
 
-      if(lang === "en"){
-        addLine("result:");
-      } else {
-        addLine("sonuç:");
-      }
-
+      addLine(lang === "en" ? "result:" : "sonuç:");
       addLine("https://ayse-create.github.io/WhiskerSearch/");
       break;
 
     case "contact":
 
-      if(lang === "en"){
-        addLine("result:");
-      } else {
-        addLine("sonuç:");
-      }
-
+      addLine(lang === "en" ? "result:" : "sonuç:");
       addLine("https://ayse-create.github.io/WhiskerSearch/contact");
       break;
 
@@ -198,6 +207,7 @@ function run(cmdText, saveCommand = true){
       addLine("website");
       addLine("TR");
       addLine("ENG");
+      addLine("clear");
 
       break;
 
@@ -220,13 +230,13 @@ cmd.addEventListener("keydown", (e)=>{
 
   const value = cmd.value.trim();
 
-  addLine(
-    `whiskersearch@system ~ % ${value}`,
-    "cmd"
-  );
+  addCommandLine(value);
 
   run(value);
 
   cmd.value = "";
 });
 </script>
+
+</body>
+</html>
