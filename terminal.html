@@ -80,36 +80,58 @@ input {
 const cmd = document.getElementById("cmd");
 const output = document.getElementById("output");
 
-let lang = "en"; // varsayılan
+let lang = "en";
+let lastCommand = "";
 
-function addLine(text){
-  const div = document.createElement("div");
-  div.className = "line";
-  div.innerHTML = text;
-  output.appendChild(div);
+function linkify(text){
+  return text.replace(
+    /(https?:\/\/[^\s]+)/g,
+    '<a href="$1" target="_blank">$1</a>'
+  );
 }
 
-function run(cmdText){
+function addLine(text, className = ""){
+  const div = document.createElement("div");
+  div.className = "line " + className;
+  div.innerHTML = linkify(text);
+  output.appendChild(div);
+
+  window.scrollTo(0, document.body.scrollHeight);
+}
+
+function run(cmdText, saveCommand = true){
+
   const args = cmdText.split(" ");
   const main = args[0];
 
-  // DİL KOMUTLARI
+  if(saveCommand && !["TR","ENG"].includes(main)){
+    lastCommand = cmdText;
+  }
+
   if(main === "TR"){
     lang = "tr";
-    addLine("Dil Türkçe olarak ayarlandı.");
+    addLine("Dil algılandı: Türkçe");
+
+    if(lastCommand){
+      run(lastCommand, false);
+    }
     return;
   }
 
   if(main === "ENG"){
     lang = "en";
-    addLine("Language set to English.");
+    addLine("Language detected: English");
+
+    if(lastCommand){
+      run(lastCommand, false);
+    }
     return;
   }
 
-  // KOMUTLAR
   switch(main){
 
     case "about":
+
       if(lang === "en"){
         addLine("WhiskerSearch-ProfessorCat is an interactive web experience.");
         addLine("It simulates a browser-like system and guides the user through a 4-stage journey.");
@@ -117,25 +139,75 @@ function run(cmdText){
         addLine("WhiskerSearch-ProfessorCat interaktif bir web deneyimidir.");
         addLine("Bir tarayıcı sistemi gibi çalışır ve kullanıcıyı 4 aşamalı bir yolculuğa yönlendirir.");
       }
+
       break;
 
     case "support":
+
       if(lang === "en"){
-        addLine("Search \"whiskersearch-profcat\" on Google and leave a review.");
+        addLine('You can search "whiskersearch-profcat" on Google');
+        addLine("and leave a review on the listed profile.");
       } else {
-        addLine("\"whiskersearch-profcat\" diye Google'da aratıp yorum bırakabilirsin.");
+        addLine('"whiskersearch-profcat" ifadesini Google\'da aratabilir');
+        addLine("ve listelenen profil üzerinden değerlendirme bırakabilirsiniz.");
       }
+
       break;
 
     case "website":
+
+      if(lang === "en"){
+        addLine("result:");
+      } else {
+        addLine("sonuç:");
+      }
+
       addLine("https://ayse-create.github.io/WhiskerSearch/");
       break;
 
     case "contact":
+
+      if(lang === "en"){
+        addLine("result:");
+      } else {
+        addLine("sonuç:");
+      }
+
       addLine("https://ayse-create.github.io/WhiskerSearch/contact");
       break;
 
+    case "feedback":
+
+      if(lang === "en"){
+        addLine("result:");
+        addLine("Google Apps Script endpoint loaded");
+      } else {
+        addLine("sonuç:");
+        addLine("Google Apps Script bağlantısı yüklendi");
+      }
+
+      addLine("https://script.google.com/macros/s/AKfycbzhq4K6qHQ0xoLVbNvKq_NWif8znBEcIki8z8wxozlQBAB3TjUGiREwU4GrBOe31cL6PA/exec");
+      break;
+
+    case "help":
+
+      addLine("about");
+      addLine("contact");
+      addLine("feedback");
+      addLine("support");
+      addLine("website");
+      addLine("TR");
+      addLine("ENG");
+
+      break;
+
+    case "clear":
+
+      output.innerHTML = "";
+      break;
+
     default:
+
       if(cmdText){
         addLine("command not found: " + main);
       }
@@ -143,10 +215,15 @@ function run(cmdText){
 }
 
 cmd.addEventListener("keydown", (e)=>{
+
   if(e.key !== "Enter") return;
 
   const value = cmd.value.trim();
-  addLine(`ws@system ~ % ${value}`);
+
+  addLine(
+    `whiskersearch@system ~ % ${value}`,
+    "cmd"
+  );
 
   run(value);
 
