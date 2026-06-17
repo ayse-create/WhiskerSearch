@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Terminal</title>
+
+<style>
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #000;
+    color: #d0d0d0;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    overflow: hidden;
+  }
+
+  .terminal {
+    height: 100%;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  .header {
+    color: #888;
+    margin-bottom: 10px;
+  }
+
+  .line {
+    white-space: pre-wrap;
+    margin: 4px 0;
+  }
+
+  .prompt {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .prompt span {
+    color: #7CFF7C;
+  }
+
+  input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #d0d0d0;
+    font: inherit;
+  }
+</style>
+</head>
+
+<body>
+
+<div class="terminal">
+  <div class="header">WhiskerSearch Terminal v1.0</div>
+
+  <div id="output">
+    <div class="line">system ready.</div>
+  </div>
+
+  <div class="prompt">
+    <span>whiskersearch@system ~ %</span>
+    <input id="cmd" autofocus />
+  </div>
+</div>
+
+<script>
+const cmd = document.getElementById("cmd");
+const output = document.getElementById("output");
+
+cmd.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    const val = cmd.value;
+
+    const line = document.createElement("div");
+    line.className = "line";
+    line.textContent = `whiskersearch@system ~ % ${val}`;
+
+    output.appendChild(line);
+    cmd.value = "";
+    window.scrollTo(0, document.body.scrollHeight);
+  }
+});
+</script>
+
+</body>
+</html>
