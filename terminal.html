@@ -80,75 +80,76 @@ input {
 const cmd = document.getElementById("cmd");
 const output = document.getElementById("output");
 
-function linkify(text){
-  return text.replace(/(https?:\/\/[^\s]+)/g,
-    url => `<a href="${url}" target="_blank">${url}</a>`
-  );
-}
+let lang = "en"; // varsayılan
 
-function addLine(text, className = ""){
+function addLine(text){
   const div = document.createElement("div");
-  div.className = "line " + className;
-  div.innerHTML = linkify(text);
+  div.className = "line";
+  div.innerHTML = text;
   output.appendChild(div);
 }
 
-cmd.addEventListener("keydown", (e) => {
-  if (e.key !== "Enter") return;
-
-  const value = cmd.value.trim();
-
-  // kullanıcı komutu (sarı)
-  addLine(`whiskersearch@system ~ % ${value}`, "cmd");
-
-  const args = value.split(" ");
+function run(cmdText){
+  const args = cmdText.split(" ");
   const main = args[0];
 
+  // DİL KOMUTLARI
+  if(main === "turkish"){
+    lang = "tr";
+    addLine("Dil Türkçe olarak ayarlandı.");
+    return;
+  }
+
+  if(main === "english"){
+    lang = "en";
+    addLine("Language set to English.");
+    return;
+  }
+
+  // KOMUTLAR
   switch(main){
 
     case "about":
-      addLine("WhiskerSearch-ProfessorCat is an interactive web experience.");
-      addLine("It simulates a browser-like system and guides the user through a 4-stage journey.");
-      break;
-
-    case "contact":
-      addLine("result:");
-      addLine("https://ayse-create.github.io/WhiskerSearch/contact");
-      break;
-
-    case "feedback":
-      addLine("result:");
-      addLine("Google Apps Script endpoint loaded");
-      addLine("https://script.google.com/macros/s/AKfycbzhq4K6qHQ0xoLVbNvKq_NWif8znBEcIki8z8wxozlQBAB3TjUGiREwU4GrBOe31cL6PA/exec");
+      if(lang === "en"){
+        addLine("WhiskerSearch-ProfessorCat is an interactive web experience.");
+        addLine("It simulates a browser-like system and guides the user through a 4-stage journey.");
+      } else {
+        addLine("WhiskerSearch-ProfessorCat interaktif bir web deneyimidir.");
+        addLine("Bir tarayıcı sistemi gibi çalışır ve kullanıcıyı 4 aşamalı bir yolculuğa yönlendirir.");
+      }
       break;
 
     case "support":
-      addLine("You can search \"whiskersearch-profcat\" on Google");
-      addLine("and leave a review on the listed profile.");
+      if(lang === "en"){
+        addLine("Search \"whiskersearch-profcat\" on Google and leave a review.");
+      } else {
+        addLine("\"whiskersearch-profcat\" diye Google'da aratıp yorum bırakabilirsin.");
+      }
       break;
 
     case "website":
-      addLine("result:");
       addLine("https://ayse-create.github.io/WhiskerSearch/");
       break;
 
-    case "help":
-      addLine("commands: about, contact, feedback, support, website, clear");
-      break;
-
-    case "clear":
-      output.innerHTML = "";
+    case "contact":
+      addLine("https://ayse-create.github.io/WhiskerSearch/contact");
       break;
 
     default:
-      if(value){
+      if(cmdText){
         addLine("command not found: " + main);
       }
   }
+}
+
+cmd.addEventListener("keydown", (e)=>{
+  if(e.key !== "Enter") return;
+
+  const value = cmd.value.trim();
+  addLine(`ws@system ~ % ${value}`);
+
+  run(value);
 
   cmd.value = "";
 });
 </script>
-
-</body>
-</html>
