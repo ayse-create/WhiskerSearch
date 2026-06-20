@@ -64,86 +64,89 @@
 
 <!-- AI ENGINE -->
 <script type="module">
-(function(){
 
-  const input = document.getElementById("aiInput");
-  const chat = document.getElementById("aiMessages");
-  const btn = document.getElementById("sendBtn");
+import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
-  if(!input || !chat || !btn) return;
+const input = document.getElementById("aiInput");
+const chat = document.getElementById("aiMessages");
+const btn = document.getElementById("sendBtn");
 
-  let engine = null;
+let engine = null;
 
-  function addMessage(text, type){
+function addMessage(text, type){
 
-    const div = document.createElement("div");
-    div.className = "message " + type;
-    div.innerHTML = `<div class="message-bubble"></div>`;
-    div.querySelector(".message-bubble").textContent = text;
+  const div = document.createElement("div");
+  div.className = "message " + type;
 
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+  const bubble = document.createElement("div");
+  bubble.className = "message-bubble";
+  bubble.textContent = text;
 
-    return div.querySelector(".message-bubble");
-  }
+  div.appendChild(bubble);
+  chat.appendChild(div);
 
-  async function initAI(){
-    const loading = addMessage("Model yükleniyor...", "ai");
+  chat.scrollTop = chat.scrollHeight;
 
-    const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+  return bubble;
+}
 
+async function initAI(){
+
+  const loading = addMessage("Model yükleniyor...", "ai");
+
+  try {
     engine = await webllm.CreateMLCEngine(
       "Llama-3.2-1B-Instruct-q4f32_1"
     );
 
     loading.textContent = "Hazır 😺";
+
+  } catch (e) {
+    console.error(e);
+    loading.textContent = "Model yüklenemedi ❌";
   }
-
-  async function send(){
-
-    const text = input.value.trim();
-    if(!text || !engine) return;
-
-    addMessage(text, "user");
-    input.value = "";
-
-    const bubble = addMessage("...", "ai");
-
-    const res = await engine.chat.completions.create({
-      messages: [
-        {
-  role: "system",
-  content: `
-Sen ProfCat adlı bir asistansın.
-
-Kurallar:
-- Kısa ve doğal cevap ver (3-5 cümle)
-- Türkçe konuş
-- Kullanıcı "teşekkür", "tamam", "evet", "hayır" gibi kısa ifadeler yazarsa:
-  - uygun kısa sosyal cevap ver
-- Anlamadığın şeylerde "Bunu tam anlayamadım" deme, onun yerine soru sor
-- Matematik sorularını her zaman çöz
-- Asla cevapsız bırakma
-`
 }
-        { role: "user", content: text }
-      ]
-    });
 
-    bubble.textContent = res.choices[0].message.content;
+async function send(){
 
+  const text = input.value.trim();
+  if(!text) return;
+
+  addMessage(text, "user");
+  input.value = "";
+
+  if(!engine){
+    addMessage("Model henüz hazır 😺", "ai");
+    return;
   }
 
-  btn.addEventListener("click", send);
+  const bubble = addMessage("...", "ai");
 
-  input.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter"){
-      e.preventDefault();
-      send();
-    }
+  const res = await engine.chat.completions.create({
+    messages: [
+      {
+        role: "system",
+        content: "Sen ProfCat adlı kısa ve doğal cevap veren bir asistansın."
+      },
+      {
+        role: "user",
+        content: text
+      }
+    ]
   });
 
-  initAI();
+  bubble.textContent = res.choices[0].message.content;
+}
 
-})();
+btn.addEventListener("click", send);
+
+input.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){
+    e.preventDefault();
+    send();
+  }
+});
+
+initAI();
+
 </script>
