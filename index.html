@@ -559,7 +559,23 @@
   <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
- <script src="/_sdk/telemetry_sdk.js"></script></head>
+ <script src="/_sdk/telemetry_sdk.js"></script>
+  <script type="module">
+import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+
+window.engine = new webllm.MLCEngine();
+
+window.loadModel = async () => {
+  const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
+
+  await window.engine.reload(selectedModel);
+
+  console.log("CatAI hazır!");
+};
+
+window.loadModel();
+</script>
+ </head>
  <body>
   <div class="browser-container"><!-- Demo Uyarısı -->
    <div class="demo-warning">
@@ -601,15 +617,7 @@
     let history = [];
     let historyIndex = -1;
 
-    const aiResponses = [
-      "Hmm, ben ne bileyim? ProfessorCat'ı aç sen!",
-      "Hiçbir fikrim yok arkadaş, ama ProfessorCat'ı açmayı denedin mi?",
-      "Merak etme, ProfessorCat'ı açıp bak, belki orada cevap vardır!",
-      "Ben sadece bir kedi bilgisayarım, ProfessorCat'ı aç yeter!",
-      "Ay ben ne bileyim! ProfessorCat'ı aç sen, o sana yardım eder!",
-      "Umarım ProfessorCat'a sormuş olursun, ben cevap veremem!",
-      "Bunu bilmek için ProfessorCat olman lazım!"
-    ];
+    
 
     function goHome() {
       history = [];
@@ -819,7 +827,7 @@
       }
     }
 
-    function sendAIMessage() {
+    async function sendAIMessage() {
       const input = document.getElementById('aiInput');
       const message = input.value.trim();
       
@@ -837,14 +845,43 @@
       input.value = '';
 
       // AI cevabı ekle
-      setTimeout(() => {
-        const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
-        const aiMessageDiv = document.createElement('div');
-        aiMessageDiv.className = 'message ai';
-        aiMessageDiv.innerHTML = `<div class="message-bubble">${randomResponse}</div>`;
-        messagesContainer.appendChild(aiMessageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 500);
+      try {
+
+  const aiMessageDiv = document.createElement('div');
+  aiMessageDiv.className = 'message ai';
+  aiMessageDiv.innerHTML =
+    '<div class="message-bubble">CatAI düşünüyor...</div>';
+
+  messagesContainer.appendChild(aiMessageDiv);
+
+  const response =
+    await window.engine.chat.completions.create({
+      messages: [
+        {
+          role: "system",
+          content:
+            "Sen CatAI adlı Türkçe konuşan yardımcı bir yapay zekasın. Her zaman Türkçe cevap ver."
+        },
+        {
+          role: "user",
+          content: message
+        }
+      ]
+    });
+
+  aiMessageDiv.innerHTML =
+    `<div class="message-bubble">${response.choices[0].message.content}</div>`;
+
+}
+catch (err) {
+
+  const aiMessageDiv = document.createElement('div');
+  aiMessageDiv.className = 'message ai';
+  aiMessageDiv.innerHTML =
+    `<div class="message-bubble">Hata: ${err.message}</div>`;
+
+  messagesContainer.appendChild(aiMessageDiv);
+}
 
       messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
