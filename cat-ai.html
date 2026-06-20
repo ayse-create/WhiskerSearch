@@ -38,7 +38,6 @@
 
 </div>
 
-<!-- STİL -->
 <style>
 .message{display:flex;}
 .message.user{justify-content:flex-end;}
@@ -49,6 +48,7 @@
   padding:10px 14px;
   border-radius:12px;
   font-size:14px;
+  word-wrap:break-word;
 }
 
 .message.user .message-bubble{
@@ -60,9 +60,14 @@
   background:#eee;
   color:#333;
 }
+
+.typing{
+  font-size:12px;
+  color:#888;
+  margin-left:10px;
+}
 </style>
 
-<!-- AI ENGINE -->
 <script>
 (function(){
 
@@ -72,132 +77,88 @@
 
   if(!input || !chat || !btn) return;
 
-  function reply(text){
+  // 🔌 BURAYA SONRA WEBLLM BAĞLANACAK
+  let engine = null;
 
-    const t = text.trim().toLowerCase();
+  function addMessage(text, type){
 
-    // 🧮 HESAP MAKİNESİ
+    const div = document.createElement("div");
+    div.className = "message " + type;
+
+    const bubble = document.createElement("div");
+    bubble.className = "message-bubble";
+    bubble.textContent = text;
+
+    div.appendChild(bubble);
+    chat.appendChild(div);
+
+    chat.scrollTop = chat.scrollHeight;
+
+    return bubble;
+  }
+
+  function localReply(text){
+
+    const t = text.toLowerCase();
+
     if(/^[0-9+\-*/().\s^]+$/.test(text)){
       try {
-        const result = Function("return (" + text.replace(/\^/g,"**") + ")")();
-        return "🧮 Sonuç: " + result;
+        return "🧮 Sonuç: " + Function("return (" + text.replace(/\^/g,"**") + ")")();
       } catch {
-        return "Bunu hesaplayamadım 😺";
+        return "Hesaplayamadım 😺";
       }
     }
 
-    // 👋 SELAM
-    if(t.includes("merhaba") || t.includes("selam")){
-      const r = [
-        "Selam 😺 bugün neler yapıyorsun?",
-        "Merhaba! Günün nasıl geçiyor?",
-        "Hey 😸 anlat bakalım",
-        "Selam 🐾 bir şey oldu mu bugün?"
-      ];
-      return r[Math.floor(Math.random()*r.length)];
-    }
+    if(t.includes("merhaba") || t.includes("selam"))
+      return "Selam 😺";
 
-    // 🏫 OKUL / GÜN SOHBET
-    if(t.includes("okul") || t.includes("ders") || t.includes("bugün")){
-      const r = [
-        "Okul nasıldı 😺?",
-        "Bugün ilginç bir şey oldu mu?",
-        "En sevdiğin ders hangisi?",
-        "Yorucu bir gün müydü 🐾?",
-        "Anlat bakalım, dinliyorum 😸"
-      ];
-      return r[Math.floor(Math.random()*r.length)];
-    }
+    if(t.includes("okul") || t.includes("ders"))
+      return "Okul nasıl gidiyor? 😸";
 
-    // 😄 OLUMLU DUYGU
-    if(t.includes("iyi") || t.includes("güzel") || t.includes("harika") || t.includes("süper")){
-      const r = [
-        "Hmm güzelmiş 😺 devam et",
-        "İlginç 😸 sonra ne oldu?",
-        "Bunu duymak iyi 🐾",
-        "Güzel gidiyor gibi, anlat bakalım",
-        "Hoş 😺 biraz daha detay verir misin?"
-      ];
-      return r[Math.floor(Math.random()*r.length)];
-    }
+    if(t.includes("whisker"))
+      return "WhiskerSearch bir kedi temalı demo arama motoru 😺";
 
-    // 😐 BİLMİYORUM
-    if(t.includes("bilmiyorum") || t.includes("emin değilim")){
-      const r = [
-        "Sorun değil 😺 birlikte düşünebiliriz",
-        "Bilmemen normal 🐾",
-        "İstersen birlikte bulalım",
-        "Önemli değil, devam edelim 😸"
-      ];
-      return r[Math.floor(Math.random()*r.length)];
-    }
-
-    // 🎤 UZUN CÜMLELER = SOHBET DEVAM
-    if(text.length > 20){
-      const r = [
-        "Vay 😺 sonra ne oldu?",
-        "İlginçmiş 🐾 devam et",
-        "Bunu merak ettim 😸",
-        "Anladım gibi ama biraz daha anlat",
-        "Dinliyorum 😺 devam et"
-      ];
-      return r[Math.floor(Math.random()*r.length)];
-    }
-
-    // 🐱 WHISKER
-    if(t.includes("whisker")){
-      return "WhiskerSearch kedi temalı bir demo arama motorudur 😺";
-    }
-
-    // 💬 GENEL SOHBET AKIŞI
-    const fallback = [
-      "Hmm 😺 biraz daha anlatır mısın?",
-      "Devam et, dinliyorum 🐾",
-      "Bunu tam anlayamadım ama ilgimi çekti",
-      "Sonra ne oldu 😸?",
-      "Biraz daha detay verir misin?",
-      "İlginç 😺"
-    ];
-
-    return fallback[Math.floor(Math.random()*fallback.length)];
+    return "Bunu tam anlayamadım ama anlatabilirsin 😺";
   }
 
-  function send(){
+  async function getAIResponse(text){
+
+    // 🤖 Eğer WebLLM bağlarsan burası aktif olur
+    if(engine){
+      const res = await engine.chat.completions.create({
+        messages: [
+          { role: "system", content: "Sen ProfCat adında basit bir asistansın." },
+          { role: "user", content: text }
+        ]
+      });
+
+      return res.choices[0].message.content;
+    }
+
+    // fallback
+    return localReply(text);
+  }
+
+  async function send(){
 
     const text = input.value.trim();
     if(!text) return;
 
-    // USER
-    const u = document.createElement("div");
-    u.className = "message user";
-    u.innerHTML = `<div class="message-bubble">${text}</div>`;
-    chat.appendChild(u);
-
+    addMessage(text, "user");
     input.value = "";
 
-    // AI
-    setTimeout(() => {
+    const typing = addMessage("yazıyor...", "ai");
 
-      const r = reply(text);
+    const reply = await getAIResponse(text);
 
-      const a = document.createElement("div");
-      a.className = "message ai";
-      a.innerHTML = `<div class="message-bubble">${r}</div>`;
-      chat.appendChild(a);
-
-      chat.scrollTop = chat.scrollHeight;
-
-    }, 200);
+    typing.textContent = reply;
 
   }
 
   btn.addEventListener("click", send);
 
-  input.addEventListener("keydown", function(e){
-    if(e.key === "Enter"){
-      e.preventDefault();
-      send();
-    }
+  input.addEventListener("keydown", (e)=>{
+    if(e.key === "Enter") send();
   });
 
 })();
