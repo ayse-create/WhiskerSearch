@@ -6,10 +6,16 @@
   </url>
 
   <url>
-    <loc>https://ayse-create.github.io/WhiskerSearch/about/</loc>
+    <loc>https://ayse-create.github.io/WhiskerSearch/about</loc>
   </url>
 
   <url>
-    <loc>https://ayse-create.github.io/WhiskerSearch/contact/</loc>
+    <loc>https://ayse-create.github.io/WhiskerSearch/contact</loc>
+  </url>
+  <url>
+    <loc>https://ayse-create.github.io/WhiskerSearch/cat-ai</loc>
+  </url>
+  <url>
+    <loc>https://ayse-create.github.io/WhiskerSearch/terminal</loc>
   </url>
 </urlset>
