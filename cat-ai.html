@@ -1,3 +1,5 @@
+görünüm için kodum var zaten ama bunu düzenler misin
+
 <div id="ai-content" class="tab-content">
 
   <div class="ai-chat-container" style="display:flex;flex-direction:column;height:100%;">
@@ -38,6 +40,7 @@
 
 </div>
 
+<!-- STİL -->
 <style>
 .message{display:flex;}
 .message.user{justify-content:flex-end;}
@@ -48,7 +51,6 @@
   padding:10px 14px;
   border-radius:12px;
   font-size:14px;
-  word-wrap:break-word;
 }
 
 .message.user .message-bubble{
@@ -60,14 +62,9 @@
   background:#eee;
   color:#333;
 }
-
-.typing{
-  font-size:12px;
-  color:#888;
-  margin-left:10px;
-}
 </style>
 
+<!-- AI ENGINE -->
 <script>
 (function(){
 
@@ -77,88 +74,51 @@
 
   if(!input || !chat || !btn) return;
 
-  // 🔌 BURAYA SONRA WEBLLM BAĞLANACAK
-  let engine = null;
+  function reply(text){
 
-  function addMessage(text, type){
+    const t = text.trim().toLowerCase();
 
-    const div = document.createElement("div");
-    div.className = "message " + type;
+    
 
-    const bubble = document.createElement("div");
-    bubble.className = "message-bubble";
-    bubble.textContent = text;
-
-    div.appendChild(bubble);
-    chat.appendChild(div);
-
-    chat.scrollTop = chat.scrollHeight;
-
-    return bubble;
+    return fallback[Math.floor(Math.random()*fallback.length)];
   }
 
-  function localReply(text){
-
-    const t = text.toLowerCase();
-
-    if(/^[0-9+\-*/().\s^]+$/.test(text)){
-      try {
-        return "🧮 Sonuç: " + Function("return (" + text.replace(/\^/g,"**") + ")")();
-      } catch {
-        return "Hesaplayamadım 😺";
-      }
-    }
-
-    if(t.includes("merhaba") || t.includes("selam"))
-      return "Selam 😺";
-
-    if(t.includes("okul") || t.includes("ders"))
-      return "Okul nasıl gidiyor? 😸";
-
-    if(t.includes("whisker"))
-      return "WhiskerSearch bir kedi temalı demo arama motoru 😺";
-
-    return "Bunu tam anlayamadım ama anlatabilirsin 😺";
-  }
-
-  async function getAIResponse(text){
-
-    // 🤖 Eğer WebLLM bağlarsan burası aktif olur
-    if(engine){
-      const res = await engine.chat.completions.create({
-        messages: [
-          { role: "system", content: "Sen ProfCat adında basit bir asistansın." },
-          { role: "user", content: text }
-        ]
-      });
-
-      return res.choices[0].message.content;
-    }
-
-    // fallback
-    return localReply(text);
-  }
-
-  async function send(){
+  function send(){
 
     const text = input.value.trim();
     if(!text) return;
 
-    addMessage(text, "user");
+    // USER
+    const u = document.createElement("div");
+    u.className = "message user";
+    u.innerHTML = `<div class="message-bubble">${text}</div>`;
+    chat.appendChild(u);
+
     input.value = "";
 
-    const typing = addMessage("yazıyor...", "ai");
+    // AI
+    setTimeout(() => {
 
-    const reply = await getAIResponse(text);
+      const r = reply(text);
 
-    typing.textContent = reply;
+      const a = document.createElement("div");
+      a.className = "message ai";
+      a.innerHTML = `<div class="message-bubble">${r}</div>`;
+      chat.appendChild(a);
+
+      chat.scrollTop = chat.scrollHeight;
+
+    }, 200);
 
   }
 
   btn.addEventListener("click", send);
 
-  input.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter") send();
+  input.addEventListener("keydown", function(e){
+    if(e.key === "Enter"){
+      e.preventDefault();
+      send();
+    }
   });
 
 })();
