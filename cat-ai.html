@@ -63,7 +63,7 @@
 </style>
 
 <!-- AI ENGINE -->
-<script>
+<script type="module">
 (function(){
 
   const input = document.getElementById("aiInput");
@@ -72,52 +72,64 @@
 
   if(!input || !chat || !btn) return;
 
-  function reply(text){
+  let engine = null;
 
-    const t = text.trim().toLowerCase();
+  function addMessage(text, type){
 
-    
+    const div = document.createElement("div");
+    div.className = "message " + type;
+    div.innerHTML = `<div class="message-bubble"></div>`;
+    div.querySelector(".message-bubble").textContent = text;
 
-    return fallback[Math.floor(Math.random()*fallback.length)];
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+
+    return div.querySelector(".message-bubble");
   }
 
-  function send(){
+  async function initAI(){
+    const loading = addMessage("Model yükleniyor...", "ai");
+
+    const webllm = await import("https://esm.run/@mlc-ai/web-llm");
+
+    engine = await webllm.CreateMLCEngine(
+      "Llama-3.2-1B-Instruct-q4f32_1"
+    );
+
+    loading.textContent = "Hazır 😺";
+  }
+
+  async function send(){
 
     const text = input.value.trim();
-    if(!text) return;
+    if(!text || !engine) return;
 
-    // USER
-    const u = document.createElement("div");
-    u.className = "message user";
-    u.innerHTML = `<div class="message-bubble">${text}</div>`;
-    chat.appendChild(u);
-
+    addMessage(text, "user");
     input.value = "";
 
-    // AI
-    setTimeout(() => {
+    const bubble = addMessage("...", "ai");
 
-      const r = reply(text);
+    const res = await engine.chat.completions.create({
+      messages: [
+        { role: "system", content: "Sen ProfCat adında kısa ve basit cevap veren bir asistansın." },
+        { role: "user", content: text }
+      ]
+    });
 
-      const a = document.createElement("div");
-      a.className = "message ai";
-      a.innerHTML = `<div class="message-bubble">${r}</div>`;
-      chat.appendChild(a);
-
-      chat.scrollTop = chat.scrollHeight;
-
-    }, 200);
+    bubble.textContent = res.choices[0].message.content;
 
   }
 
   btn.addEventListener("click", send);
 
-  input.addEventListener("keydown", function(e){
+  input.addEventListener("keydown", (e)=>{
     if(e.key === "Enter"){
       e.preventDefault();
       send();
     }
   });
+
+  initAI();
 
 })();
 </script>
