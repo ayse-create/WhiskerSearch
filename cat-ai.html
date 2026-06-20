@@ -1,29 +1,18 @@
 <div id="ai-content" class="tab-content">
 
-  <div class="ai-chat-container" style="display:flex;flex-direction:column;height:100%;">
+  <div style="display:flex;flex-direction:column;height:100%;">
 
-    <!-- MESAJ ALANI -->
-    <div id="aiMessages" style="
-      flex:1;
-      overflow-y:auto;
-      padding:10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    ">
+    <!-- MESAJLAR -->
+    <div id="aiMessages" style="flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px;">
       <div style="text-align:center;color:#666;margin-top:40px;">
-        🤖 Whisker AI sohbet modunda
+        🤖 Whisker AI başlatılıyor...
       </div>
     </div>
 
     <!-- INPUT -->
     <div style="display:flex;gap:10px;border-top:1px solid #ddd;padding:10px;">
-
-      <input id="aiInput"
-        type="text"
-        placeholder="Bir şey anlat..."
-        style="flex:1;height:44px;padding:0 12px;border:1px solid #ccc;border-radius:10px;outline:none;"
-      />
+      <input id="aiInput" type="text" placeholder="Bir şey yaz..."
+        style="flex:1;height:44px;padding:0 12px;border:1px solid #ccc;border-radius:10px;outline:none;" />
 
       <button id="sendBtn"
         style="height:44px;padding:0 20px;border:none;border-radius:10px;
@@ -31,14 +20,11 @@
         color:white;font-weight:600;cursor:pointer;">
         Gönder
       </button>
-
     </div>
 
   </div>
-
 </div>
 
-<!-- STİL -->
 <style>
 .message{display:flex;}
 .message.user{justify-content:flex-end;}
@@ -50,21 +36,18 @@
   border-radius:12px;
   font-size:14px;
 }
-
 .message.user .message-bubble{
   background:linear-gradient(135deg,#667eea,#764ba2);
   color:white;
 }
-
 .message.ai .message-bubble{
   background:#eee;
   color:#333;
 }
 </style>
 
-<!-- AI ENGINE -->
 <script type="module">
-import * as webllm from "https://esm.run/@mlc-ai/web-llm";
+import * as webllm from "https://cdn.jsdelivr.net/npm/@mlc-ai/web-llm/+esm";
 
 const input = document.getElementById("aiInput");
 const chat = document.getElementById("aiMessages");
@@ -72,6 +55,7 @@ const btn = document.getElementById("sendBtn");
 
 let engine = null;
 
+/* mesaj ekleme */
 function addMessage(text, type){
   const div = document.createElement("div");
   div.className = "message " + type;
@@ -82,43 +66,43 @@ function addMessage(text, type){
 
   div.appendChild(bubble);
   chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
 
+  chat.scrollTop = chat.scrollHeight;
   return bubble;
 }
 
+/* model başlat */
 async function initAI(){
   const loading = addMessage("Model yükleniyor...", "ai");
 
   try {
     console.log("WebGPU:", navigator.gpu);
 
-    engine = await webllm.CreateMLCEngine(
-      "Phi-3-mini-4k-instruct-q4f16_1"
-    );
+    const models = webllm.prebuiltAppConfig.model_list;
+    console.log("Models:", models);
+
+    const model = models[0].model_id; // otomatik en uyumlu model
+
+    engine = await webllm.CreateMLCEngine(model);
 
     loading.textContent = "Hazır 😺";
 
   } catch (e) {
-    console.error("MODEL ERROR:", e);
-    loading.textContent = "Model yüklenemedi ❌ (Console bak)";
+    console.error("INIT ERROR:", e);
+    loading.textContent = "Model yüklenemedi ❌";
   }
 }
 
+/* mesaj gönder */
 async function send(){
-
   const text = input.value.trim();
-  if(!text){
-    console.log("boş mesaj");
-    return;
-  }
+  if(!text) return;
 
   addMessage(text, "user");
   input.value = "";
 
   if(!engine){
-    addMessage("Model hazır değil 😺 (init bekleniyor)", "ai");
-    console.log("engine null");
+    addMessage("Model henüz hazır değil 😺", "ai");
     return;
   }
 
@@ -127,8 +111,14 @@ async function send(){
   try {
     const res = await engine.chat.completions.create({
       messages: [
-        { role: "system", content: "Kısa ve doğal cevap ver." },
-        { role: "user", content: text }
+        {
+          role: "system",
+          content: "Kısa, doğal ve Türkçe cevap ver."
+        },
+        {
+          role: "user",
+          content: text
+        }
       ]
     });
 
@@ -140,6 +130,7 @@ async function send(){
   }
 }
 
+/* eventler */
 btn.addEventListener("click", send);
 
 input.addEventListener("keydown", (e)=>{
@@ -149,5 +140,6 @@ input.addEventListener("keydown", (e)=>{
   }
 });
 
+/* başlat */
 initAI();
 </script>
