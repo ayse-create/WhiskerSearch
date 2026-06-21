@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhiskerSearch - Web Sitesi Sunumu</title>
+  <link rel="stylesheet" href="sunum-styles.css">
+</head>
+<body>
+  <div class="browser-container">
+    <!-- Browser Header -->
+    <div class="browser-header">
+      <div class="browser-buttons">
+        <button class="nav-button" onclick="goBack()">←</button>
+        <button class="nav-button" onclick="goForward()">→</button>
+        <button class="nav-button" onclick="goHome()">🏠</button>
+      </div>
+      <div class="address-bar">
+        <span class="address-bar-icon">🔒</span>
+        <span>https://www.whiskersearch.com</span>
+      </div>
+    </div>
+
+    <!-- Browser Content -->
+    <div class="browser-content" id="browserContent">
+      <!-- Ana Sayfa -->
+      <div class="home-page">
+        <div class="logo-container">
+          <div class="logo">🐱</div>
+          <h1>WhiskerSearch</h1>
+          <p>Benim Web Sitesi Sunumu</p>
+        </div>
+        <div class="search-box-home">
+          <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'ta ara..." onkeypress="handleSearch(event)">
+          <button class="search-button" onclick="performSearch()">Ara</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="sunum-script.js"></script>
+</body>
+</html>
