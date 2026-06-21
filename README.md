@@ -42,7 +42,7 @@ Kreativitenizi ortaya çıkarın!
 
 ## 🚀 Nasıl Başlanır?
 
-1. **https://ayse-create.github.io/WhiskerSearch/** adresini ziyaret edin
+1. **https://ayse-create.github.io/WhiskerSearch-ProfCat/** adresini ziyaret edin
 2. Arama kutusuna istediğiniz sorguyu yazın
 3. Sonuçlara tıklayarak Canva oyun deneyimine geçin
 4. 4 bölümlü oyunu tamamlayarak puan kazanın
@@ -64,13 +64,13 @@ Kreativitenizi ortaya çıkarın!
 
 ## 🔗 Bağlantılar
 
-- **🏠 Ana Sayfa**: https://ayse-create.github.io/WhiskerSearch/
-- **🤖 AI Asistan**: https://ayse-create.github.io/WhiskerSearch/cat-ai (English Support)
-- **📞 İletişim**: https://ayse-create.github.io/WhiskerSearch/contact
+- **🏠 Ana Sayfa**: https://ayse-create.github.io/WhiskerSearch-ProfCat/
+- **🤖 AI Asistan**: https://ayse-create.github.io/WhiskerSearch-ProfCat/cat-ai (English Support)
+- **📞 İletişim**: https://ayse-create.github.io/WhiskerSearch-ProfCat/contact
 
 ## 📞 İletişim & Destek
 
-WhiskerSearch hakkında sorularınız veya geri bildirimleriniz için lütfen [İletişim Sayfasını](https://ayse-create.github.io/WhiskerSearch/contact) ziyaret ediniz.
+WhiskerSearch hakkında sorularınız veya geri bildirimleriniz için lütfen [İletişim Sayfasını](https://ayse-create.github.io/WhiskerSearch-ProfCat/contact) ziyaret ediniz.
 
 ---
 
