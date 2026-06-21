@@ -55,10 +55,6 @@ Kreativitenizi ortaya çıkarın!
 - **AI Model**: WebLLM (English Support)
 - **Görsel İşleme**: Kedi Emoji & Custom Graphics
 
-## 👨‍💼 İşletme
-
-WhiskerSearch, başarılı trafik sonuçlarından sonra profesyonel bir yazılım şirketi olarak kurulmuştur. Amacımız, eğlenceli öğrenme deneyimleri yaratarak çocuk ve gençlerin gelişimine katkı sağlamaktır.
-
 ## 🎯 Misyon
 
 - 📚 Eğitimi eğlenceli hale getirmek
