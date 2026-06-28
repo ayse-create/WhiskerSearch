@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WhiskerChat 🐱</title>
     <style>
-        /* ---------- GENEL ---------- */
         * {
             margin: 0;
             padding: 0;
@@ -20,27 +19,27 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
+            padding: 20px;
         }
 
-        /* Ana sohbet kutusu */
         .chat-container {
             width: 420px;
-            max-width: 98%;
+            max-width: 100%;
             height: 700px;
             background: white;
             border-radius: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
-        /* ---------- BAŞLIK (GRADIENT) ---------- */
         .chat-header {
             background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-            padding: 20px 25px;
+            padding: 22px 25px;
             text-align: center;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.4);
         }
 
         .chat-header h1 {
@@ -51,14 +50,9 @@
             text-shadow: 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
-        .chat-header h1 span {
-            font-size: 28px;
-        }
-
-        /* ---------- MESAJ ALANI ---------- */
         .chat-messages {
             flex: 1;
-            padding: 20px 15px;
+            padding: 20px 18px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -66,31 +60,27 @@
             background: #f0f0f0;
         }
 
-        /* ---------- MESAJ BALONLARI (Renk Döngüsü) ---------- */
         .message {
             max-width: 80%;
-            padding: 12px 18px;
+            padding: 14px 20px;
             border-radius: 20px;
             font-size: 15px;
             line-height: 1.5;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             word-wrap: break-word;
             animation: fadeIn 0.3s ease;
         }
 
-        /* Kullanıcı mesajları sağda */
         .message.user {
             align-self: flex-end;
-            border-bottom-right-radius: 6px;
+            border-bottom-right-radius: 8px;
         }
 
-        /* Admin mesajları solda */
         .message.admin {
             align-self: flex-start;
-            border-bottom-left-radius: 6px;
+            border-bottom-left-radius: 8px;
         }
 
-        /* Renk sınıfları (döngü için) */
         .color-blue {
             background: #a8d8ff;
             color: #003366;
@@ -104,52 +94,49 @@
             color: #5e2a44;
         }
 
-        /* Mesaj animasyonu */
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(8px);
+                transform: translateY(8px) scale(0.96);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
-        /* ---------- ALT GİRİŞ ALANI ---------- */
         .chat-input-area {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 15px 20px;
+            padding: 15px 20px 20px;
             background: white;
-            border-top: 1px solid #e0e0e0;
+            border-top: 1px solid #e8e8e8;
         }
 
-        /* Yumuşacık input */
         .chat-input-area input {
             flex: 1;
-            padding: 14px 20px;
-            border: 2px solid #ccc;
-            border-radius: 50px; /* Çok yumuşak */
+            padding: 16px 24px;
+            border: 2px solid #d0d0d0;
+            border-radius: 50px;
             font-size: 15px;
             outline: none;
             transition: all 0.3s ease;
             background: #fafafa;
         }
 
-        /* Tıklayınca gradient çerçeve */
         .chat-input-area input:focus {
             border-color: transparent;
             background: white;
-            box-shadow: 0 0 0 3px #CFEFFF, 0 0 0 6px #D8C7FF, 0 0 0 9px #FFD1E8;
-            /* Gradient efekti için box-shadow katmanları */
+            box-shadow: 
+                0 0 0 3px #CFEFFF,
+                0 0 0 6px #D8C7FF,
+                0 0 0 9px #FFD1E8;
         }
 
-        /* Gönder butonu (gradient + ok) */
         .chat-input-area button {
-            width: 52px;
-            height: 52px;
+            width: 56px;
+            height: 56px;
             border: none;
             border-radius: 50%;
             background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
@@ -161,28 +148,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
             flex-shrink: 0;
         }
 
         .chat-input-area button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+            transform: scale(1.06);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
         }
 
         .chat-input-area button:active {
-            transform: scale(0.92);
+            transform: scale(0.90);
         }
 
-        /* Yukarı bakan ok */
         .chat-input-area button::after {
             content: "↑";
-            font-size: 28px;
+            font-size: 30px;
             line-height: 1;
             color: #1a1a2e;
+            font-weight: 700;
         }
 
-        /* ---------- SCROLLBAR SÜSLEMESİ ---------- */
         .chat-messages::-webkit-scrollbar {
             width: 6px;
         }
@@ -194,16 +180,37 @@
             background: #d0b0ff;
             border-radius: 10px;
         }
+
+        @media (max-width: 480px) {
+            .chat-container {
+                height: 95vh;
+                border-radius: 30px;
+            }
+            .message {
+                max-width: 90%;
+                padding: 12px 16px;
+                font-size: 14px;
+            }
+            .chat-input-area input {
+                padding: 14px 18px;
+                font-size: 14px;
+            }
+            .chat-input-area button {
+                width: 50px;
+                height: 50px;
+            }
+            .chat-input-area button::after {
+                font-size: 26px;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="chat-container">
-        <!-- BAŞLIK -->
         <div class="chat-header">
             <h1>🐱 WhiskerChat</h1>
         </div>
 
-        <!-- MESAJLAR -->
         <div class="chat-messages" id="messageArea">
             <!-- Örnek mesajlar (renk döngüsüyle) -->
             <div class="message user color-blue">Merhaba!</div>
@@ -214,7 +221,6 @@
             <div class="message admin color-pink">Kediniz üst solunum yolu enfeksiyonu geçiriyor olabilir. Bol su verin ve en kısa sürede veterinere görünün.</div>
         </div>
 
-        <!-- ALT YAZMA ALANI -->
         <div class="chat-input-area">
             <input type="text" id="messageInput" placeholder="Mesajınızı yazın..." />
             <button id="sendButton"></button>
@@ -222,42 +228,39 @@
     </div>
 
     <script>
-        // ---------- MESAJ GÖNDERME ----------
+        // -------- APPS SCRIPT BAĞLANTISI --------
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxFtSAC8BT9gMUfpfzo87HFDXTbmLg8rn1Q_VR7Bm-Czwdad-sM7FTRE3ToskDjH3ecjw/exec';
+
+        // -------- DOM ELEMENTLERİ --------
         const input = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendButton');
         const messageArea = document.getElementById('messageArea');
 
-        // Renk döngüsü için sayaç
+        // -------- RENK DÖNGÜSÜ --------
         let colorIndex = 0;
         const colorClasses = ['color-blue', 'color-purple', 'color-pink'];
 
-        // Yeni mesaj ekleme fonksiyonu
+        // -------- MESAJ EKLEME --------
         function addMessage(text, sender) {
-            if (!text.trim()) return;
+            if (!text || !text.trim()) return;
 
-            // Hangi renk sırada?
             const colorClass = colorClasses[colorIndex % colorClasses.length];
-            colorIndex++; // Bir sonraki mesaj için ilerlet
+            colorIndex++;
 
-            // Mesaj div'ini oluştur
             const msgDiv = document.createElement('div');
             msgDiv.className = `message ${sender} ${colorClass}`;
             msgDiv.textContent = text;
 
-            // Mesaj alanına ekle ve aşağı kaydır
             messageArea.appendChild(msgDiv);
             messageArea.scrollTop = messageArea.scrollHeight;
 
-            // ---- MİYAV SESİ (Her 10 mesajda bir) ----
-            // Toplam mesaj sayısını kontrol et
-            const totalMessages = messageArea.children.length;
-            if (totalMessages % 10 === 0) {
-                // Ses efekti oluştur (basit bir "miyav" sesi için Web Audio API)
+            // Her 10 mesajda bir miyav sesi
+            if (messageArea.children.length % 10 === 0) {
                 playMeowSound();
             }
         }
 
-        // Basit "miyav" sesi (Web Audio API ile)
+        // -------- MİYAV SESİ --------
         function playMeowSound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -267,47 +270,75 @@
                 oscillator.connect(gainNode);
                 gainNode.connect(audioCtx.destination);
 
-                // Miyav benzeri bir ses (iki farklı frekans)
                 oscillator.frequency.setValueAtTime(800, audioCtx.currentTime);
                 oscillator.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.1);
                 oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.2);
-
-                oscillator.type = 'sawtooth'; // Biraz kedi sesi gibi
-                gainNode.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                oscillator.type = 'sawtooth';
+                gainNode.gain.setValueAtTime(0.12, audioCtx.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
 
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.3);
             } catch (e) {
-                // Ses çalışmazsa sessizce geç
-                console.log('Miyav sesi çalınamadı :)');
+                // Sessizce geç
             }
         }
 
-        // Gönder butonuna tıklayınca
-        sendBtn.addEventListener('click', function () {
+        // -------- MESAJ GÖNDER (Apps Script'e) --------
+        async function sendMessageToServer(text) {
+            try {
+                const response = await fetch(APP_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors', // CORS sorununu aşmak için
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        action: 'mesajGonder',
+                        mesaj: text,
+                        kullanici: 'Beyza' // Şimdilik sabit, sonra geliştirilir
+                    })
+                });
+
+                // no-cors mode'da response okunamaz, ama istek gider.
+                console.log('Mesaj gönderildi (no-cors)');
+                return true;
+            } catch (error) {
+                console.error('Mesaj gönderme hatası:', error);
+                return false;
+            }
+        }
+
+        // -------- GÖNDER BUTONU --------
+        sendBtn.addEventListener('click', async function () {
             const text = input.value.trim();
             if (text) {
+                // Mesajı ekrana ekle
                 addMessage(text, 'user');
                 input.value = '';
 
-                // Admin otomatik cevabı (örnek) - gerçekte buraya Google Sheets gelecek
+                // Apps Script'e gönder
+                await sendMessageToServer(text);
+
+                // Admin yanıtı (şimdilik simülasyon)
                 setTimeout(() => {
-                    addMessage('Mesajınız alındı! 🐱', 'admin');
-                }, 600);
+                    addMessage('Mesajın alındı! 🐱', 'admin');
+                }, 800);
             }
         });
 
-        // Enter tuşu ile gönderme
+        // -------- ENTER TUŞU --------
         input.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 sendBtn.click();
             }
         });
 
-        // Sayfa açıldığında inputa odaklan
+        // -------- SAYFA AÇILINCA --------
         window.addEventListener('load', () => {
             input.focus();
+            console.log('🐱 WhiskerChat hazır!');
+            console.log('Apps Script URL:', APP_SCRIPT_URL);
         });
     </script>
 </body>
