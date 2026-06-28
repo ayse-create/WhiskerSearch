@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>WhiskerChat 🐱</title>
     <style>
+        /* SIFIRLAMA */
         * {
             margin: 0;
             padding: 0;
@@ -12,7 +13,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* ----- TAM EKRAN ----- */
+        /* TAM EKRAN */
         html, body {
             width: 100%;
             height: 100%;
@@ -23,7 +24,7 @@
             overflow: hidden;
         }
 
-        /* ----- ANA KONTEYNER (Tam ekran) ----- */
+        /* ANA KONTEYNER */
         .chat-container {
             width: 100vw;
             height: 100vh;
@@ -38,7 +39,7 @@
             position: relative;
         }
 
-        /* ----- BAŞLIK (SENİN GRADIENT'İN) ----- */
+        /* BAŞLIK (SENİN GRADIENT'İN) */
         .chat-header {
             background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
             padding: 20px 25px;
@@ -54,7 +55,7 @@
             letter-spacing: 1px;
         }
 
-        /* ----- MESAJ ALANI ----- */
+        /* MESAJ ALANI */
         .chat-messages {
             flex: 1;
             padding: 20px 18px;
@@ -65,7 +66,7 @@
             background: #f0f0f0;
         }
 
-        /* ----- MESAJ BALONLARI ----- */
+        /* MESAJ BALONLARI */
         .message {
             max-width: 80%;
             padding: 14px 20px;
@@ -111,7 +112,7 @@
             }
         }
 
-        /* ----- GİRİŞ EKRANI (İsim Soran) ----- */
+        /* GİRİŞ EKRANI (İsim Sorar) */
         .login-screen {
             position: absolute;
             top: 0;
@@ -126,6 +127,12 @@
             z-index: 10;
             padding: 30px;
             border-radius: 30px;
+            transition: opacity 0.3s ease;
+        }
+
+        .login-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
         }
 
         .login-screen h2 {
@@ -177,7 +184,13 @@
             background: #1a1a1a;
         }
 
-        /* ----- ALT GİRİŞ ALANI ----- */
+        .login-screen button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ALT YAZMA ALANI */
         .chat-input-area {
             display: flex;
             align-items: center;
@@ -208,6 +221,11 @@
                 0 0 0 9px #FFD1E8;
         }
 
+        .chat-input-area input:disabled {
+            background: #f0f0f0;
+            cursor: not-allowed;
+        }
+
         .chat-input-area button {
             width: 56px;
             height: 56px;
@@ -223,13 +241,18 @@
             flex-shrink: 0;
         }
 
-        .chat-input-area button:hover {
+        .chat-input-area button:hover:not(:disabled) {
             transform: scale(1.06);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.16);
         }
 
-        .chat-input-area button:active {
+        .chat-input-area button:active:not(:disabled) {
             transform: scale(0.90);
+        }
+
+        .chat-input-area button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .chat-input-area button::after {
@@ -240,7 +263,7 @@
             font-weight: 700;
         }
 
-        /* ----- SCROLLBAR ----- */
+        /* SCROLLBAR */
         .chat-messages::-webkit-scrollbar {
             width: 6px;
         }
@@ -251,6 +274,18 @@
         .chat-messages::-webkit-scrollbar-thumb {
             background: #d0b0ff;
             border-radius: 10px;
+        }
+
+        /* TELEFON İÇİN (Tam Ekran) */
+        @media (max-width: 520px) {
+            .chat-container {
+                max-width: 100%;
+                max-height: 100%;
+                border-radius: 0;
+            }
+            .login-screen {
+                border-radius: 0;
+            }
         }
     </style>
 </head>
@@ -264,14 +299,14 @@
             <button id="girisButonu">Sohbete Başla 🚀</button>
         </div>
 
-        <!-- SOHBET EKRANI (Başlangıçta gizli) -->
-        <div style="display: none; flex-direction: column; height: 100%;" id="chatScreen">
+        <!-- SOHBET EKRANI -->
+        <div id="chatScreen" style="display: none; flex-direction: column; height: 100%;">
             <div class="chat-header">
                 <h1>🐱 WhiskerChat</h1>
             </div>
 
             <div class="chat-messages" id="messageArea">
-                <!-- Mesajlar buraya gelecek -->
+                <!-- Mesajlar buraya gelir -->
             </div>
 
             <div class="chat-input-area">
@@ -282,8 +317,8 @@
     </div>
 
     <script>
-        // -------- APPS SCRIPT BAĞLANTISI --------
-        const https://script.google.com/macros/s/AKfycbybfkyexV7_tqd5UTNcTyP3hxoL7YH_gXKV64dYa-GOKC3KtHx0JwrlQapfzo7pgzbluQ/exec = 'https://script.google.com/macros/s/AKfycbybfkyexV7_tqd5UTNcTyP3hxoL7YH_gXKV64dYa-GOKC3KtHx0JwrlQapfzo7pgzbluQ/exec'; // 🛠️ KENDİ ID'NLE DEĞİŞTİR!
+        // -------- APPS SCRIPT BAĞLANTISI (SENİN YENİ LİNKİN!) --------
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxRaIVge6i44IZ3lf9fqaHs5fiP519tnYsbYeZj6NFHa92xskyXszqptmnYeE9uAKPzYw/exec';
 
         // -------- DOM ELEMENTLERİ --------
         const loginScreen = document.getElementById('loginScreen');
@@ -299,6 +334,7 @@
         let kullaniciAdi = '';
         let colorIndex = 0;
         const colorClasses = ['color-blue', 'color-purple', 'color-pink'];
+        let kontrolInterval = null;
 
         // -------- MESAJ EKLEME --------
         function addMessage(text, sender) {
@@ -339,22 +375,31 @@
 
                 oscillator.start();
                 oscillator.stop(audioCtx.currentTime + 0.3);
-            } catch (e) { /* sessiz */ }
+            } catch (e) { /* Sessizce geç */ }
         }
 
         // -------- APPS SCRIPT İSTEKLERİ --------
         async function apiIstek(action, params = {}) {
             try {
                 const body = new URLSearchParams({ action, ...params });
-                const response = await fetch(https://script.google.com/macros/s/AKfycbybfkyexV7_tqd5UTNcTyP3hxoL7YH_gXKV64dYa-GOKC3KtHx0JwrlQapfzo7pgzbluQ/exec, {
+                console.log(`📤 İstek gönderiliyor: ${action}`, params);
+                
+                const response = await fetch(APP_SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: body
                 });
-                return await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP hatası: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log(`📥 ${action} yanıtı:`, data);
+                return data;
             } catch (error) {
-                console.error('API Hatası:', error);
-                return { durum: 'hata', mesaj: 'Bağlantı hatası' };
+                console.error('❌ API Hatası:', error);
+                return { durum: 'hata', mesaj: 'Bağlantı hatası: ' + error.message };
             }
         }
 
@@ -366,7 +411,7 @@
                 kullaniciAdi = isim;
                 return true;
             } else {
-                alert('Kayıt olurken hata oluştu: ' + sonuc.mesaj);
+                alert('Kayıt olurken hata oluştu: ' + (sonuc.mesaj || 'Bilinmeyen hata'));
                 return false;
             }
         }
@@ -384,7 +429,7 @@
         async function cevaplariGetir() {
             const sonuc = await apiIstek('cevaplariGetir', { kod: kullaniciKodu });
             if (sonuc.durum === 'basarili') {
-                return sonuc.data;
+                return sonuc.data || [];
             }
             return [];
         }
@@ -397,32 +442,48 @@
                 return;
             }
 
+            // Butonu kit
+            girisButonu.disabled = true;
+            girisButonu.textContent = '⏳ Kaydediliyor...';
+
             const basarili = await kayitOl(isim);
             if (basarili) {
                 // Giriş ekranını gizle, sohbeti göster
-                loginScreen.style.display = 'none';
-                chatScreen.style.display = 'flex';
+                loginScreen.classList.add('hidden');
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    chatScreen.style.display = 'flex';
+                }, 300);
+                
                 messageInput.disabled = false;
                 sendButton.disabled = false;
                 messageInput.focus();
 
                 // Hoşgeldin mesajı
-                addMessage(`Hoşgeldin ${kullaniciAdi}! 🐱`, 'admin');
-                addMessage('Sorularını sorabilirsin, cevap bekliyorum.', 'admin');
+                addMessage(`🐱 Hoşgeldin ${kullaniciAdi}!`, 'admin');
+                addMessage('Sorularını sorabilirsin, cevap bekliyorum. 😊', 'admin');
 
                 // Cevapları kontrol etmeye başla
-                setInterval(kontrolEt, 5000);
+                if (kontrolInterval) clearInterval(kontrolInterval);
+                kontrolInterval = setInterval(kontrolEt, 3000);
+            } else {
+                girisButonu.disabled = false;
+                girisButonu.textContent = 'Sohbete Başla 🚀';
             }
         });
 
         // -------- CEVAP KONTROLÜ --------
         async function kontrolEt() {
             if (!kullaniciKodu) return;
-            const cevaplar = await cevaplariGetir();
-            if (cevaplar && cevaplar.length > 0) {
-                for (let i = 0; i < cevaplar.length; i++) {
-                    addMessage(cevaplar[i].mesaj, 'admin');
+            try {
+                const cevaplar = await cevaplariGetir();
+                if (cevaplar && cevaplar.length > 0) {
+                    for (let i = 0; i < cevaplar.length; i++) {
+                        addMessage(`🐱 ${cevaplar[i].mesaj}`, 'admin');
+                    }
                 }
+            } catch (error) {
+                console.error('Kontrol hatası:', error);
             }
         }
 
@@ -431,18 +492,23 @@
             const mesaj = messageInput.value.trim();
             if (!mesaj) return;
 
+            // Mesajı ekle ve gönder
             addMessage(mesaj, 'user');
             messageInput.value = '';
+            sendButton.disabled = true;
 
             const basarili = await mesajGonder(mesaj);
             if (!basarili) {
-                addMessage('Mesaj gönderilemedi, tekrar dene! 😿', 'admin');
+                addMessage('😿 Mesaj gönderilemedi, tekrar dener misin?', 'admin');
             }
+            
+            sendButton.disabled = false;
+            messageInput.focus();
         });
 
         // -------- ENTER TUŞU --------
         messageInput.addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
+            if (e.key === 'Enter' && !sendButton.disabled) {
                 sendButton.click();
             }
         });
@@ -451,6 +517,7 @@
         window.addEventListener('load', () => {
             isimInput.focus();
             console.log('🐱 WhiskerChat hazır!');
+            console.log('📡 Apps Script URL:', APP_SCRIPT_URL);
         });
     </script>
 </body>
