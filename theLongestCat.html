@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>En Uzun ProfessorCat 🐱</title>
+
+  <style>
+    /* ---------- GENEL ---------- */
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #ffe6f0, #ffd6e8);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    #bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    h1, .sub, #cat {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 28px 0 10px;
+      color: #ff5fa2;
+      font-size: 30px;
+      letter-spacing: 0.2px;
+    }
+
+    .sub {
+      margin: 0 0 18px;
+      color: rgba(0, 0, 0, 0.55);
+      font-size: 14px;
+    }
+
+    #cat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 120px;
+    }
+
+    /* ---------- KEDİ KULAKLARI (ÜÇGEN) ---------- */
+    .ears {
+      display: flex;
+      gap: 28px;
+      margin-top: 6px;
+    }
+    .ear {
+      width: 0;
+      height: 0;
+      border-left: 24px solid transparent;
+      border-right: 24px solid transparent;
+      border-bottom: 54px solid #ffffff;
+      position: relative;
+      filter: drop-shadow(0 -2px 6px rgba(0, 0, 0, 0.06));
+    }
+    .ear::after {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: -13px;
+      width: 0;
+      height: 0;
+      border-left: 13px solid transparent;
+      border-right: 13px solid transparent;
+      border-bottom: 34px solid #ffc0da;
+      opacity: 0.7;
+    }
+    .ear.right {
+      transform: scaleX(-1);
+    }
+
+    /* ---------- KAFA ---------- */
+    .head {
+      width: 120px;
+      height: 120px;
+      background: #ffffff;
+      border: 2px solid rgba(0, 0, 0, 0.25);
+      border-radius: 50%;
+      margin-top: -8px;
+      position: relative;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+    }
+
+    .eye {
+      width: 16px;
+      height: 18px;
+      background: #111;
+      border-radius: 50%;
+      position: absolute;
+      top: 48px;
+    }
+    .eye.left { left: 28px; }
+    .eye.right { right: 28px; }
+    .eye::after {
+      content: "";
+      width: 6px;
+      height: 6px;
+      background: white;
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 3px;
+    }
+
+    .nose {
+      width: 16px;
+      height: 12px;
+      background: #ff8fb1;
+      border: 1px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50% 50% 60% 60%;
+      position: absolute;
+      left: 50%;
+      top: 66px;
+      transform: translateX(-50%);
+    }
+
+    .whisker {
+      position: absolute;
+      width: 40px;
+      height: 1.5px;
+      background: rgba(0, 0, 0, 0.2);
+      top: 74px;
+    }
+    .whisker.left { left: -34px; transform: rotate(-8deg); }
+    .whisker.left2 { left: -34px; top: 80px; transform: rotate(6deg); }
+    .whisker.right { right: -34px; transform: rotate(8deg); }
+    .whisker.right2 { right: -34px; top: 80px; transform: rotate(-6deg); }
+
+    .mouth {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 10px;
+      border-bottom: 1.5px solid rgba(0, 0, 0, 0.2);
+      border-radius: 0 0 50% 50%;
+    }
+
+    /* ---------- GÖVDE ---------- */
+    .body-part {
+      width: 110px;
+      height: 80px;
+      background: #ffffff;
+      border: 2px solid rgba(0, 0, 0, 0.22);
+      border-radius: 50px 50px 30px 30px;
+      margin-top: 8px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+      transition: transform 200ms ease;
+      position: relative;
+    }
+    .body-part::after {
+      content: "";
+      position: absolute;
+      top: 12px;
+      left: 20px;
+      width: 60px;
+      height: 1px;
+      background: rgba(0, 0, 0, 0.05);
+      box-shadow: 0 8px 0 rgba(0, 0, 0, 0.05), 0 16px 0 rgba(0, 0, 0, 0.05), 0 24px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    /* ---------- WOW ÇIKARTMALARI ---------- */
+    .wow {
+      margin: 8px 0 2px;
+      font-size: 22px;
+      font-weight: 900;
+      color: #ff3f96;
+      animation: wowPop 0.6s ease-in-out;
+      letter-spacing: 1px;
+      text-shadow: 0 6px 14px rgba(255, 95, 162, 0.22);
+    }
+    .wow.big {
+      font-size: 38px;
+      color: #ff2d75;
+      text-shadow: 0 6px 30px rgba(255, 45, 117, 0.4);
+    }
+    .wow.rainbow {
+      font-size: 48px;
+      background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #9b59b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 6px 30px rgba(255, 200, 0, 0.4));
+    }
+
+    @keyframes wowPop {
+      0% { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+      60% { transform: scale(1.2) rotate(3deg); }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    /* ---------- ARKA PLAN UÇAN OBJELER ---------- */
+    .bg-item {
+      position: absolute;
+      opacity: 0.2;
+      animation: floatUp 7s linear forwards;
+      white-space: nowrap;
+      font-size: 28px;
+    }
+    @keyframes floatUp {
+      from { transform: translateY(40px); opacity: 0; }
+      to { transform: translateY(-120vh); opacity: 0.2; }
+    }
+
+    /* ---------- SAYAÇ ---------- */
+    .stats {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(6px);
+      border-radius: 24px;
+      padding: 16px 24px;
+      font-family: system-ui;
+      font-size: 14px;
+      z-index: 10;
+      box-shadow: 0 8px 32px rgba(255, 95, 162, 0.15);
+      text-align: left;
+      line-height: 1.6;
+    }
+    .stats span { display: block; }
+    .stats .count { font-weight: 700; color: #ff5fa2; font-size: 16px; }
+    .stats .big { color: #ff2d75; }
+    .stats .rainbow {
+      background: linear-gradient(90deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #9b59b6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ---------- BUTON ---------- */
+    .reset-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff5fa2;
+      color: white;
+      border: none;
+      padding: 12px 32px;
+      border-radius: 60px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 95, 162, 0.35);
+      transition: all 0.2s;
+      font-family: system-ui;
+      z-index: 10;
+    }
+    .reset-btn:hover {
+      transform: translateX(-50%) scale(1.04);
+    }
+  </style>
+</head>
+
+<body>
+  <div id="bg"></div>
+
+  <div class="stats">
+    <span>🧱 Gövde: <span class="count" id="bodyCount">1</span></span>
+    <span>✨ WOW: <span class="count" id="wowCount">0</span></span>
+    <span>🔥 Büyük WOW: <span class="count big" id="bigWowCount">0</span></span>
+    <span>🌈 Gökkuşağı WOW: <span class="count rainbow" id="rainbowWowCount">0</span></span>
+  </div>
+
+  <h1>🐱 En Uzun ProfessorCat</h1>
+  <p class="sub">Aşağı kaydırdıkça uzar… arada WOW! çıkar 😼</p>
+
+  <div id="cat">
+    <div class="ears">
+      <div class="ear"></div>
+      <div class="ear right"></div>
+    </div>
+
+    <div class="head">
+      <div class="eye left"></div>
+      <div class="eye right"></div>
+      <div class="nose"></div>
+      <div class="whisker left"></div>
+      <div class="whisker left2"></div>
+      <div class="whisker right"></div>
+      <div class="whisker right2"></div>
+      <div class="mouth"></div>
+    </div>
+  </div>
+
+  <button class="reset-btn" onclick="resetCat()">🔄 Baştan Başlat</button>
+
+  <script>
+    const cat = document.getElementById("cat");
+    const bg = document.getElementById("bg");
+
+    const bodyCountEl = document.getElementById('bodyCount');
+    const wowCountEl = document.getElementById('wowCount');
+    const bigWowCountEl = document.getElementById('bigWowCount');
+    const rainbowWowCountEl = document.getElementById('rainbowWowCount');
+
+    let bodyCount = 0;
+    let wowCount = 0;
+    let bigWowCount = 0;
+    let rainbowWowCount = 0;
+
+    function addWow(isBig = false, isRainbow = false) {
+      const wow = document.createElement("div");
+      wow.className = "wow";
+      if (isBig) {
+        wow.classList.add("big");
+        wow.textContent = "🔥 WOW!";
+        bigWowCount++;
+        bigWowCountEl.textContent = bigWowCount;
+      } else if (isRainbow) {
+        wow.classList.add("rainbow");
+        wow.textContent = "🌈 WOW!";
+        rainbowWowCount++;
+        rainbowWowCountEl.textContent = rainbowWowCount;
+      } else {
+        wow.textContent = "✨ WOW!";
+        wowCount++;
+        wowCountEl.textContent = wowCount;
+      }
+      cat.appendChild(wow);
+    }
+
+    function addBodyPart() {
+      const part = document.createElement("div");
+      part.className = "body-part";
+      const shift = (Math.random() * 18) - 9;
+      part.style.transform = `translateX(${shift}px)`;
+      cat.appendChild(part);
+      bodyCount++;
+      bodyCountEl.textContent = bodyCount;
+
+      const rand = Math.random();
+      if (rand < 0.40) {
+        addWow(false, false);
+      }
+      if (wowCount > 0 && wowCount % 80 === 0) {
+        addWow(true, false);
+      }
+      if (wowCount > 0 && wowCount % 3000 === 0) {
+        addWow(false, true);
+      }
+    }
+
+    function addNextPiece() {
+      if (bodyCount > 0 && bodyCount % 9 === 0 && Math.random() < 0.3) {
+        addWow(true, false);
+        return;
+      }
+      addBodyPart();
+    }
+
+    for (let i = 0; i < 10; i++) addNextPiece();
+
+    function onScroll() {
+      const nearBottom = (window.innerHeight + window.scrollY) >= (document.body.offsetHeight - 300);
+      if (nearBottom) {
+        addNextPiece();
+        addNextPiece();
+        addNextPiece();
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    function addBgItem() {
+      const item = document.createElement("div");
+      item.className = "bg-item";
+      const isWow = Math.random() < 0.5;
+      item.textContent = isWow ? "WOW!" : "✨";
+      const size = (Math.random() < 0.25) ? (Math.random() * 50 + 40) : (Math.random() * 28 + 20);
+      item.style.fontSize = size + "px";
+      item.style.left = (Math.random() * 100) + "vw";
+      item.style.top = (Math.random() * 20 + 85) + "vh";
+      if (isWow) {
+        item.style.color = "#ff3f96";
+        item.style.fontWeight = "900";
+        item.style.opacity = "0.2";
+      } else {
+        item.style.color = "#ffd93d";
+        item.style.opacity = "0.15";
+      }
+      const dur = (Math.random() * 4 + 5);
+      item.style.animationDuration = dur + "s";
+      bg.appendChild(item);
+      setTimeout(() => item.remove(), Math.round((dur + 1) * 1000));
+    }
+
+    setInterval(() => {
+      if (Math.random() < 0.45) addBgItem();
+    }, 900);
+
+    function resetCat() {
+      const parts = cat.querySelectorAll('.body-part, .wow');
+      parts.forEach(el => el.remove());
+      bodyCount = 0;
+      wowCount = 0;
+      bigWowCount = 0;
+      rainbowWowCount = 0;
+      bodyCountEl.textContent = bodyCount;
+      wowCountEl.textContent = wowCount;
+      bigWowCountEl.textContent = bigWowCount;
+      rainbowWowCountEl.textContent = rainbowWowCount;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      for (let i = 0; i < 10; i++) addNextPiece();
+    }
+  </script>
+</body>
+</html>
