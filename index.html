@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="tr">
  <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="google-site-verification" content="hPq_WPZAvU4KE1qqk9TOxsd2XuAZEduUX5T1LQYAd-A" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WhiskerSearch🐱🔎</title>
   <link rel="icon" href="images/whiskersearch-tatli-arama.ico" type="image/x-icon" />
   <style>
@@ -30,7 +30,7 @@
 
     .demo-warning {
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-      color: white;
+      color: #2d2d2d;
       padding: 12px 20px;
       text-align: center;
       font-size: 14px;
@@ -76,9 +76,7 @@
       background: #f0f0f0;
       border: 1px solid #d0d0d0;
       border-radius: 8px;
-      padding: 8px 12px;
-      font-size: 13px;
-      color: #999;
+      padding: 4px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -87,6 +85,22 @@
     .address-bar-icon {
       color: #666;
       font-size: 14px;
+      flex-shrink: 0;
+    }
+
+    .address-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 6px 0;
+      font-size: 13px;
+      color: #333;
+      outline: none;
+      min-width: 50px;
+    }
+
+    .address-bar input::placeholder {
+      color: #999;
     }
 
     .browser-content {
@@ -94,6 +108,7 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
 
     .search-page {
@@ -155,6 +170,7 @@
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     }
 
+    /* ALERT */
     .alert-overlay {
       position: fixed;
       top: 0;
@@ -238,6 +254,7 @@
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
     }
 
+    /* SONUÇLAR ve TABS */
     .results-container {
       flex: 1;
       overflow-y: auto;
@@ -429,54 +446,6 @@
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
 
-    .ai-response {
-      padding: 30px;
-      background: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      min-height: 300px;
-      text-align: center;
-    }
-
-    .ai-icon {
-      font-size: 80px;
-      margin-bottom: 20px;
-      animation: bounce 2s infinite;
-    }
-
-    .ai-text {
-      font-size: 24px;
-      color: #333;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-
-    .ai-subtext {
-      font-size: 16px;
-      color: #666;
-      margin-bottom: 30px;
-      max-width: 400px;
-    }
-
-    .ai-button {
-      background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-      color: white;
-      border: none;
-      padding: 12px 40px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
-
-    .ai-button:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
-    }
-
     .videos-container {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -553,13 +522,15 @@
       display: flex;
       flex-direction: column;
     }
+
+    iframe.page-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      flex: 1;
+    }
   </style>
-  <style>body { box-sizing: border-box; }</style>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js" type="text/javascript"></script>
-  <script src="https://cdn.tailwindcss.com/3.4.17" type="text/javascript"></script>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
- <script src="/_sdk/telemetry_sdk.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
   <script type="module">
 import * as webllm from "https://esm.run/@mlc-ai/web-llm";
 
@@ -567,9 +538,7 @@ window.engine = new webllm.MLCEngine();
 
 window.loadModel = async () => {
   const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
-
   await window.engine.reload(selectedModel);
-
   console.log("CatAI hazır!");
 };
 
@@ -577,63 +546,145 @@ window.loadModel();
 </script>
  </head>
  <body>
-  <div class="browser-container"><!-- Demo Uyarısı -->
+  <div class="browser-container">
+   <!-- Demo Uyarısı -->
    <div class="demo-warning">
     ⚠️ Bu bir demo/tarayıcı simülasyonudur - Eğlence amaçlıdır
-   </div><!-- Browser Header -->
+   </div>
+
+   <!-- Browser Header -->
    <div class="browser-header">
-    <div class="browser-buttons"><button class="nav-button" onclick="goBack()">←</button> <button class="nav-button" onclick="goForward()">→</button> <button class="nav-button" onclick="reload()">↻</button>
+    <div class="browser-buttons">
+      <button class="nav-button" onclick="goBack()" title="Geri">←</button>
+      <button class="nav-button" onclick="goForward()" title="İleri">→</button>
+      <button class="nav-button" onclick="goHome()" title="Ana Sayfa">↻</button>
     </div>
-    <div class="address-bar"><span class="address-bar-icon">🔒</span> <span>https://www.professorcatsearch.com</span>
+    <div class="address-bar">
+      <span class="address-bar-icon">🔒</span>
+      <input type="text" id="addressInput" value="https://www.professorcatsearch.com" placeholder="URL girin..." onkeypress="handleAddress(event)" />
     </div>
-   </div><!-- Browser Content -->
+   </div>
+
+   <!-- Browser Content -->
    <div class="browser-content" id="browserContent">
     <div class="search-page">
-     <div class="search-logo">
-      🐱
+     <div class="search-logo">🐱</div>
+     <div class="search-box">
+       <input type="text" class="search-input" id="searchInput" placeholder="ProfessorCat'ta ara..." onkeypress="handleSearch(event)" />
+       <button class="search-button" onclick="performSearch()">Ara</button>
      </div>
-     <div class="search-box"><input type="text" class="search-input" id="searchInput" placeholder="ProfessorCat'ta ara..." onkeypress="handleSearch(event)"> <button class="search-button" onclick="performSearch()">Ara</button>
-     </div>
     </div>
-   </div>
-  </div><!-- Alert Modal -->
-  <div class="alert-overlay" id="alertOverlay" style="display: none;">
-   <div class="alert-box">
-    <div class="alert-icon">
-     🐱
-    </div>
-    <div class="alert-title">
-     ProfessorCat uyarısı!
-    </div>
-    <div class="alert-message">
-     Bu arama sonuçları ProfessorCat tarafından işlenmiştir. Devam etmek için tıklayın.
-    </div><button class="alert-button" onclick="confirmAlert()">Devam Et</button>
    </div>
   </div>
+
+  <!-- Alert Modal -->
+  <div class="alert-overlay" id="alertOverlay" style="display: none;">
+   <div class="alert-box">
+    <div class="alert-icon">🐱</div>
+    <div class="alert-title">ProfessorCat uyarısı!</div>
+    <div class="alert-message">Bu arama sonuçları ProfessorCat tarafından işlenmiştir. Devam etmek için tıklayın.</div>
+    <button class="alert-button" onclick="confirmAlert()">Devam Et</button>
+   </div>
+  </div>
+
   <script>
+    // -------- DEĞİŞKENLER --------
     let lastSearchQuery = '';
     let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
     let currentTab = 'all';
     let history = [];
     let historyIndex = -1;
 
-    
+    // İzin verilen kendi sitelerin
+    const ownSites = [
+      'ayse-create.github.io',
+      'professorcatsearch.com',
+      'whiskersearch.com'
+    ];
 
-    function goHome() {
-      history = [];
-      historyIndex = -1;
-      document.getElementById('browserContent').innerHTML = `
-        <div class="search-page">
-         <div class="search-logo">
-          🐱
-         </div>
-         <div class="search-box">
-          <input type="text" class="search-input" id="searchInput" placeholder="ProfessorCat'ta ara..." onkeypress="handleSearch(event)"> <button class="search-button" onclick="performSearch()">Ara</button>
-         </div>
-        </div>
-      `;
+    // -------- ADRES ÇUBUĞU --------
+    function handleAddress(event) {
+      if (event.key === 'Enter') {
+        const input = document.getElementById('addressInput');
+        let url = input.value.trim();
+        if (!url) return;
+
+        // http:// veya https:// yoksa ekle
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'https://' + url;
+        }
+
+        // Kendi sitem mi?
+        const isOwn = ownSites.some(site => url.includes(site));
+
+        if (isOwn) {
+          loadPage(url);
+        } else {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
+      }
     }
 
+    // -------- SAYFA YÜKLE (iframe) --------
+    function loadPage(url) {
+      const content = document.getElementById('browserContent');
+      content.innerHTML = `
+        <iframe class="page-frame" src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+      `;
+      document.getElementById('addressInput').value = url;
+
+      // Geçmişe ekle
+      history.push({ type: 'page', url: url });
+      historyIndex = history.length - 1;
+    }
+
+    // -------- ANA SAYFA --------
+    function goHome() {
+      const content = document.getElementById('browserContent');
+      content.innerHTML = `
+        <div class="search-page">
+          <div class="search-logo">🐱</div>
+          <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="ProfessorCat'ta ara..." onkeypress="handleSearch(event)" />
+            <button class="search-button" onclick="performSearch()">Ara</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('addressInput').value = 'https://www.professorcatsearch.com';
+      // Geçmişi sıfırlama
+      history = [];
+      historyIndex = -1;
+    }
+
+    // -------- GERİ --------
+    function goBack() {
+      if (historyIndex > 0) {
+        historyIndex--;
+        const entry = history[historyIndex];
+        if (entry.type === 'results') {
+          lastSearchQuery = entry.query;
+          showResults();
+        } else if (entry.type === 'page') {
+          loadPage(entry.url);
+        }
+      }
+    }
+
+    // -------- İLERİ --------
+    function goForward() {
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+        const entry = history[historyIndex];
+        if (entry.type === 'results') {
+          lastSearchQuery = entry.query;
+          showResults();
+        } else if (entry.type === 'page') {
+          loadPage(entry.url);
+        }
+      }
+    }
+
+    // -------- ARAMA --------
     function handleSearch(event) {
       if (event.key === 'Enter') {
         performSearch();
@@ -644,6 +695,7 @@ window.loadModel();
       const query = document.getElementById('searchInput').value;
       if (query.trim()) {
         lastSearchQuery = query;
+        document.getElementById('addressInput').value = `https://professorcatsearch.com/search?q=${encodeURIComponent(query)}`;
         showAlert();
       }
     }
@@ -657,28 +709,15 @@ window.loadModel();
       showResults();
     }
 
-    function switchTab(tabName) {
-      currentTab = tabName;
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById(`${tabName}-content`).classList.add('active');
-    }
-
+    // -------- SONUÇLARI GÖSTER --------
     function showResults() {
-      const browserContent = document.getElementById('browserContent');
+      const content = document.getElementById('browserContent');
       const query = lastSearchQuery;
 
-      const content = `
+      content.innerHTML = `
         <div style="display: flex; align-items: center; padding: 20px 30px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0;">
           <div class="search-box" style="max-width: 600px; margin: 0;">
-            <input 
-              type="text" 
-              class="search-input" 
-              value="${query}" 
-              onkeypress="handleSearch(event)" 
-              style="max-width: none;"
-            >
+            <input type="text" class="search-input" value="${query}" onkeypress="handleSearch(event)" style="max-width: none;" />
             <button class="search-button" onclick="performSearch()">Ara</button>
           </div>
         </div>
@@ -694,34 +733,26 @@ window.loadModel();
         <!-- Tümü -->
         <div id="all-content" class="tab-content active">
           <div class="results-container">
-            <div style="margin-bottom: 10px; color: #999; font-size: 14px;">
-              Sonuçlar: "${query}" için
-            </div>
+            <div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "${query}" için</div>
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
                 <div class="result-url">professorcatsearch.com › arama › ${query}</div>
                 <div class="result-title">ProfessorCat'ın En İyi Sonucu</div>
-                <div class="result-description">
-                  ProfessorCat sizin için özel olarak seçtiği bu kaynağı incelemenizi tavsiye eder.
-                </div>
+                <div class="result-description">ProfessorCat sizin için özel olarak seçtiği bu kaynağı incelemenizi tavsiye eder.</div>
               </div>
             </div>
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
                 <div class="result-url">professorcatsearch.com › sonuç › ${query}</div>
                 <div class="result-title">Başka Bir ProfessorCat Önerisi</div>
-                <div class="result-description">
-                  ProfessorCat'ın dış dünyaya bakışını sizin de deneyimlemenizi çok isterim.
-                </div>
+                <div class="result-description">ProfessorCat'ın dış dünyaya bakışını sizin de deneyimlemenizi çok isterim.</div>
               </div>
             </div>
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
                 <div class="result-url">professorcatsearch.com › tavsiye › ${query}</div>
                 <div class="result-title">ProfessorCat'ın Özel Seçimi</div>
-                <div class="result-description">
-                  Bu bağlantı ProfessorCat tarafından titizlikle incelendi ve onaylandı!
-                </div>
+                <div class="result-description">Bu bağlantı ProfessorCat tarafından titizlikle incelendi ve onaylandı!</div>
               </div>
             </div>
           </div>
@@ -760,36 +791,12 @@ window.loadModel();
         <!-- Alışveriş -->
         <div id="shopping-content" class="tab-content">
           <div class="shopping-container">
-            <div class="product-item" onclick="openResult()">
-              <div class="product-image">🐱</div>
-              <div class="product-name">ProfessorCat Tişört</div>
-              <div class="product-price">₺199</div>
-            </div>
-            <div class="product-item" onclick="openResult()">
-              <div class="product-image">😸</div>
-              <div class="product-name">Kedi Şapkası</div>
-              <div class="product-price">₺149</div>
-            </div>
-            <div class="product-item" onclick="openResult()">
-              <div class="product-image">😹</div>
-              <div class="product-name">Mugs Kedi</div>
-              <div class="product-price">₺79</div>
-            </div>
-            <div class="product-item" onclick="openResult()">
-              <div class="product-image">😻</div>
-              <div class="product-name">Kedi Bilezik</div>
-              <div class="product-price">₺99</div>
-            </div>
-            <div class="product-item" onclick="openResult()">
-              <div class="product-image">😼</div>
-              <div class="product-name">Kedi Çorap</div>
-              <div class="product-price">₺49</div>
-            </div>
-            <div class="product-item" onclick="openResult()">
-              <div class="product-image">😽</div>
-              <div class="product-name">Kedi Hoodie</div>
-              <div class="product-price">₺299</div>
-            </div>
+            <div class="product-item" onclick="openResult()"><div class="product-image">🐱</div><div class="product-name">ProfessorCat Tişört</div><div class="product-price">₺199</div></div>
+            <div class="product-item" onclick="openResult()"><div class="product-image">😸</div><div class="product-name">Kedi Şapkası</div><div class="product-price">₺149</div></div>
+            <div class="product-item" onclick="openResult()"><div class="product-image">😹</div><div class="product-name">Mugs Kedi</div><div class="product-price">₺79</div></div>
+            <div class="product-item" onclick="openResult()"><div class="product-image">😻</div><div class="product-name">Kedi Bilezik</div><div class="product-price">₺99</div></div>
+            <div class="product-item" onclick="openResult()"><div class="product-image">😼</div><div class="product-name">Kedi Çorap</div><div class="product-price">₺49</div></div>
+            <div class="product-item" onclick="openResult()"><div class="product-image">😽</div><div class="product-name">Kedi Hoodie</div><div class="product-price">₺299</div></div>
           </div>
         </div>
 
@@ -800,27 +807,29 @@ window.loadModel();
               <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; gap: 20px;">
                 <div style="font-size: 80px;">🤖</div>
                 <div style="font-size: 32px; font-weight: 700; color: #333;">CatAI</div>
-                <div style="font-size: 16px; color: #666; max-width: 400px; text-align: center;">
-                  ProfessorCat'ın yapay zeka asistanı ile sohbet edin. Bir soru sorun ve hazır olun!
-                </div>
+                <div style="font-size: 16px; color: #666; max-width: 400px; text-align: center;">ProfessorCat'ın yapay zeka asistanı ile sohbet edin. Bir soru sorun ve hazır olun!</div>
               </div>
             </div>
             <div class="ai-input-area">
-              <input type="text" class="ai-input" id="aiInput" placeholder="Bir soru sor..." onkeypress="handleAIMessage(event)">
+              <input type="text" class="ai-input" id="aiInput" placeholder="Bir soru sor..." onkeypress="handleAIMessage(event)" />
               <button class="ai-send-button" onclick="sendAIMessage()">Gönder</button>
             </div>
           </div>
         </div>
       `;
 
-      browserContent.innerHTML = content;
-      
       // Geçmişe ekle
-      historyIndex++;
-      history = history.slice(0, historyIndex);
       history.push({ type: 'results', query: query });
+      historyIndex = history.length - 1;
+
+      // AI input focus
+      setTimeout(() => {
+        const aiInput = document.getElementById('aiInput');
+        if (aiInput) aiInput.focus();
+      }, 100);
     }
 
+    // -------- AI MESAJ --------
     function handleAIMessage(event) {
       if (event.key === 'Enter') {
         sendAIMessage();
@@ -830,97 +839,72 @@ window.loadModel();
     async function sendAIMessage() {
       const input = document.getElementById('aiInput');
       const message = input.value.trim();
-      
       if (!message) return;
 
-      const messagesContainer = document.getElementById('aiMessages');
-      
-      // Kullanıcı mesajı ekle
-      const userMessageDiv = document.createElement('div');
-      userMessageDiv.className = 'message user';
-      userMessageDiv.innerHTML = `<div class="message-bubble">${message}</div>`;
-      messagesContainer.appendChild(userMessageDiv);
+      const container = document.getElementById('aiMessages');
 
-      // Input temizle
+      // Kullanıcı mesajı
+      const userDiv = document.createElement('div');
+      userDiv.className = 'message user';
+      userDiv.innerHTML = `<div class="message-bubble">${message}</div>`;
+      container.appendChild(userDiv);
+
       input.value = '';
 
-      // AI cevabı ekle
+      // AI düşünüyor
+      const aiDiv = document.createElement('div');
+      aiDiv.className = 'message ai';
+      aiDiv.innerHTML = '<div class="message-bubble">CatAI düşünüyor...</div>';
+      container.appendChild(aiDiv);
+      container.scrollTop = container.scrollHeight;
+
       try {
-
-  const aiMessageDiv = document.createElement('div');
-  aiMessageDiv.className = 'message ai';
-  aiMessageDiv.innerHTML =
-    '<div class="message-bubble">CatAI düşünüyor...</div>';
-
-  messagesContainer.appendChild(aiMessageDiv);
-
-  const response =
-    await window.engine.chat.completions.create({
-      messages: [
-        {
-          role: "system",
-          content:
-            "Sen CatAI adlı Türkçe konuşan yardımcı bir yapay zekasın. Her zaman Türkçe cevap ver."
-        },
-        {
-          role: "user",
-          content: message
-        }
-      ]
-    });
-
-  aiMessageDiv.innerHTML =
-    `<div class="message-bubble">${response.choices[0].message.content}</div>`;
-
-}
-catch (err) {
-
-  const aiMessageDiv = document.createElement('div');
-  aiMessageDiv.className = 'message ai';
-  aiMessageDiv.innerHTML =
-    `<div class="message-bubble">Hata: ${err.message}</div>`;
-
-  messagesContainer.appendChild(aiMessageDiv);
-}
-
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        const response = await window.engine.chat.completions.create({
+          messages: [
+            { role: "system", content: "Sen CatAI adlı Türkçe konuşan yardımcı bir yapay zekasın. Her zaman Türkçe cevap ver." },
+            { role: "user", content: message }
+          ]
+        });
+        aiDiv.innerHTML = `<div class="message-bubble">${response.choices[0].message.content}</div>`;
+      } catch (err) {
+        aiDiv.innerHTML = `<div class="message-bubble">Hata: ${err.message}</div>`;
+      }
+      container.scrollTop = container.scrollHeight;
     }
 
+    // -------- TAB GEÇİŞ --------
+    function switchTab(tabName) {
+      currentTab = tabName;
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      event.target.classList.add('active');
+      document.getElementById(`${tabName}-content`).classList.add('active');
+    }
+
+    // -------- SONUÇ AÇ --------
     function openResult() {
       window.open(canvaLink, '_blank', 'noopener,noreferrer');
     }
 
-    function goBack() {
-      if (historyIndex > 0) {
-        historyIndex--;
-        const page = history[historyIndex];
-        if (page.type === 'results') {
-          lastSearchQuery = page.query;
-          showResults();
-        }
-      }
-    }
-
-    function goForward() {
-      if (historyIndex < history.length - 1) {
-        historyIndex++;
-        const page = history[historyIndex];
-        if (page.type === 'results') {
-          lastSearchQuery = page.query;
-          showResults();
-        }
-      }
-    }
-
+    // -------- RELOAD (Tarayıcı yenileme butonu) --------
     function reload() {
       if (historyIndex >= 0 && history[historyIndex]) {
-        const page = history[historyIndex];
-        if (page.type === 'results') {
-          lastSearchQuery = page.query;
+        const entry = history[historyIndex];
+        if (entry.type === 'results') {
+          lastSearchQuery = entry.query;
           showResults();
+        } else if (entry.type === 'page') {
+          loadPage(entry.url);
         }
       }
     }
+
+    // -------- SAYFA YÜKLENİNCE --------
+    window.onload = function() {
+      // Adres çubuğuna odaklanma
+      const addrInput = document.getElementById('addressInput');
+      if (addrInput) addrInput.value = 'https://www.professorcatsearch.com';
+    };
   </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a067e003fd6fddf7',t:'MTc4MDU4NTkzOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ </body>
 </html>
