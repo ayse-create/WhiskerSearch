@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>WhiskerChat 🐱</title>
     <style>
-        /* ----- SIFIRLAMA ----- */
+        /* ----- SIFIRLAMA & TAM EKRAN ----- */
         * {
             margin: 0;
             padding: 0;
@@ -13,7 +13,6 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* ----- GERÇEK TAM EKRAN (KUTU YOK!) ----- */
         html, body {
             width: 100%;
             height: 100%;
@@ -23,7 +22,6 @@
             overflow: hidden;
         }
 
-        /* ----- TÜM EKRANI KAPLA ----- */
         .chat-container {
             width: 100vw;
             height: 100vh;
@@ -34,7 +32,7 @@
             position: relative;
         }
 
-        /* ----- BAŞLIK (GRADIENT - TAM GENİŞLİK) ----- */
+        /* ----- BAŞLIK (SENİN GRADIENT'İN) ----- */
         .chat-header {
             background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
             padding: 20px 25px;
@@ -50,7 +48,7 @@
             letter-spacing: 1px;
         }
 
-        /* ----- MESAJ ALANI (TAM EKRAN) ----- */
+        /* ----- MESAJ ALANI ----- */
         .chat-messages {
             flex: 1;
             padding: 20px 18px;
@@ -62,7 +60,7 @@
             width: 100%;
         }
 
-        /* ----- MESAJ BALONLARI ----- */
+        /* ----- MESAJ BALONLARI (PASTEL RENKLER) ----- */
         .message {
             max-width: 80%;
             padding: 14px 20px;
@@ -84,16 +82,17 @@
             border-bottom-left-radius: 8px;
         }
 
+        /* 🎨 SENİN RENKLERİN (PASTEL) */
         .color-blue {
-            background: #a8d8ff;
-            color: #003366;
+            background: #CFEFFF;  /* Açık Mavi */
+            color: #2d4a6e;
         }
         .color-purple {
-            background: #d5b8ff;
-            color: #2d1b4e;
+            background: #D8C7FF;  /* Açık Mor */
+            color: #3d2a5e;
         }
         .color-pink {
-            background: #ffb8d8;
+            background: #FFD1E8;  /* Açık Pembe */
             color: #5e2a44;
         }
 
@@ -108,7 +107,7 @@
             }
         }
 
-        /* ----- GİRİŞ EKRANI (TAM EKRAN - KUTU YOK!) ----- */
+        /* ----- GİRİŞ EKRANI (SENİN GRADIENT'İN) ----- */
         .login-screen {
             position: absolute;
             top: 0;
@@ -158,9 +157,9 @@
         }
 
         .login-screen input:focus {
-            border-color: #a8d8ff;
+            border-color: #CFEFFF;
             background: white;
-            box-shadow: 0 0 0 4px rgba(168, 216, 255, 0.3);
+            box-shadow: 0 0 0 4px rgba(207, 239, 255, 0.3);
         }
 
         .login-screen button {
@@ -187,7 +186,7 @@
             transform: none;
         }
 
-        /* ----- ALT YAZMA ALANI (TAM GENİŞLİK) ----- */
+        /* ----- ALT YAZMA ALANI ----- */
         .chat-input-area {
             display: flex;
             align-items: center;
@@ -274,21 +273,11 @@
             background: #d0b0ff;
             border-radius: 10px;
         }
-
-        /* ----- TELEFON İÇİN EKSTRA (Tam ekran garantisi) ----- */
-        @media (max-width: 520px) {
-            .chat-container {
-                border-radius: 0;
-            }
-            .login-screen {
-                border-radius: 0;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="chat-container" id="app">
-        <!-- GİRİŞ EKRANI (Tam ekran) -->
+        <!-- GİRİŞ EKRANI -->
         <div class="login-screen" id="loginScreen">
             <h2>🐱 WhiskerChat</h2>
             <p>Kendine bir isim bul, sohbete katıl!</p>
@@ -296,7 +285,7 @@
             <button id="girisButonu">Sohbete Başla 🚀</button>
         </div>
 
-        <!-- SOHBET EKRANI (Tam ekran) -->
+        <!-- SOHBET EKRANI -->
         <div id="chatScreen" style="display: none; flex-direction: column; height: 100%; width: 100%;">
             <div class="chat-header">
                 <h1>🐱 WhiskerChat</h1>
@@ -315,7 +304,7 @@
 
     <script>
         // -------- APPS SCRIPT BAĞLANTISI (SENİN LİNKİN!) --------
-        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwuOkwrzcDSyo6DvcAumSbWjJo64HeQcRtJYppLcYGMNJkyw614h71ySeAVIOxwapU38w/exec';
+        const APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxcuh9zaH8_JymgQrFJYFe_Oym63BO56r0Y5ZHM25s9b0ISV8pXIntatPSPvDlSxlcCRQ/exec';
 
         // -------- DOM ELEMENTLERİ --------
         const loginScreen = document.getElementById('loginScreen');
@@ -347,6 +336,7 @@
             messageArea.appendChild(msgDiv);
             messageArea.scrollTop = messageArea.scrollHeight;
 
+            // Her 10 mesajda bir miyav
             if (messageArea.children.length % 10 === 0) {
                 playMeowSound();
             }
