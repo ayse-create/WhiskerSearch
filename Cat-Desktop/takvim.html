@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>🐱 Takvim</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            background: #f2f2f7;
+            overflow: hidden;
+        }
+
+        .window {
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            height: 100%;
+        }
+
+        /* Sol: Aylar */
+        .sidebar {
+            width: 200px;
+            min-width: 160px;
+            background: #f8f9fc;
+            border-right: 1px solid #e8e8ed;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            height: 100%;
+        }
+
+        .sidebar-header {
+            padding: 16px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #555;
+            border-bottom: 1px solid #e8e8ed;
+            flex-shrink: 0;
+        }
+
+        .month-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 6px;
+        }
+
+        .month-item {
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            border-radius: 8px;
+            font-size: 14px;
+            color: #1c1c1e;
+        }
+
+        .month-item:hover {
+            background: #f0f0f5;
+        }
+
+        .month-item.active {
+            background: #e8e8f0;
+            font-weight: 600;
+        }
+
+        /* Sağ: Takvim */
+        .calendar-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #ffffff;
+            min-width: 0;
+            padding: 20px 28px;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .calendar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            flex-shrink: 0;
+        }
+
+        .calendar-header .month-year {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1c1c1e;
+        }
+
+        .calendar-header .nav-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-header .nav-buttons button {
+            background: none;
+            border: 1px solid #e8e8ed;
+            border-radius: 30px;
+            padding: 4px 14px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .calendar-header .nav-buttons button:hover {
+            background: #f0f0f5;
+        }
+
+        .weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 500;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #e8e8ed;
+            padding-bottom: 8px;
+            flex-shrink: 0;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            flex: 1;
+            min-height: 0;
+            align-content: start;
+        }
+
+        .day-cell {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.15s;
+            aspect-ratio: 1 / 1;
+            color: #1c1c1e;
+            background: transparent;
+            max-height: 56px;
+        }
+
+        .day-cell:hover {
+            background: #f0f0f5;
+        }
+
+        /* 🎯 BUGÜN 3'LÜ GRADIENT */
+        .day-cell.today {
+            background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+            font-weight: 600;
+            color: #1c1c1e;
+            border-radius: 12px;
+        }
+
+        .day-cell.other-month {
+            color: #ccc;
+        }
+
+        .day-cell.has-event {
+            position: relative;
+        }
+
+        .day-cell.has-event::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #FFD1E8;
+        }
+
+        .event-list {
+            margin-top: 12px;
+            border-top: 1px solid #e8e8ed;
+            padding-top: 12px;
+            flex-shrink: 0;
+            max-height: 110px;
+            overflow-y: auto;
+            min-height: 60px;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 0;
+            font-size: 14px;
+            color: #1c1c1e;
+        }
+
+        .event-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #FFD1E8;
+            flex-shrink: 0;
+        }
+
+        .event-item .time {
+            color: #888;
+            font-size: 13px;
+            margin-left: auto;
+        }
+
+        .add-event-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+            flex-shrink: 0;
+        }
+
+        .add-event-area input {
+            flex: 1;
+            padding: 8px 14px;
+            border: 1.5px solid #e8e8ed;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            background: #f8f9fc;
+            transition: all 0.2s;
+            min-width: 0;
+        }
+
+        .add-event-area input:focus {
+            border-color: #D8C7FF;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(216, 199, 255, 0.15);
+        }
+
+        .add-event-area button {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+            font-weight: 600;
+            cursor: pointer;
+            color: #1c1c1e;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .add-event-area button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(216, 199, 255, 0.3);
+        }
+
+        .empty-state {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #999;
+            font-size: 14px;
+            height: 100%;
+        }
+
+        /* Scroll */
+        .event-list::-webkit-scrollbar,
+        .month-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .event-list::-webkit-scrollbar-thumb,
+        .month-list::-webkit-scrollbar-thumb {
+            background: #d0d0d5;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 140px;
+                min-width: 100px;
+            }
+            .calendar-area {
+                padding: 14px 16px;
+            }
+            .calendar-header .month-year {
+                font-size: 18px;
+            }
+            .day-cell {
+                font-size: 13px;
+                max-height: 44px;
+            }
+            .sidebar-header {
+                padding: 12px 14px;
+                font-size: 13px;
+            }
+            .month-item {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .sidebar {
+                width: 100px;
+                min-width: 70px;
+            }
+            .sidebar-header {
+                font-size: 11px;
+                padding: 10px 8px;
+            }
+            .month-item {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+            .calendar-area {
+                padding: 10px 10px;
+            }
+            .calendar-header .month-year {
+                font-size: 16px;
+            }
+            .day-cell {
+                font-size: 12px;
+                max-height: 36px;
+                border-radius: 8px;
+            }
+            .weekdays {
+                font-size: 11px;
+            }
+            .add-event-area input {
+                font-size: 13px;
+                padding: 6px 12px;
+            }
+            .add-event-area button {
+                font-size: 13px;
+                padding: 6px 14px;
+            }
+            .event-item {
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="window">
+    <div class="main">
+        <div class="sidebar">
+            <div class="sidebar-header">🗓️ Aylar</div>
+            <div class="month-list" id="monthList"></div>
+        </div>
+
+        <div class="calendar-area">
+            <div class="calendar-header">
+                <div class="month-year" id="monthYear">Ocak 2025</div>
+                <div class="nav-buttons">
+                    <button id="prevMonth">‹</button>
+                    <button id="nextMonth">›</button>
+                </div>
+            </div>
+
+            <div class="weekdays">
+                <span>Pzt</span><span>Sal</span><span>Çar</span><span>Per</span><span>Cum</span><span>Cmt</span><span>Paz</span>
+            </div>
+
+            <div class="days-grid" id="daysGrid"></div>
+
+            <div class="event-list" id="eventList">
+                <div class="empty-state">📅 Seçili günde etkinlik yok</div>
+            </div>
+
+            <div class="add-event-area">
+                <input type="text" id="eventInput" placeholder="Etkinlik ekle..." />
+                <button id="addEventBtn">Ekle</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const monthNames = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+    let currentMonth = 0;
+    let currentYear = 2025;
+    let selectedDay = null;
+    let events = {};
+
+    events['2025-01-15'] = ['🐱 Kedi günü'];
+    events['2025-01-20'] = ['📅 Toplantı', '☕ Kahve'];
+    events['2025-01-27'] = ['🎂 Doğum günü'];
+
+    const monthList = document.getElementById('monthList');
+    const monthYear = document.getElementById('monthYear');
+    const daysGrid = document.getElementById('daysGrid');
+    const eventList = document.getElementById('eventList');
+    const eventInput = document.getElementById('eventInput');
+    const addEventBtn = document.getElementById('addEventBtn');
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+
+    function getDaysInMonth(month, year) {
+        return new Date(year, month + 1, 0).getDate();
+    }
+
+    function getFirstDay(month, year) {
+        return new Date(year, month, 1).getDay();
+    }
+
+    function formatDate(day, month, year) {
+        const m = String(month + 1).padStart(2, '0');
+        const d = String(day).padStart(2, '0');
+        return year + '-' + m + '-' + d;
+    }
+
+    function renderMonthList() {
+        monthList.innerHTML = '';
+        monthNames.forEach((name, index) => {
+            const div = document.createElement('div');
+            div.className = 'month-item' + (index === currentMonth ? ' active' : '');
+            div.textContent = name;
+            div.dataset.index = index;
+            div.addEventListener('click', function() {
+                currentMonth = parseInt(this.dataset.index);
+                renderMonthList();
+                renderCalendar();
+            });
+            monthList.appendChild(div);
+        });
+    }
+
+    function renderCalendar() {
+        const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+        const firstDay = getFirstDay(currentMonth, currentYear);
+        const today = new Date();
+        const todayStr = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+
+        monthYear.textContent = monthNames[currentMonth] + ' ' + currentYear;
+
+        const startOffset = (firstDay === 0) ? 6 : firstDay - 1;
+        let html = '';
+        for (let i = 0; i < startOffset; i++) {
+            html += `<div class="day-cell other-month"></div>`;
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const dateStr = formatDate(day, currentMonth, currentYear);
+            const isToday = (dateStr === todayStr);
+            const hasEvent = events[dateStr] && events[dateStr].length > 0;
+            let cls = 'day-cell';
+            if (isToday) cls += ' today';
+            if (hasEvent) cls += ' has-event';
+            html += `<div class="${cls}" data-date="${dateStr}" data-day="${day}">${day}</div>`;
+        }
+
+        daysGrid.innerHTML = html;
+
+        document.querySelectorAll('.day-cell:not(.other-month)').forEach(el => {
+            el.addEventListener('click', function() {
+                const date = this.dataset.date;
+                selectedDay = date;
+                renderEvents(date);
+                document.querySelectorAll('.day-cell').forEach(d => d.style.outline = 'none');
+                this.style.outline = '2px solid #D8C7FF';
+                this.style.outlineOffset = '2px';
+            });
+        });
+
+        if (!selectedDay) {
+            const todayEl = document.querySelector('.day-cell.today');
+            if (todayEl) {
+                selectedDay = todayEl.dataset.date;
+                renderEvents(selectedDay);
+                todayEl.style.outline = '2px solid #D8C7FF';
+                todayEl.style.outlineOffset = '2px';
+            }
+        } else {
+            renderEvents(selectedDay);
+        }
+    }
+
+    function renderEvents(date) {
+        const evs = events[date] || [];
+        if (evs.length === 0) {
+            eventList.innerHTML = `<div class="empty-state">📅 Seçili günde etkinlik yok</div>`;
+            return;
+        }
+        let html = '';
+        evs.forEach((text, index) => {
+            html += `
+                <div class="event-item">
+                    <span class="dot"></span>
+                    <span>${text}</span>
+                    <span class="time">${index + 1}. etkinlik</span>
+                </div>
+            `;
+        });
+        eventList.innerHTML = html;
+    }
+
+    function addEvent() {
+        const text = eventInput.value.trim();
+        if (!text || !selectedDay) return;
+        if (!events[selectedDay]) events[selectedDay] = [];
+        events[selectedDay].push(text);
+        eventInput.value = '';
+        renderCalendar();
+        renderEvents(selectedDay);
+    }
+
+    function changeMonth(delta) {
+        currentMonth += delta;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+        renderMonthList();
+        renderCalendar();
+    }
+
+    addEventBtn.addEventListener('click', addEvent);
+    eventInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') addEvent();
+    });
+    prevMonth.addEventListener('click', function() { changeMonth(-1); });
+    nextMonth.addEventListener('click', function() { changeMonth(1); });
+
+    const now = new Date();
+    currentMonth = now.getMonth();
+    currentYear = now.getFullYear();
+    renderMonthList();
+    renderCalendar();
+</script>
+</body>
+</html>
