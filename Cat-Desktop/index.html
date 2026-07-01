@@ -345,20 +345,22 @@
       margin: 12px 0;
     }
 
-          <!-- Kişiler -->
-      <div class="mac-window" id="contacts-window" style="width: 360px; height: 380px; top: 140px; left: 100px;">
-        <div class="window-header" onmousedown="dragStart(event, 'contacts-window')">
-          <div class="window-buttons">
-            <span class="close-btn" onclick="closeWindow('contacts-window')"></span>
-            <span class="minimize-btn" onclick="closeWindow('contacts-window')"></span>
-            <span class="maximize-btn" onclick="toggleMaximize('contacts-window')"></span>
-          </div>
-          <div class="window-title">👥 Kişiler</div>
-        </div>
-        <div class="window-content">
-          <iframe src="https://ayse-create.github.io/WhiskerSearch/Cat-Desktop/kisiler" frameborder="0"></iframe>
-        </div>
-      </div>
+    /* Kişiler */
+    .contacts-box {
+      padding: 16px;
+      background: #fff;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .contact-card {
+      padding: 8px 12px;
+      background: #f5f5f7;
+      border-radius: 8px;
+      margin-bottom: 8px;
+      font-size: 14px;
+      border-left: 3px solid #D8C7FF;
+    }
 
     /* Anımsatıcılar */
     .reminders-box {
@@ -532,7 +534,7 @@
         </div>
       </div>
 
-      <!-- Mesajlar - Sadece iframe, sidebar ve input yok -->
+      <!-- Mesajlar - Sadece iframe -->
       <div class="mac-window" id="messages-window" style="width: 650px; height: 460px; top: 80px; left: 140px;">
         <div class="window-header" onmousedown="dragStart(event, 'messages-window')">
           <div class="window-buttons">
@@ -641,6 +643,21 @@
         </div>
       </div>
 
+      <!-- MAIL UYGULAMASI - YENİ -->
+      <div class="mac-window" id="mail-window" style="width: 700px; height: 520px; top: 100px; left: 340px;">
+        <div class="window-header" onmousedown="dragStart(event, 'mail-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('mail-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('mail-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('mail-window')"></span>
+          </div>
+          <div class="window-title">✉️ Mail</div>
+        </div>
+        <div class="window-content">
+          <iframe src="https://ayse-create.github.io/WhiskerSearch/Cat-Desktop/mail" frameborder="0"></iframe>
+        </div>
+      </div>
+
     </div>
 
     <!-- Dock -->
@@ -651,6 +668,8 @@
         <div class="dock-icon" onclick="openWindow('photos-window', 'Fotoğraflar')">🖼️<span class="tooltip">Fotoğraflar</span></div>
         <div class="dock-icon" onclick="openWindow('calendar-window', 'Takvim')">📅<span class="tooltip">Takvim</span></div>
         <div class="dock-icon" onclick="openWindow('contacts-window', 'Kişiler')">👥<span class="tooltip">Kişiler</span></div>
+        <!-- MAIL SIMGESI DOCK'TA -->
+        <div class="dock-icon" onclick="openWindow('mail-window', 'Mail')">✉️<span class="tooltip">Mail</span></div>
         <div class="dock-icon" onclick="openWindow('reminders-window', 'Anımsatıcılar')">💡<span class="tooltip">Anımsatıcılar</span></div>
         <div class="dock-icon" onclick="openWindow('settings-window', 'Sistem Ayarları')">⚙️<span class="tooltip">Ayarlar</span></div>
         <div class="dock-divider"></div>
