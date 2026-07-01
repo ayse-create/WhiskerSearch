@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>macOS Kitty - Ultimate Edition</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      overflow: hidden;
+      user-select: none;
+      height: 100vh;
+      background: #1a1a2e;
+    }
+
+    .mac-desktop {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop');
+      background-size: cover;
+      background-position: center;
+      transition: background 0.5s ease;
+      overflow: hidden;
+    }
+
+    .mac-desktop.gradient-theme {
+      background: radial-gradient(circle at 20% 20%, #4f46e5 0%, transparent 40%),
+                  radial-gradient(circle at 80% 80%, #7c3aed 0%, transparent 50%),
+                  linear-gradient(135deg, #1e1b4b, #311042);
+    }
+
+    .mac-desktop.dark-theme {
+      background: #121214;
+    }
+
+    .menu-bar {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      font-size: 13px;
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+      position: relative;
+      z-index: 10000;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      flex-shrink: 0;
+    }
+
+    .menu-left, .menu-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-item {
+      cursor: pointer;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .bold {
+      font-weight: 600;
+    }
+
+    .brand-icon {
+      cursor: pointer;
+      font-size: 16px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: background 0.2s;
+    }
+
+    .brand-icon:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .window-area {
+      height: calc(100vh - 28px - 80px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mac-window {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      min-width: 300px;
+      min-height: 200px;
+    }
+
+    .mac-window.maximized {
+      position: fixed !important;
+      top: 28px !important;
+      left: 0 !important;
+      width: 100vw !important;
+      height: calc(100vh - 28px) !important;
+      border-radius: 0 !important;
+      z-index: 9999 !important;
+    }
+
+    /* Tam ekran açıldığında Dock'u gizle */
+    .mac-window.maximized ~ .dock-container {
+      display: none !important;
+    }
+
+    /* Dock'u gizlemek için alternatif yöntem */
+    .dock-hidden .dock-container {
+      display: none !important;
+    }
+
+    .window-header {
+      background: linear-gradient(to bottom, #f6f6f6, #ebebeb);
+      height: 30px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      position: relative;
+      border-bottom: 1px solid #d1d1d1;
+      cursor: default;
+      flex-shrink: 0;
+    }
+
+    .window-buttons {
+      display: flex;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .window-buttons span {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .window-buttons span:hover {
+      opacity: 0.7;
+    }
+
+    .close-btn {
+      background: #ff5f56;
+      border: 0.5px solid #e0443e;
+    }
+    .minimize-btn {
+      background: #ffbd2e;
+      border: 0.5px solid #dfa224;
+    }
+    .maximize-btn {
+      background: #27c93f;
+      border: 0.5px solid #1aab29;
+    }
+
+    .window-title {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      color: #4a4a4a;
+      left: 0;
+      pointer-events: none;
+    }
+
+    .window-content {
+      flex: 1;
+      width: 100%;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .window-content iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Mesajlar - Sadece iframe */
+    .messages-full {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+    }
+
+    .messages-full iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Fotoğraflar */
+    .photo-gallery-box {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      background: #f5f5f7;
+    }
+
+    .gallery-toolbar {
+      padding: 8px 12px;
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      flex-shrink: 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .gallery-toolbar button {
+      padding: 4px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #fff;
+      cursor: pointer;
+      font-size: 12px;
+      transition: all 0.2s;
+    }
+
+    .gallery-toolbar button:hover {
+      background: #f0f0f0;
+      border-color: #999;
+    }
+
+    .photo-grid {
+      flex: 1;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 10px;
+      overflow-y: auto;
+    }
+
+    .photo-grid img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s;
+    }
+
+    .photo-grid img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Sistem Ayarları */
+    .settings-layout {
+      padding: 16px;
+      background: #f5f5f7;
+      height: 100%;
+      overflow-y: auto;
+    }
+
+    .settings-layout h3 {
+      font-size: 14px;
+      color: #1c1c1e;
+      margin: 16px 0 8px 0;
+    }
+
+    .settings-layout h3:first-child {
+      margin-top: 0;
+    }
+
+    .wallpaper-options {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .wp-thumb {
+      flex: 1;
+      height: 60px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      text-shadow: 0 1px 2px #000;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+      transition: transform 0.2s;
+    }
+
+    .wp-thumb:hover {
+      transform: scale(1.05);
+    }
+
+    .wp-apple {
+      background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=40&w=150');
+      background-size: cover;
+    }
+
+    .wp-gradient {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    }
+
+    .wp-dark {
+      background: #222;
+    }
+
+    .setting-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .setting-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e5e5e5;
+      margin: 12px 0;
+    }
+
+    /* Kişiler */
+    .contacts-box {
+      padding: 16px;
+      height: 100%;
+      background: #fff;
+      overflow-y: auto;
+    }
+
+    .contact-card {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+      font-size: 13px;
+    }
+
+    .contact-card strong {
+      color: #1c1c1e;
+    }
+
+    .contact-card:last-child {
+      border-bottom: none;
+    }
+
+    /* Anımsatıcılar */
+    .reminders-box {
+      padding: 16px;
+      height: 100%;
+      background: #fff;
+      overflow-y: auto;
+    }
+
+    .reminders-box h3 {
+      font-size: 14px;
+      color: #1c1c1e;
+      margin-bottom: 12px;
+    }
+
+    .reminder-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .reminder-list li {
+      padding: 6px 0;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .reminder-list li input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
+    /* Dock */
+    .dock-container {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      z-index: 9998;
+      transition: opacity 0.3s ease;
+    }
+
+    .mac-dock {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      padding: 6px 12px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+
+    .dock-icon {
+      font-size: 36px;
+      cursor: pointer;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: 8px;
+    }
+
+    .dock-icon:hover {
+      transform: scale(1.2) translateY(-8px);
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .dock-divider {
+      width: 1px;
+      height: 36px;
+      background: rgba(255, 255, 255, 0.25);
+      margin: 0 4px;
+    }
+
+    .tooltip {
+      display: none;
+      position: absolute;
+      top: -38px;
+      background: rgba(20, 20, 20, 0.85);
+      color: white;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
+
+    .dock-icon:hover .tooltip {
+      display: block;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #c0c0c0;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #a0a0a0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .menu-left .menu-item:not(.bold):not(.brand-icon) {
+        display: none;
+      }
+      
+      .mac-window {
+        min-width: 200px;
+        min-height: 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="mac-desktop" id="desktop">
+    
+    <!-- Üst Menü Çubuğu -->
+    <div class="menu-bar">
+      <div class="menu-left">
+        <span class="brand-icon" onclick="openWindow('settings-window', 'Sistem Ayarları')">🐱</span>
+        <span class="menu-item bold" id="active-app-name">Finder</span>
+        <span class="menu-item">Dosya</span>
+        <span class="menu-item">Düzen</span>
+        <span class="menu-item">Görüntü</span>
+        <span class="menu-item">Geçmiş</span>
+        <span class="menu-item">Yer İşaretleri</span>
+        <span class="menu-item">Geliştirme</span>
+        <span class="menu-item">Pencere</span>
+        <span class="menu-item">Yardım</span>
+      </div>
+      <div class="menu-right">
+        <span class="menu-item">📶 Wi-Fi: Miyav_Net</span>
+        <span id="live-clock" class="menu-item bold">12:00</span>
+      </div>
+    </div>
+
+    <!-- Pencere Alanı -->
+    <div class="window-area">
+      
+      <!-- Safari/WhiskerSearch -->
+      <div class="mac-window" id="safari-window" style="width: 850px; height: 550px; top: 40px; left: 60px;">
+        <div class="window-header" onmousedown="dragStart(event, 'safari-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('safari-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('safari-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('safari-window')"></span>
+          </div>
+          <div class="window-title">🐱 WhiskerSearch (Safari)</div>
+        </div>
+        <div class="window-content">
+          <iframe src="https://ayse-create.github.io/WhiskerSearch/"></iframe>
+        </div>
+      </div>
+
+      <!-- Mesajlar - Sadece iframe, sidebar ve input yok -->
+      <div class="mac-window" id="messages-window" style="width: 650px; height: 460px; top: 80px; left: 140px;">
+        <div class="window-header" onmousedown="dragStart(event, 'messages-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('messages-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('messages-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('messages-window')"></span>
+          </div>
+          <div class="window-title">💬 Mesajlar</div>
+        </div>
+        <div class="window-content messages-full">
+          <iframe src="https://ayse-create.github.io/Tghygj/"></iframe>
+        </div>
+      </div>
+
+      <!-- Fotoğraflar -->
+      <div class="mac-window" id="photos-window" style="width: 550px; height: 400px; top: 120px; left: 220px;">
+        <div class="window-header" onmousedown="dragStart(event, 'photos-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('photos-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('photos-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('photos-window')"></span>
+          </div>
+          <div class="window-title">🖼️ Fotoğraflar</div>
+        </div>
+        <div class="window-content photo-gallery-box">
+          <div class="gallery-toolbar">
+            <button onclick="loadRandomCatPhotos()">🔄 Fotoğrafları Yenile</button>
+          </div>
+          <div class="photo-grid" id="photo-grid"></div>
+        </div>
+      </div>
+
+      <!-- Sistem Ayarları -->
+      <div class="mac-window" id="settings-window" style="width: 460px; height: 360px; top: 180px; left: 300px;">
+        <div class="window-header" onmousedown="dragStart(event, 'settings-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('settings-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('settings-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('settings-window')"></span>
+          </div>
+          <div class="window-title">⚙️ Sistem Ayarları</div>
+        </div>
+        <div class="window-content settings-layout">
+          <h3>Masaüstü Duvar Kağıdı</h3>
+          <div class="wallpaper-options">
+            <div class="wp-thumb wp-apple" onclick="changeWallpaper('apple')"><span>Orijinal Mac</span></div>
+            <div class="wp-thumb wp-gradient" onclick="changeWallpaper('gradient')"><span>Aurora</span></div>
+            <div class="wp-thumb wp-dark" onclick="changeWallpaper('dark')"><span>Karanlık</span></div>
+          </div>
+          <hr>
+          <h3>Sistem Tercihleri</h3>
+          <div class="setting-row"><span>Kedi Ses Efektleri</span><input type="checkbox" checked></div>
+          <div class="setting-row"><span>Dock'ı Otomatik Gizle</span><input type="checkbox"></div>
+        </div>
+      </div>
+
+      <!-- Takvim -->
+      <div class="mac-window" id="calendar-window" style="width: 500px; height: 450px; top: 60px; left: 430px;">
+        <div class="window-header" onmousedown="dragStart(event, 'calendar-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('calendar-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('calendar-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('calendar-window')"></span>
+          </div>
+          <div class="window-title">📅 Takvim</div>
+        </div>
+        <div class="window-content">
+          <iframe src="https://ayse-create.github.io/hmjhmj/" frameborder="0"></iframe>
+        </div>
+      </div>
+
+      <!-- Kişiler -->
+      <div class="mac-window" id="contacts-window" style="width: 360px; height: 380px; top: 140px; left: 100px;">
+        <div class="window-header" onmousedown="dragStart(event, 'contacts-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('contacts-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('contacts-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('contacts-window')"></span>
+          </div>
+          <div class="window-title">👥 Kişiler</div>
+        </div>
+        <div class="window-content contacts-box">
+          <div class="contact-card"><strong>ProfessorCat</strong> — Bilge Arama Motoru</div>
+          <div class="contact-card"><strong>Pamuk</strong> — +1 888 555-1212</div>
+          <div class="contact-card"><strong>Tekir</strong> — +1 555 564-8583</div>
+        </div>
+      </div>
+
+      <!-- Anımsatıcılar -->
+      <div class="mac-window" id="reminders-window" style="width: 380px; height: 300px; top: 200px; left: 180px;">
+        <div class="window-header" onmousedown="dragStart(event, 'reminders-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('reminders-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('reminders-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('reminders-window')"></span>
+          </div>
+          <div class="window-title">💡 Anımsatıcılar</div>
+        </div>
+        <div class="window-content reminders-box">
+          <h3>Görevlerim</h3>
+          <ul class="reminder-list">
+            <li><input type="checkbox" checked> WhiskerSearch Dock simgesini tamamla</li>
+            <li><input type="checkbox"> Dünyayı ele geçir (Kedice plan)</li>
+            <li><input type="checkbox"> Halıyı tırmala ve koş</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Dock -->
+    <div class="dock-container" id="dock-container">
+      <div class="mac-dock">
+        <div class="dock-icon" onclick="openWindow('safari-window', 'WhiskerSearch')">🐱<span class="tooltip">WhiskerSearch</span></div>
+        <div class="dock-icon" onclick="openWindow('messages-window', 'Mesajlar')">💬<span class="tooltip">Mesajlar</span></div>
+        <div class="dock-icon" onclick="openWindow('photos-window', 'Fotoğraflar')">🖼️<span class="tooltip">Fotoğraflar</span></div>
+        <div class="dock-icon" onclick="openWindow('calendar-window', 'Takvim')">📅<span class="tooltip">Takvim</span></div>
+        <div class="dock-icon" onclick="openWindow('contacts-window', 'Kişiler')">👥<span class="tooltip">Kişiler</span></div>
+        <div class="dock-icon" onclick="openWindow('reminders-window', 'Anımsatıcılar')">💡<span class="tooltip">Anımsatıcılar</span></div>
+        <div class="dock-icon" onclick="openWindow('settings-window', 'Sistem Ayarları')">⚙️<span class="tooltip">Ayarlar</span></div>
+        <div class="dock-divider"></div>
+        <div class="dock-icon" onclick="alert('Çöp kutusu temiz!')">🗑️<span class="tooltip">Çöp Kutusu</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    let highestZIndex = 10;
+    let dragObj = null;
+    let offsetX = 0, offsetY = 0;
+
+    // Uygulama Açma
+    function openWindow(windowId, appName) {
+      const win = document.getElementById(windowId);
+      if (win) {
+        win.style.display = 'flex';
+        highestZIndex++;
+        win.style.zIndex = highestZIndex;
+        
+        if (appName) {
+          document.getElementById('active-app-name').innerText = appName;
+        }
+        
+        if (windowId === 'photos-window') {
+          loadRandomCatPhotos();
+        }
+      }
+    }
+
+    function closeWindow(windowId) {
+      const win = document.getElementById(windowId);
+      if (win) {
+        win.style.display = 'none';
+        document.getElementById('active-app-name').innerText = 'Finder';
+        // Dock'u tekrar göster
+        document.getElementById('dock-container').style.display = 'flex';
+        document.getElementById('desktop').classList.remove('dock-hidden');
+      }
+    }
+
+    function toggleMaximize(windowId) {
+      const win = document.getElementById(windowId);
+      if (win) {
+        win.classList.toggle('maximized');
+        if (win.classList.contains('maximized')) {
+          highestZIndex++;
+          win.style.zIndex = highestZIndex;
+          // Dock'u gizle
+          document.getElementById('dock-container').style.display = 'none';
+          document.getElementById('desktop').classList.add('dock-hidden');
+        } else {
+          // Dock'u göster
+          document.getElementById('dock-container').style.display = 'flex';
+          document.getElementById('desktop').classList.remove('dock-hidden');
+        }
+      }
+    }
+
+    // Pencere Sürükleme
+    function dragStart(e, id) {
+      const win = document.getElementById(id);
+      if (win.classList.contains('maximized')) return;
+      
+      dragObj = win;
+      const rect = win.getBoundingClientRect();
+      offsetX = e.clientX - rect.left;
+      offsetY = e.clientY - rect.top;
+      
+      document.addEventListener('mousemove', dragMove);
+      document.addEventListener('mouseup', dragEnd);
+    }
+
+    function dragMove(e) {
+      if (dragObj) {
+        dragObj.style.left = (e.clientX - offsetX) + 'px';
+        dragObj.style.top = (e.clientY - offsetY) + 'px';
+      }
+    }
+
+    function dragEnd() {
+      dragObj = null;
+      document.removeEventListener('mousemove', dragMove);
+      document.removeEventListener('mouseup', dragEnd);
+    }
+
+    // Kedi Fotoğrafları Yükleme
+    function loadRandomCatPhotos() {
+      const grid = document.getElementById('photo-grid');
+      grid.innerHTML = '';
+      for (let i = 0; i < 9; i++) {
+        const img = document.createElement('img');
+        img.src = `https://cataas.com/cat?ts=${Date.now()}_${i}`;
+        img.alt = 'Kedi fotoğrafı';
+        img.onerror = function() {
+          this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200"%3E%3Crect width="200" height="200" fill="%23f0f0f0"/%3E%3Ctext x="50" y="110" font-size="40"%3E🐱%3C/text%3E%3C/svg%3E';
+        };
+        grid.appendChild(img);
+      }
+    }
+
+    // Duvar Kağıdı Değiştirme
+    function changeWallpaper(theme) {
+      const desktop = document.getElementById('desktop');
+      desktop.className = 'mac-desktop';
+      
+      if (theme === 'gradient') {
+        desktop.classList.add('gradient-theme');
+      } else if (theme === 'dark') {
+        desktop.classList.add('dark-theme');
+      }
+    }
+
+    // Pencere Ön Plana Getirme
+    document.querySelectorAll('.mac-window').forEach(win => {
+      win.addEventListener('mousedown', () => {
+        highestZIndex++;
+        win.style.zIndex = highestZIndex;
+      });
+    });
+
+    // Canlı Saat
+    setInterval(() => {
+      const now = new Date();
+      document.getElementById('live-clock').innerText = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+    }, 1000);
+
+    // Başlangıçta Fotoğrafları Yükle
+    window.addEventListener('load', function() {
+      loadRandomCatPhotos();
+    });
+  </script>
+
+</body>
+</html>
