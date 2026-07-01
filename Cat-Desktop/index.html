@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>macOS Kitty - Ultimate Edition</title>
+  <title>macOS Kitty - Bite Edition</title>
   <style>
     * {
       margin: 0;
@@ -23,17 +23,13 @@
       width: 100vw;
       height: 100vh;
       position: relative;
-      background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1920&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
+      background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
       transition: background 0.5s ease;
       overflow: hidden;
     }
 
     .mac-desktop.gradient-theme {
-      background: radial-gradient(circle at 20% 20%, #4f46e5 0%, transparent 40%),
-                  radial-gradient(circle at 80% 80%, #7c3aed 0%, transparent 50%),
-                  linear-gradient(135deg, #1e1b4b, #311042);
+      background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
     }
 
     .mac-desktop.dark-theme {
@@ -83,14 +79,22 @@
 
     .brand-icon {
       cursor: pointer;
-      font-size: 16px;
+      font-size: 20px;
       padding: 2px 6px;
       border-radius: 4px;
       transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .brand-icon:hover {
       background: rgba(255, 255, 255, 0.1);
+    }
+
+    .brand-icon svg {
+      width: 24px;
+      height: 24px;
     }
 
     .window-area {
@@ -123,12 +127,10 @@
       z-index: 9999 !important;
     }
 
-    /* Tam ekran açıldığında Dock'u gizle */
     .mac-window.maximized ~ .dock-container {
       display: none !important;
     }
 
-    /* Dock'u gizlemek için alternatif yöntem */
     .dock-hidden .dock-container {
       display: none !important;
     }
@@ -201,7 +203,6 @@
       border: none;
     }
 
-    /* Mesajlar - Sadece iframe */
     .messages-full {
       width: 100%;
       height: 100%;
@@ -214,7 +215,6 @@
       border: none;
     }
 
-    /* Fotoğraflar */
     .photo-gallery-box {
       display: flex;
       flex-direction: column;
@@ -268,7 +268,6 @@
       transform: scale(1.05);
     }
 
-    /* Sistem Ayarları */
     .settings-layout {
       padding: 16px;
       background: #f5f5f7;
@@ -345,24 +344,6 @@
       margin: 12px 0;
     }
 
-    /* Kişiler */
-    .contacts-box {
-      padding: 16px;
-      background: #fff;
-      height: 100%;
-      overflow-y: auto;
-    }
-
-    .contact-card {
-      padding: 8px 12px;
-      background: #f5f5f7;
-      border-radius: 8px;
-      margin-bottom: 8px;
-      font-size: 14px;
-      border-left: 3px solid #D8C7FF;
-    }
-
-    /* Anımsatıcılar */
     .reminders-box {
       padding: 16px;
       height: 100%;
@@ -396,7 +377,6 @@
       cursor: pointer;
     }
 
-    /* Dock */
     .dock-container {
       position: absolute;
       bottom: 10px;
@@ -460,7 +440,6 @@
       display: block;
     }
 
-    /* Scrollbar */
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
@@ -479,7 +458,6 @@
       background: #a0a0a0;
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       .menu-left .menu-item:not(.bold):not(.brand-icon) {
         display: none;
@@ -499,7 +477,22 @@
     <!-- Üst Menü Çubuğu -->
     <div class="menu-bar">
       <div class="menu-left">
-        <span class="brand-icon" onclick="openWindow('settings-window', 'Sistem Ayarları')">🐱</span>
+        <span class="brand-icon" onclick="openWindow('settings-window', 'Sistem Ayarları')">
+          <svg viewBox="0 0 120 120" width="24" height="24" fill="white">
+            <circle cx="60" cy="55" r="40" fill="white" />
+            <polygon points="30,25 40,5 50,25" fill="white" />
+            <polygon points="70,25 80,5 90,25" fill="white" />
+            <circle cx="45" cy="50" r="5" fill="#1c1c1e" />
+            <circle cx="75" cy="50" r="5" fill="#1c1c1e" />
+            <polygon points="58,58 62,58 60,62" fill="#ff8fb1" />
+            <path d="M 52 62 Q 60 68 68 62" stroke="#1c1c1e" stroke-width="1.5" fill="none" />
+            <circle cx="95" cy="45" r="22" fill="white" />
+            <circle cx="85" cy="30" r="10" fill="white" />
+            <circle cx="103" cy="55" r="8" fill="white" />
+            <circle cx="98" cy="70" r="6" fill="white" />
+          </svg>
+          Kitty
+        </span>
         <span class="menu-item bold" id="active-app-name">Finder</span>
         <span class="menu-item">Dosya</span>
         <span class="menu-item">Düzen</span>
@@ -518,7 +511,6 @@
 
     <!-- Pencere Alanı -->
     <div class="window-area">
-      
       <!-- Safari/WhiskerSearch -->
       <div class="mac-window" id="safari-window" style="width: 850px; height: 550px; top: 40px; left: 60px;">
         <div class="window-header" onmousedown="dragStart(event, 'safari-window')">
@@ -534,7 +526,7 @@
         </div>
       </div>
 
-      <!-- Mesajlar - Sadece iframe -->
+      <!-- Mesajlar -->
       <div class="mac-window" id="messages-window" style="width: 650px; height: 460px; top: 80px; left: 140px;">
         <div class="window-header" onmousedown="dragStart(event, 'messages-window')">
           <div class="window-buttons">
@@ -606,8 +598,8 @@
         </div>
       </div>
 
-      <!-- Kişiler -->
-      <div class="mac-window" id="contacts-window" style="width: 360px; height: 380px; top: 140px; left: 100px;">
+      <!-- ✅ DÜZELTİLMİŞ KİŞİLER (iframe) -->
+      <div class="mac-window" id="contacts-window" style="width: 500px; height: 420px; top: 140px; left: 100px;">
         <div class="window-header" onmousedown="dragStart(event, 'contacts-window')">
           <div class="window-buttons">
             <span class="close-btn" onclick="closeWindow('contacts-window')"></span>
@@ -616,10 +608,8 @@
           </div>
           <div class="window-title">👥 Kişiler</div>
         </div>
-        <div class="window-content contacts-box">
-          <div class="contact-card"><strong>ProfessorCat</strong> — Bilge Arama Motoru</div>
-          <div class="contact-card"><strong>Pamuk</strong> — +1 888 555-1212</div>
-          <div class="contact-card"><strong>Tekir</strong> — +1 555 564-8583</div>
+        <div class="window-content">
+          <iframe src="https://ayse-create.github.io/WhiskerSearch/Cat-Desktop/kisiler" frameborder="0"></iframe>
         </div>
       </div>
 
@@ -643,7 +633,7 @@
         </div>
       </div>
 
-      <!-- MAIL UYGULAMASI - YENİ -->
+      <!-- Mail -->
       <div class="mac-window" id="mail-window" style="width: 700px; height: 520px; top: 100px; left: 340px;">
         <div class="window-header" onmousedown="dragStart(event, 'mail-window')">
           <div class="window-buttons">
@@ -668,7 +658,6 @@
         <div class="dock-icon" onclick="openWindow('photos-window', 'Fotoğraflar')">🖼️<span class="tooltip">Fotoğraflar</span></div>
         <div class="dock-icon" onclick="openWindow('calendar-window', 'Takvim')">📅<span class="tooltip">Takvim</span></div>
         <div class="dock-icon" onclick="openWindow('contacts-window', 'Kişiler')">👥<span class="tooltip">Kişiler</span></div>
-        <!-- MAIL SIMGESI DOCK'TA -->
         <div class="dock-icon" onclick="openWindow('mail-window', 'Mail')">✉️<span class="tooltip">Mail</span></div>
         <div class="dock-icon" onclick="openWindow('reminders-window', 'Anımsatıcılar')">💡<span class="tooltip">Anımsatıcılar</span></div>
         <div class="dock-icon" onclick="openWindow('settings-window', 'Sistem Ayarları')">⚙️<span class="tooltip">Ayarlar</span></div>
@@ -684,18 +673,15 @@
     let dragObj = null;
     let offsetX = 0, offsetY = 0;
 
-    // Uygulama Açma
     function openWindow(windowId, appName) {
       const win = document.getElementById(windowId);
       if (win) {
         win.style.display = 'flex';
         highestZIndex++;
         win.style.zIndex = highestZIndex;
-        
         if (appName) {
           document.getElementById('active-app-name').innerText = appName;
         }
-        
         if (windowId === 'photos-window') {
           loadRandomCatPhotos();
         }
@@ -707,7 +693,6 @@
       if (win) {
         win.style.display = 'none';
         document.getElementById('active-app-name').innerText = 'Finder';
-        // Dock'u tekrar göster
         document.getElementById('dock-container').style.display = 'flex';
         document.getElementById('desktop').classList.remove('dock-hidden');
       }
@@ -720,27 +705,22 @@
         if (win.classList.contains('maximized')) {
           highestZIndex++;
           win.style.zIndex = highestZIndex;
-          // Dock'u gizle
           document.getElementById('dock-container').style.display = 'none';
           document.getElementById('desktop').classList.add('dock-hidden');
         } else {
-          // Dock'u göster
           document.getElementById('dock-container').style.display = 'flex';
           document.getElementById('desktop').classList.remove('dock-hidden');
         }
       }
     }
 
-    // Pencere Sürükleme
     function dragStart(e, id) {
       const win = document.getElementById(id);
       if (win.classList.contains('maximized')) return;
-      
       dragObj = win;
       const rect = win.getBoundingClientRect();
       offsetX = e.clientX - rect.left;
       offsetY = e.clientY - rect.top;
-      
       document.addEventListener('mousemove', dragMove);
       document.addEventListener('mouseup', dragEnd);
     }
@@ -758,7 +738,6 @@
       document.removeEventListener('mouseup', dragEnd);
     }
 
-    // Kedi Fotoğrafları Yükleme
     function loadRandomCatPhotos() {
       const grid = document.getElementById('photo-grid');
       grid.innerHTML = '';
@@ -773,19 +752,18 @@
       }
     }
 
-    // Duvar Kağıdı Değiştirme
     function changeWallpaper(theme) {
       const desktop = document.getElementById('desktop');
       desktop.className = 'mac-desktop';
-      
       if (theme === 'gradient') {
         desktop.classList.add('gradient-theme');
       } else if (theme === 'dark') {
         desktop.classList.add('dark-theme');
+      } else {
+        desktop.style.background = 'linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8)';
       }
     }
 
-    // Pencere Ön Plana Getirme
     document.querySelectorAll('.mac-window').forEach(win => {
       win.addEventListener('mousedown', () => {
         highestZIndex++;
@@ -793,13 +771,11 @@
       });
     });
 
-    // Canlı Saat
     setInterval(() => {
       const now = new Date();
       document.getElementById('live-clock').innerText = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
     }, 1000);
 
-    // Başlangıçta Fotoğrafları Yükle
     window.addEventListener('load', function() {
       loadRandomCatPhotos();
     });
