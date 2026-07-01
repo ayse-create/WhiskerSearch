@@ -345,27 +345,20 @@
       margin: 12px 0;
     }
 
-    /* Kişiler */
-    .contacts-box {
-      padding: 16px;
-      height: 100%;
-      background: #fff;
-      overflow-y: auto;
-    }
-
-    .contact-card {
-      padding: 10px 0;
-      border-bottom: 1px solid #eee;
-      font-size: 13px;
-    }
-
-    .contact-card strong {
-      color: #1c1c1e;
-    }
-
-    .contact-card:last-child {
-      border-bottom: none;
-    }
+          <!-- Kişiler -->
+      <div class="mac-window" id="contacts-window" style="width: 360px; height: 380px; top: 140px; left: 100px;">
+        <div class="window-header" onmousedown="dragStart(event, 'contacts-window')">
+          <div class="window-buttons">
+            <span class="close-btn" onclick="closeWindow('contacts-window')"></span>
+            <span class="minimize-btn" onclick="closeWindow('contacts-window')"></span>
+            <span class="maximize-btn" onclick="toggleMaximize('contacts-window')"></span>
+          </div>
+          <div class="window-title">👥 Kişiler</div>
+        </div>
+        <div class="window-content">
+          <iframe src="https://ayse-create.github.io/WhiskerSearch/Cat-Desktop/kisiler" frameborder="0"></iframe>
+        </div>
+      </div>
 
     /* Anımsatıcılar */
     .reminders-box {
