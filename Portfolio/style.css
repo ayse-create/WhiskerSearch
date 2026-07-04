@@ -1,0 +1,146 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000000;
+  color: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.container {
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+}
+
+/* İSİM */
+.name-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.name {
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: -1px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  justify-content: center;
+}
+
+.first {
+  background: linear-gradient(135deg, #CFEFFF, #D8C7FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.last {
+  background: linear-gradient(135deg, #D8C7FF, #FFD1E8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* DÖNEN B */
+.rotating-b {
+  font-size: 56px;
+  font-weight: 700;
+  color: #FFD1E8;
+  animation: spin 4s linear infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* KİM OLDUĞUM */
+.bio {
+  font-size: 18px;
+  color: #cccccc;
+  max-width: 600px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+  border-top: 1px solid #222;
+  padding-top: 24px;
+}
+
+/* LİNKLER */
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px 20px;
+  margin-bottom: 40px;
+}
+
+.links a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 17px;
+  padding: 6px 14px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.links a:hover {
+  background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+  color: #000000;
+  border-color: #D8C7FF;
+  box-shadow: 0 0 30px rgba(216, 199, 255, 0.15);
+}
+
+/* İLETİŞİM */
+.contact {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  border-top: 1px solid #222;
+  padding-top: 24px;
+}
+
+.contact a {
+  color: #888;
+  text-decoration: none;
+  font-size: 15px;
+  transition: color 0.3s;
+}
+
+.contact a:hover {
+  color: #ffffff;
+}
+
+/* MOBİL */
+@media (max-width: 600px) {
+  .name {
+    font-size: 34px;
+  }
+  .rotating-b {
+    font-size: 34px;
+  }
+  .bio {
+    font-size: 16px;
+  }
+  .links a {
+    font-size: 14px;
+    padding: 4px 10px;
+  }
+}
