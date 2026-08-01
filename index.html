@@ -599,12 +599,10 @@
         let url = input.value.trim();
         if (!url) return;
 
-        // http:// veya https:// yoksa ekle
         if (!url.startsWith('http://') && !url.startsWith('https://')) {
           url = 'https://' + url;
         }
 
-        // Kendi sitem mi?
         const isOwn = ownSites.some(site => url.includes(site));
 
         if (isOwn) {
@@ -622,8 +620,6 @@
         <iframe class="page-frame" src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
       `;
       document.getElementById('addressInput').value = url;
-
-      // Geçmişe ekle
       history.push({ type: 'page', url: url });
       historyIndex = history.length - 1;
     }
@@ -641,7 +637,6 @@
         </div>
       `;
       document.getElementById('addressInput').value = 'https://www.professorcatsearch.com';
-      // Geçmişi sıfırlama
       history = [];
       historyIndex = -1;
     }
@@ -808,85 +803,107 @@
         </div>
       `;
 
-      // Geçmişe ekle
       history.push({ type: 'results', query: query });
       historyIndex = history.length - 1;
 
-      // AI input focus
       setTimeout(() => {
         const aiInput = document.getElementById('aiInput');
         if (aiInput) aiInput.focus();
       }, 100);
     }
 
-    // -------- AI MESAJ (Whisker AI Data) --------
-    function handleAIMessage(event) {
-      if (event.key === 'Enter') {
-        sendAIMessage();
-      }
-    }
+    // ================================================================
+    // 🐱 WHISKER AI DATA İLE GERÇEK CEVAP SİSTEMİ
+    // ================================================================
 
-    // Genel konuşmalar için basit cevap havuzu (fallback)
-    const generalResponses = {
-      'merhaba': 'Merhaba! Size nasıl yardımcı olabilirim? 😊',
-      'selam': 'Selam! Hoş geldiniz. Size nasıl yardımcı olabilirim? 🐱',
-      'teşekkürler': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
-      'teşekkür ederim': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
-      'sağol': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
-      'nasılsın': 'Ben bir yapay zeka asistanıyım, her zaman iyiyim! Siz nasılsınız? 😺',
-      'ne haber': 'Her şey yolunda! Size nasıl yardımcı olabilirim? 🐾',
-      'iyi günler': 'İyi günler! Size yardımcı olmaktan mutluluk duyarım. ☀️'
-    };
-
-    function findBestMatch(message) {
-      if (!whiskerAIData || !Array.isArray(whiskerAIData) || whiskerAIData.length === 0) {
-        return null;
+    /**
+     * whiskerAIData içindeki instruction'larla eşleşme yapar
+     * ve en uygun response'u döndürür.
+     * Eğer eşleşme yoksa fallback cevap verir.
+     */
+    function getWhiskerAIResponse(userMessage) {
+      // 1. whiskerAIData kontrolü
+      if (typeof whiskerAIData === 'undefined' || !Array.isArray(whiskerAIData) || whiskerAIData.length === 0) {
+        console.warn('⚠️ whiskerAIData tanımlı değil veya boş.');
+        return 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen daha sonra tekrar deneyin. 😿';
       }
 
-      const cleanMsg = message.toLowerCase().trim();
-      
-      // Önce genel konuşmaları kontrol et
+      const cleanMsg = userMessage.toLowerCase().trim();
+      if (!cleanMsg) {
+        return 'Bir şey yazmadınız. Size nasıl yardımcı olabilirim? 😊';
+      }
+
+      // 2. En iyi eşleşmeyi bul
+      let bestMatch = null;
+      let bestScore = 0;
+
+      for (const item of whiskerAIData) {
+        // instruction ve response kontrolü
+        if (!item.instruction || !item.response) continue;
+        
+        const instruction = item.instruction.toLowerCase();
+        let score = 0;
+
+        // Tam eşleşme (birebir aynı)
+        if (instruction === cleanMsg) {
+          score += 100;
+        }
+        // instruction, mesajın içinde geçiyor mu?
+        else if (cleanMsg.includes(instruction)) {
+          score += 50;
+        }
+        // mesaj, instruction'ın içinde geçiyor mu? (kısmi)
+        else if (instruction.includes(cleanMsg)) {
+          score += 30;
+        }
+
+        // Kelime bazlı eşleşme
+        const words = cleanMsg.split(/\s+/);
+        for (const word of words) {
+          if (word.length > 2 && instruction.includes(word)) {
+            score += 10;
+          }
+        }
+
+        // Eğer puan 0'dan büyükse ve mevcut en iyiden yüksekse güncelle
+        if (score > 0 && score > bestScore) {
+          bestScore = score;
+          bestMatch = item.response;
+        }
+      }
+
+      // 3. Eğer eşleşme bulunduysa ve puan yeterliyse (en az 10 puan)
+      if (bestMatch && bestScore >= 10) {
+        return bestMatch;
+      }
+
+      // 4. Eşleşme yoksa veya çok düşük puansa, genel cevapları dene
+      const generalResponses = {
+        'merhaba': 'Merhaba! Size nasıl yardımcı olabilirim? 😊',
+        'selam': 'Selam! Hoş geldiniz. Size nasıl yardımcı olabilirim? 🐱',
+        'teşekkürler': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
+        'teşekkür ederim': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
+        'sağol': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
+        'nasılsın': 'Ben bir yapay zeka asistanıyım, her zaman iyiyim! Siz nasılsınız? 😺',
+        'ne haber': 'Her şey yolunda! Size nasıl yardımcı olabilirim? 🐾',
+        'iyi günler': 'İyi günler! Size yardımcı olmaktan mutluluk duyarım. ☀️'
+      };
+
       for (const [key, response] of Object.entries(generalResponses)) {
         if (cleanMsg.includes(key)) {
           return response;
         }
       }
 
-      // whiskerAIData içinde en iyi eşleşmeyi bul
-      let bestMatch = null;
-      let bestScore = 0;
+      // 5. Hiçbir eşleşme yoksa varsayılan cevap
+      return 'Üzgünüm, bu konuda henüz bir bilgim yok. Farklı bir şey sormak ister misiniz? 😿';
+    }
 
-      for (const item of whiskerAIData) {
-        if (!item.instruction || !item.response) continue;
-        
-        const instruction = item.instruction.toLowerCase();
-        // Kelime benzerliği kontrolü
-        const words = cleanMsg.split(' ');
-        let score = 0;
-        
-        for (const word of words) {
-          if (word.length > 2 && instruction.includes(word)) {
-            score++;
-          }
-        }
-        
-        // Tam eşleşme bonusu
-        if (instruction === cleanMsg) {
-          score += 10;
-        }
-        
-        // Kısmi eşleşme
-        if (cleanMsg.includes(instruction) || instruction.includes(cleanMsg)) {
-          score += 5;
-        }
-
-        if (score > bestScore) {
-          bestScore = score;
-          bestMatch = item.response;
-        }
+    // -------- AI MESAJ (Whisker AI Data ile) --------
+    function handleAIMessage(event) {
+      if (event.key === 'Enter') {
+        sendAIMessage();
       }
-
-      return bestMatch;
     }
 
     async function sendAIMessage() {
@@ -911,39 +928,32 @@
       container.appendChild(aiDiv);
       container.scrollTop = container.scrollHeight;
 
-      // Yanıtı bul
+      // Gerçek whiskerAIData'dan cevap al (senkron)
       setTimeout(() => {
-        let response = findBestMatch(message);
-        
-        // Eğer eşleşme bulunamadıysa varsayılan cevap
-        if (!response) {
-          response = 'Üzgünüm, bu konuda henüz bir bilgim yok. Farklı bir şey sormak ister misiniz? 😿';
-        }
-
+        const response = getWhiskerAIResponse(message);
         aiDiv.innerHTML = `<div class="message-bubble">${response}</div>`;
         container.scrollTop = container.scrollHeight;
-      }, 300); // Küçük bir gecikme ile doğal hissettir
+      }, 300);
     }
 
     // -------- TAB GEÇİŞ --------
     function switchTab(tabName) {
       currentTab = tabName;
-      // Butonları güncelle
       const tabs = document.querySelectorAll('.tab');
       const contents = document.querySelectorAll('.tab-content');
       
       tabs.forEach(t => t.classList.remove('active'));
       contents.forEach(c => c.classList.remove('active'));
       
-      // Event.target kontrolü
-      const activeTab = Array.from(tabs).find(t => t.textContent.includes(
-        tabName === 'all' ? 'Tümü' :
-        tabName === 'images' ? 'Görseller' :
-        tabName === 'videos' ? 'Videolar' :
-        tabName === 'shopping' ? 'Alışveriş' :
-        'AI Modu'
-      ));
+      const tabMap = {
+        'all': 'Tümü',
+        'images': 'Görseller',
+        'videos': 'Videolar',
+        'shopping': 'Alışveriş',
+        'ai': 'AI Modu'
+      };
       
+      const activeTab = Array.from(tabs).find(t => t.textContent.includes(tabMap[tabName]));
       if (activeTab) activeTab.classList.add('active');
       
       const content = document.getElementById(`${tabName}-content`);
@@ -957,15 +967,15 @@
 
     // -------- SAYFA YÜKLENİNCE --------
     window.onload = function() {
-      // Adres çubuğuna odaklanma
       const addrInput = document.getElementById('addressInput');
       if (addrInput) addrInput.value = 'https://www.professorcatsearch.com';
       
-      // whiskerAIData kontrolü
-      if (typeof whiskerAIData === 'undefined') {
-        console.warn('whisker_ai_data.js yüklenemedi veya whiskerAIData tanımlı değil.');
+      if (typeof whiskerAIData !== 'undefined') {
+        console.log(`✅ Whisker AI Data yüklendi: ${whiskerAIData.length} örnek`);
+        console.log('📝 Örnek instruction:', whiskerAIData[0]?.instruction);
+        console.log('📝 Örnek response:', whiskerAIData[0]?.response);
       } else {
-        console.log(`Whisker AI Data yüklendi: ${whiskerAIData.length} örnek`);
+        console.warn('⚠️ whiskerAIData tanımlı değil. whisker_ai_data.js dosyasını kontrol edin.');
       }
     };
   </script>
