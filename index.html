@@ -817,9 +817,7 @@
     // ================================================================
 
     /**
-     * whiskerAIData içindeki instruction'larla eşleşme yapar
-     * ve en uygun response'u döndürür.
-     * Eğer eşleşme yoksa fallback cevap verir.
+     * whiskerAIData içindeki instruction/output ile en iyi eşleşmeyi bulur
      */
     function getWhiskerAIResponse(userMessage) {
       // 1. whiskerAIData kontrolü
@@ -833,51 +831,7 @@
         return 'Bir şey yazmadınız. Size nasıl yardımcı olabilirim? 😊';
       }
 
-      // 2. En iyi eşleşmeyi bul
-      let bestMatch = null;
-      let bestScore = 0;
-
-      for (const item of whiskerAIData) {
-        // instruction ve response kontrolü
-        if (!item.instruction || !item.response) continue;
-        
-        const instruction = item.instruction.toLowerCase();
-        let score = 0;
-
-        // Tam eşleşme (birebir aynı)
-        if (instruction === cleanMsg) {
-          score += 100;
-        }
-        // instruction, mesajın içinde geçiyor mu?
-        else if (cleanMsg.includes(instruction)) {
-          score += 50;
-        }
-        // mesaj, instruction'ın içinde geçiyor mu? (kısmi)
-        else if (instruction.includes(cleanMsg)) {
-          score += 30;
-        }
-
-        // Kelime bazlı eşleşme
-        const words = cleanMsg.split(/\s+/);
-        for (const word of words) {
-          if (word.length > 2 && instruction.includes(word)) {
-            score += 10;
-          }
-        }
-
-        // Eğer puan 0'dan büyükse ve mevcut en iyiden yüksekse güncelle
-        if (score > 0 && score > bestScore) {
-          bestScore = score;
-          bestMatch = item.response;
-        }
-      }
-
-      // 3. Eğer eşleşme bulunduysa ve puan yeterliyse (en az 10 puan)
-      if (bestMatch && bestScore >= 10) {
-        return bestMatch;
-      }
-
-      // 4. Eşleşme yoksa veya çok düşük puansa, genel cevapları dene
+      // 2. Genel konuşmalar (hızlı yanıt için)
       const generalResponses = {
         'merhaba': 'Merhaba! Size nasıl yardımcı olabilirim? 😊',
         'selam': 'Selam! Hoş geldiniz. Size nasıl yardımcı olabilirim? 🐱',
@@ -893,6 +847,67 @@
         if (cleanMsg.includes(key)) {
           return response;
         }
+      }
+
+      // 3. whiskerAIData içinde en iyi eşleşmeyi bul
+      let bestMatch = null;
+      let bestScore = 0;
+
+      for (const item of whiskerAIData) {
+        if (!item.instruction || !item.output) continue;
+        
+        const instruction = item.instruction.toLowerCase();
+        let score = 0;
+
+        // Tam eşleşme (birebir aynı)
+        if (instruction === cleanMsg) {
+          score += 100;
+        }
+        // instruction, mesajın içinde geçiyor mu? (kullanıcı daha uzun yazmış)
+        else if (cleanMsg.includes(instruction)) {
+          score += 50;
+        }
+        // mesaj, instruction'ın içinde geçiyor mu? (kullanıcı kısa yazmış)
+        else if (instruction.includes(cleanMsg)) {
+          score += 30;
+        }
+
+        // Kelime bazlı eşleşme (önemli kelimeler)
+        const words = cleanMsg.split(/\s+/);
+        let matchCount = 0;
+        for (const word of words) {
+          if (word.length > 2 && instruction.includes(word)) {
+            matchCount++;
+          }
+        }
+        score += matchCount * 10;
+
+        // Özel durum: "whiskerhub" ve "whiskerhub" ile ilgili türevler
+        if (cleanMsg.includes('whiskerhub') && instruction.includes('whiskerhub')) {
+          score += 20;
+        }
+        if (cleanMsg.includes('whiskersearch') && instruction.includes('whiskersearch')) {
+          score += 20;
+        }
+        if (cleanMsg.includes('whiskershop') && instruction.includes('whiskershop')) {
+          score += 20;
+        }
+        if (cleanMsg.includes('whiskercalc') && instruction.includes('whiskercalc')) {
+          score += 20;
+        }
+        if (cleanMsg.includes('cat-desktop') && instruction.includes('cat-desktop')) {
+          score += 20;
+        }
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = item.output;
+        }
+      }
+
+      // 4. Eğer eşleşme bulunduysa ve puan yeterliyse
+      if (bestMatch && bestScore >= 10) {
+        return bestMatch;
       }
 
       // 5. Hiçbir eşleşme yoksa varsayılan cevap
@@ -928,7 +943,7 @@
       container.appendChild(aiDiv);
       container.scrollTop = container.scrollHeight;
 
-      // Gerçek whiskerAIData'dan cevap al (senkron)
+      // Gerçek whiskerAIData'dan cevap al
       setTimeout(() => {
         const response = getWhiskerAIResponse(message);
         aiDiv.innerHTML = `<div class="message-bubble">${response}</div>`;
@@ -973,7 +988,7 @@
       if (typeof whiskerAIData !== 'undefined') {
         console.log(`✅ Whisker AI Data yüklendi: ${whiskerAIData.length} örnek`);
         console.log('📝 Örnek instruction:', whiskerAIData[0]?.instruction);
-        console.log('📝 Örnek response:', whiskerAIData[0]?.response);
+        console.log('📝 Örnek output:', whiskerAIData[0]?.output);
       } else {
         console.warn('⚠️ whiskerAIData tanımlı değil. whisker_ai_data.js dosyasını kontrol edin.');
       }
