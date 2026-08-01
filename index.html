@@ -531,20 +531,6 @@
       flex: 1;
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <script type="module">
-import * as webllm from "https://esm.run/@mlc-ai/web-llm";
-
-window.engine = new webllm.MLCEngine();
-
-window.loadModel = async () => {
-  const selectedModel = "Qwen2.5-1.5B-Instruct-q4f16_1-MLC";
-  await window.engine.reload(selectedModel);
-  console.log("CatAI hazır!");
-};
-
-window.loadModel();
-</script>
  </head>
  <body>
   <div class="browser-container">
@@ -587,6 +573,9 @@ window.loadModel();
     <button class="alert-button" onclick="confirmAlert()">Devam Et</button>
    </div>
   </div>
+
+  <!-- Whisker AI Data -->
+  <script src="whisker_ai_data.js"></script>
 
   <script>
     // -------- DEĞİŞKENLER --------
@@ -830,11 +819,74 @@ window.loadModel();
       }, 100);
     }
 
-    // -------- AI MESAJ --------
+    // -------- AI MESAJ (Whisker AI Data) --------
     function handleAIMessage(event) {
       if (event.key === 'Enter') {
         sendAIMessage();
       }
+    }
+
+    // Genel konuşmalar için basit cevap havuzu (fallback)
+    const generalResponses = {
+      'merhaba': 'Merhaba! Size nasıl yardımcı olabilirim? 😊',
+      'selam': 'Selam! Hoş geldiniz. Size nasıl yardımcı olabilirim? 🐱',
+      'teşekkürler': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
+      'teşekkür ederim': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
+      'sağol': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
+      'nasılsın': 'Ben bir yapay zeka asistanıyım, her zaman iyiyim! Siz nasılsınız? 😺',
+      'ne haber': 'Her şey yolunda! Size nasıl yardımcı olabilirim? 🐾',
+      'iyi günler': 'İyi günler! Size yardımcı olmaktan mutluluk duyarım. ☀️'
+    };
+
+    function findBestMatch(message) {
+      if (!whiskerAIData || !Array.isArray(whiskerAIData) || whiskerAIData.length === 0) {
+        return null;
+      }
+
+      const cleanMsg = message.toLowerCase().trim();
+      
+      // Önce genel konuşmaları kontrol et
+      for (const [key, response] of Object.entries(generalResponses)) {
+        if (cleanMsg.includes(key)) {
+          return response;
+        }
+      }
+
+      // whiskerAIData içinde en iyi eşleşmeyi bul
+      let bestMatch = null;
+      let bestScore = 0;
+
+      for (const item of whiskerAIData) {
+        if (!item.instruction || !item.response) continue;
+        
+        const instruction = item.instruction.toLowerCase();
+        // Kelime benzerliği kontrolü
+        const words = cleanMsg.split(' ');
+        let score = 0;
+        
+        for (const word of words) {
+          if (word.length > 2 && instruction.includes(word)) {
+            score++;
+          }
+        }
+        
+        // Tam eşleşme bonusu
+        if (instruction === cleanMsg) {
+          score += 10;
+        }
+        
+        // Kısmi eşleşme
+        if (cleanMsg.includes(instruction) || instruction.includes(cleanMsg)) {
+          score += 5;
+        }
+
+        if (score > bestScore) {
+          bestScore = score;
+          bestMatch = item.response;
+        }
+      }
+
+      return bestMatch;
     }
 
     async function sendAIMessage() {
@@ -859,27 +911,43 @@ window.loadModel();
       container.appendChild(aiDiv);
       container.scrollTop = container.scrollHeight;
 
-      try {
-        const response = await window.engine.chat.completions.create({
-          messages: [
-            { role: "system", content: "Sen CatAI adlı Türkçe konuşan yardımcı bir yapay zekasın. Her zaman Türkçe cevap ver." },
-            { role: "user", content: message }
-          ]
-        });
-        aiDiv.innerHTML = `<div class="message-bubble">${response.choices[0].message.content}</div>`;
-      } catch (err) {
-        aiDiv.innerHTML = `<div class="message-bubble">Hata: ${err.message}</div>`;
-      }
-      container.scrollTop = container.scrollHeight;
+      // Yanıtı bul
+      setTimeout(() => {
+        let response = findBestMatch(message);
+        
+        // Eğer eşleşme bulunamadıysa varsayılan cevap
+        if (!response) {
+          response = 'Üzgünüm, bu konuda henüz bir bilgim yok. Farklı bir şey sormak ister misiniz? 😿';
+        }
+
+        aiDiv.innerHTML = `<div class="message-bubble">${response}</div>`;
+        container.scrollTop = container.scrollHeight;
+      }, 300); // Küçük bir gecikme ile doğal hissettir
     }
 
     // -------- TAB GEÇİŞ --------
     function switchTab(tabName) {
       currentTab = tabName;
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-      event.target.classList.add('active');
-      document.getElementById(`${tabName}-content`).classList.add('active');
+      // Butonları güncelle
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+      
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      
+      // Event.target kontrolü
+      const activeTab = Array.from(tabs).find(t => t.textContent.includes(
+        tabName === 'all' ? 'Tümü' :
+        tabName === 'images' ? 'Görseller' :
+        tabName === 'videos' ? 'Videolar' :
+        tabName === 'shopping' ? 'Alışveriş' :
+        'AI Modu'
+      ));
+      
+      if (activeTab) activeTab.classList.add('active');
+      
+      const content = document.getElementById(`${tabName}-content`);
+      if (content) content.classList.add('active');
     }
 
     // -------- SONUÇ AÇ --------
@@ -887,24 +955,18 @@ window.loadModel();
       window.open(canvaLink, '_blank', 'noopener,noreferrer');
     }
 
-    // -------- RELOAD (Tarayıcı yenileme butonu) --------
-    function reload() {
-      if (historyIndex >= 0 && history[historyIndex]) {
-        const entry = history[historyIndex];
-        if (entry.type === 'results') {
-          lastSearchQuery = entry.query;
-          showResults();
-        } else if (entry.type === 'page') {
-          loadPage(entry.url);
-        }
-      }
-    }
-
     // -------- SAYFA YÜKLENİNCE --------
     window.onload = function() {
       // Adres çubuğuna odaklanma
       const addrInput = document.getElementById('addressInput');
       if (addrInput) addrInput.value = 'https://www.professorcatsearch.com';
+      
+      // whiskerAIData kontrolü
+      if (typeof whiskerAIData === 'undefined') {
+        console.warn('whisker_ai_data.js yüklenemedi veya whiskerAIData tanımlı değil.');
+      } else {
+        console.log(`Whisker AI Data yüklendi: ${whiskerAIData.length} örnek`);
+      }
     };
   </script>
  </body>
