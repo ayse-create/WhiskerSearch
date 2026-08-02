@@ -1,12 +1,9 @@
 <!doctype html>
 <html lang="tr">
- <head>
+<head>
   <meta charset="UTF-8" />
-  <meta name="google-site-verification" content="hPq_WPZAvU4KE1qqk9TOxsd2XuAZEduUX5T1LQYAd-A" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="İnternette dolaşmanın yeni, sıradışı bir yolu. WhiskerSearch'te her gezinti farklı bir deneyim vaat ediyor... ya da belki etmiyor? Dene ve gör.">
   <title>WhiskerSearch🐱🔎</title>
-  <link rel="icon" href="images/whiskersearch-tatli-arama.ico" type="image/x-icon" />
   <style>
     * {
       margin: 0;
@@ -429,6 +426,9 @@
       color: #333;
     }
 
+    /* ============================================================ */
+    /* 📸 GÖRSELLER GRİD - RANDOM 10 TANE */
+    /* ============================================================ */
     .images-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -440,14 +440,15 @@
     .image-item {
       aspect-ratio: 1;
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-      border-radius: 8px;
+      border-radius: 12px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: all 0.3s;
-      border: 2px solid transparent;
+      border: 3px solid transparent;
       overflow: hidden;
+      position: relative;
     }
 
     .image-item img {
@@ -457,16 +458,32 @@
     }
 
     .image-item:hover {
-      transform: scale(1.05);
-      border-color: #cbd0d6;
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
+      transform: scale(1.05) rotate(-2deg);
+      border-color: #D8C7FF;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+
+    .image-item .image-number {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-family: monospace;
     }
 
     .image-placeholder {
-      font-size: 60px;
+      font-size: 50px;
+      opacity: 0.3;
     }
 
-    .videos-container {
+    /* ============================================================ */
+    /* 🎬 VİDEOLAR GRİD - RANDOM 5 TANE */
+    /* ============================================================ */
+    .videos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
       gap: 20px;
@@ -476,7 +493,7 @@
 
     .video-item {
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-      border-radius: 8px;
+      border-radius: 12px;
       aspect-ratio: 16/9;
       display: flex;
       align-items: center;
@@ -485,6 +502,7 @@
       transition: all 0.3s;
       overflow: hidden;
       position: relative;
+      border: 3px solid transparent;
     }
 
     .video-item video {
@@ -494,7 +512,8 @@
     }
 
     .video-item:hover {
-      transform: translateY(-5px);
+      transform: translateY(-5px) scale(1.02);
+      border-color: #D8C7FF;
       box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
     }
 
@@ -506,45 +525,33 @@
       pointer-events: none;
     }
 
-    .shopping-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 20px;
-      padding: 20px 30px;
-      background: white;
+    .video-item .video-number {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-family: monospace;
     }
 
-    .product-item {
-      background: #f9f9f9;
-      border-radius: 8px;
-      padding: 15px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s;
-      border: 2px solid transparent;
+    /* ============================================================ */
+    /* 🛍️ ALIŞVERİŞ */
+    /* ============================================================ */
+    .shop-iframe-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      min-height: 500px;
     }
 
-    .product-item:hover {
-      border-color: #D8C7FF;
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
-    }
-
-    .product-image {
-      font-size: 60px;
-      margin-bottom: 10px;
-    }
-
-    .product-name {
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 8px;
-    }
-
-    .product-price {
-      font-size: 16px;
-      color: #436691;
-      font-weight: 700;
+    .shop-iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      min-height: 500px;
     }
 
     .tab-content {
@@ -556,13 +563,6 @@
     .tab-content.active {
       display: flex;
       flex-direction: column;
-    }
-
-    iframe.page-frame {
-      width: 100%;
-      height: 100%;
-      border: none;
-      flex: 1;
     }
 
     .ai-chat-header {
@@ -634,248 +634,241 @@
       padding: 10px 0;
     }
 
-    .loading-spinner {
-      text-align: center;
-      padding: 40px;
-      color: #999;
-      font-size: 16px;
-    }
-
-    .shop-iframe-container {
-      flex: 1;
-      width: 100%;
-      height: 100%;
-      min-height: 500px;
-    }
-
-    .shop-iframe-container iframe {
-      width: 100%;
-      height: 100%;
+    .refresh-btn {
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+      color: white;
       border: none;
-      min-height: 500px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      font-size: 13px;
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .grid-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 30px 5px 30px;
+      background: white;
+    }
+
+    .grid-header h3 {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .grid-header .count {
+      font-size: 13px;
+      color: #999;
     }
   </style>
- </head>
- <body>
+</head>
+<body>
   <div class="browser-container">
-   <div class="demo-warning">
-    ⚠️ Bu bir demo/tarayıcı simülasyonudur - Eğlence amaçlıdır
-   </div>
+    <div class="demo-warning">
+      ⚠️ Bu bir demo/tarayıcı simülasyonudur - Eğlence amaçlıdır
+    </div>
 
-   <div class="browser-header">
-    <div class="browser-buttons">
-      <button class="nav-button" onclick="goBack()" title="Geri">←</button>
-      <button class="nav-button" onclick="goForward()" title="İleri">→</button>
-      <button class="nav-button" onclick="goHome()" title="Ana Sayfa">↻</button>
+    <div class="browser-header">
+      <div class="browser-buttons">
+        <button class="nav-button" onclick="goBack()" title="Geri">←</button>
+        <button class="nav-button" onclick="goForward()" title="İleri">→</button>
+        <button class="nav-button" onclick="goHome()" title="Ana Sayfa">↻</button>
+      </div>
+      <div class="address-bar">
+        <span class="address-bar-icon">🔒</span>
+        <input type="text" id="addressInput" value="https://ayse-create.github.io/WhiskerSearch" placeholder="URL girin..." onfocus="this.select()" onkeypress="handleAddress(event)" />
+      </div>
     </div>
-    <div class="address-bar">
-      <span class="address-bar-icon">🔒</span>
-      <input type="text" id="addressInput" value="https://ayse-create.github.io/WhiskerSearch" placeholder="URL girin..." onfocus="this.select()" onkeypress="handleAddress(event)" />
-    </div>
-   </div>
 
-   <div class="browser-content" id="browserContent">
-    <div class="search-page">
-     <div class="search-logo">
-      <img src="1.png" alt="WhiskerSearch Logo" />
-     </div>
-     <div class="search-box">
-       <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'te ara..." onkeypress="handleSearch(event)" />
-       <button class="search-button" onclick="performSearch()">Ara</button>
-     </div>
+    <div class="browser-content" id="browserContent">
+      <div class="search-page">
+        <div class="search-logo">
+          <img src="1.png" alt="WhiskerSearch Logo" />
+        </div>
+        <div class="search-box">
+          <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'te ara..." onkeypress="handleSearch(event)" />
+          <button class="search-button" onclick="performSearch()">Ara</button>
+        </div>
+      </div>
     </div>
-   </div>
   </div>
 
   <div class="alert-overlay" id="alertOverlay" style="display: none;">
-   <div class="alert-box">
-    <div class="alert-icon">🐱</div>
-    <div class="alert-title">WhiskerSearch uyarısı!</div>
-    <div class="alert-message">Bu arama sonuçları WhiskerSearch tarafından işlenmiştir. Devam etmek için tıklayın.</div>
-    <button class="alert-button" onclick="confirmAlert()">Devam Et</button>
-   </div>
+    <div class="alert-box">
+      <div class="alert-icon">🐱</div>
+      <div class="alert-title">WhiskerSearch uyarısı!</div>
+      <div class="alert-message">Bu arama sonuçları WhiskerSearch tarafından işlenmiştir. Devam etmek için tıklayın.</div>
+      <button class="alert-button" onclick="confirmAlert()">Devam Et</button>
+    </div>
   </div>
 
   <script src="whisker_ai_data.js"></script>
 
   <script>
     // ================================================================
-    // 🔑 API KONFİGÜRASYONU - KENDİ API'LERİNİZ
+    // ⚙️ KONFİGÜRASYON
     // ================================================================
-    const API_CONFIG = {
-      // Görsel API - 24 görsel
-      images: {
-        url: 'http://localhost:3000/api/cats',
-        randomEndpoint: '/random',
-        key: 'sk_test_benimilkanahtarim123'
-      },
-      // Video API - 9 video
-      videos: {
-        url: 'http://localhost:3000/api/videos',
-        randomEndpoint: '/random',
-        key: 'sk_test_video_anahtarim123'
-      },
-      // WhiskerShop Mini
-      shop: {
-        url: 'https://ayse-create.github.io/WhiskerShopMini'
-      }
+    const CONFIG = {
+      totalImages: 24,      // 1.png'den 24.png'ye
+      totalVideos: 9,       // 1.mp4'den 9.mp4'ye
+      imagesToShow: 10,     // Her seferinde 10 görsel göster
+      videosToShow: 5,      // Her seferinde 5 video göster
+      imagePath: 'images/', // Görsel klasörü
+      videoPath: 'videos/'  // Video klasörü
     };
 
     // ================================================================
-    // 📸 GÖRSELLERİ API'DEN ÇEK
+    // 🎲 RANDOM SAYI ÜRETİCİ
     // ================================================================
-    async function loadImagesFromAPI() {
-      try {
-        const response = await fetch(`${API_CONFIG.images.url}?api_key=${API_CONFIG.images.key}`);
-        if (!response.ok) throw new Error('Görsel listesi alınamadı');
-        const data = await response.json();
-        return data.images || [];
-      } catch (error) {
-        console.warn('Görsel API hatası:', error);
-        return [];
+    function getRandomNumbers(count, max) {
+      const numbers = [];
+      const available = Array.from({ length: max }, (_, i) => i + 1);
+      
+      for (let i = 0; i < Math.min(count, max); i++) {
+        const randomIndex = Math.floor(Math.random() * available.length);
+        numbers.push(available[randomIndex]);
+        available.splice(randomIndex, 1);
       }
-    }
-
-    async function getRandomImage() {
-      try {
-        const response = await fetch(`${API_CONFIG.images.url}${API_CONFIG.images.randomEndpoint}?api_key=${API_CONFIG.images.key}`);
-        if (!response.ok) throw new Error('Rastgele görsel alınamadı');
-        const blob = await response.blob();
-        return URL.createObjectURL(blob);
-      } catch (error) {
-        console.warn('Rastgele görsel hatası:', error);
-        return null;
-      }
+      
+      return numbers;
     }
 
     // ================================================================
-    // 🎬 VİDEOLARI API'DEN ÇEK
+    // 📸 RANDOM GÖRSELLERİ OLUŞTUR
     // ================================================================
-    async function loadVideosFromAPI() {
-      try {
-        const response = await fetch(`${API_CONFIG.videos.url}?api_key=${API_CONFIG.videos.key}`);
-        if (!response.ok) throw new Error('Video listesi alınamadı');
-        const data = await response.json();
-        return data.videos || [];
-      } catch (error) {
-        console.warn('Video API hatası:', error);
-        return [];
+    function buildRandomImages() {
+      const randomNumbers = getRandomNumbers(CONFIG.imagesToShow, CONFIG.totalImages);
+      
+      return `
+        <div class="grid-header">
+          <h3>🐱 Rastgele Kediler</h3>
+          <div>
+            <span class="count">${randomNumbers.length} / ${CONFIG.totalImages} görsel</span>
+            <button class="refresh-btn" onclick="refreshImages()">🔄 Yenile</button>
+          </div>
+        </div>
+        <div class="images-grid">
+          ${randomNumbers.map(num => `
+            <div class="image-item" onclick="openImage(${num})" title="Kedi ${num}">
+              <img src="${CONFIG.imagePath}${num}.png" 
+                   alt="Kedi ${num}" 
+                   loading="lazy"
+                   onerror="this.parentElement.innerHTML='<span class=\\'image-placeholder\\'>🐱</span><span class=\\'image-number\\'>#${num}</span>'">
+              <span class="image-number">#${num}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // ================================================================
+    // 🎬 RANDOM VİDEOLARI OLUŞTUR
+    // ================================================================
+    function buildRandomVideos() {
+      const randomNumbers = getRandomNumbers(CONFIG.videosToShow, CONFIG.totalVideos);
+      
+      return `
+        <div class="grid-header">
+          <h3>🎬 Rastgele Videolar</h3>
+          <div>
+            <span class="count">${randomNumbers.length} / ${CONFIG.totalVideos} video</span>
+            <button class="refresh-btn" onclick="refreshVideos()">🔄 Yenile</button>
+          </div>
+        </div>
+        <div class="videos-grid">
+          ${randomNumbers.map(num => `
+            <div class="video-item" onclick="openVideo(${num})" title="Video ${num}">
+              <video src="${CONFIG.videoPath}${num}.mp4" 
+                     muted 
+                     loop 
+                     preload="metadata"
+                     onmouseover="this.play()"
+                     onmouseout="this.pause(); this.currentTime=0;"
+                     onerror="this.parentElement.innerHTML='<span class=\\'video-play-icon\\'>🎬</span><span class=\\'video-number\\'>#${num}</span>'">
+              </video>
+              <span class="video-play-icon">▶️</span>
+              <span class="video-number">#${num}</span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // ================================================================
+    // 🔄 YENİLEME FONKSİYONLARI
+    // ================================================================
+    function refreshImages() {
+      const container = document.getElementById('imagesContainer');
+      if (container) {
+        container.innerHTML = buildRandomImages();
       }
     }
 
-    async function getRandomVideo() {
-      try {
-        const response = await fetch(`${API_CONFIG.videos.url}${API_CONFIG.videos.randomEndpoint}?api_key=${API_CONFIG.videos.key}`);
-        if (!response.ok) throw new Error('Rastgele video alınamadı');
-        const blob = await response.blob();
-        return URL.createObjectURL(blob);
-      } catch (error) {
-        console.warn('Rastgele video hatası:', error);
-        return null;
+    function refreshVideos() {
+      const container = document.getElementById('videosContainer');
+      if (container) {
+        container.innerHTML = buildRandomVideos();
       }
     }
 
     // ================================================================
-    // 🏪 ALIŞVERİŞ - WhiskerShopMini
+    // 🖱️ TIKLAMA İŞLEMLERİ
+    // ================================================================
+    function openImage(num) {
+      const url = `${CONFIG.imagePath}${num}.png`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    function openVideo(num) {
+      const url = `${CONFIG.videoPath}${num}.mp4`;
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+
+    // ================================================================
+    // 🏪 ALIŞVERİŞ
     // ================================================================
     function loadShop() {
-      const shopUrl = API_CONFIG.shop.url;
       return `
         <div class="shop-iframe-container">
-          <iframe src="${shopUrl}" 
+          <iframe src="https://ayse-create.github.io/WhiskerShopMini" 
+                  style="width:100%; height:100%; min-height:500px; border:none;"
                   sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
                   loading="lazy"
-                  allow="autoplay; encrypted-media"
-                  title="WhiskerShop Mini">
+                  allow="autoplay; encrypted-media">
           </iframe>
         </div>
       `;
     }
 
     // ================================================================
-    // 📊 TAB İÇERİKLERİNİ OLUŞTURMA
+    // 📊 SONUÇLARI GÖSTER (GÜNCELLENMİŞ)
     // ================================================================
-    function buildImagesGrid(images) {
-      if (!images || images.length === 0) {
-        return `
-          <div class="loading-spinner">
-            <div>🐱 Görseller yükleniyor...</div>
-            <div style="font-size: 12px; color: #999; margin-top: 10px;">API'den çekiliyor: ${API_CONFIG.images.url}</div>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="images-grid">
-          ${images.map(img => `
-            <div class="image-item" onclick="openImage('${img.filename}')">
-              <img src="${API_CONFIG.images.url}/${encodeURIComponent(img.filename)}?api_key=${API_CONFIG.images.key}" 
-                   alt="${img.filename}" 
-                   loading="lazy"
-                   onerror="this.parentElement.innerHTML='<span class=\\'image-placeholder\\'>🐱</span>'">
-            </div>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    function buildVideosGrid(videos) {
-      if (!videos || videos.length === 0) {
-        return `
-          <div class="loading-spinner">
-            <div>🎬 Videolar yükleniyor...</div>
-            <div style="font-size: 12px; color: #999; margin-top: 10px;">API'den çekiliyor: ${API_CONFIG.videos.url}</div>
-          </div>
-        `;
-      }
-
-      return `
-        <div class="videos-container">
-          ${videos.map(video => `
-            <div class="video-item" onclick="openVideo('${video.filename}')">
-              <video src="${API_CONFIG.videos.url}/${encodeURIComponent(video.filename)}?api_key=${API_CONFIG.videos.key}" 
-                     muted 
-                     loop 
-                     preload="metadata"
-                     onmouseover="this.play()"
-                     onmouseout="this.pause(); this.currentTime=0;"
-                     onerror="this.parentElement.innerHTML='<span class=\\'video-play-icon\\'>🎬</span>'">
-              </video>
-              <span class="video-play-icon">▶️</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
-    }
-
-    // ================================================================
-    // 🖱️ TIKLAMA İŞLEMLERİ
-    // ================================================================
-    function openImage(filename) {
-      const url = `${API_CONFIG.images.url}/${encodeURIComponent(filename)}?api_key=${API_CONFIG.images.key}`;
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-
-    function openVideo(filename) {
-      const url = `${API_CONFIG.videos.url}/${encodeURIComponent(filename)}?api_key=${API_CONFIG.videos.key}`;
-      window.open(url, '_blank', 'noopener,noreferrer');
-    }
-
-    // ================================================================
-    // 🔄 SONUÇLARI GÖSTER (GÜNCELLENMİŞ)
-    // ================================================================
-    let cachedImages = [];
-    let cachedVideos = [];
+    let lastSearchQuery = '';
+    let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
+    let history = [];
+    let historyIndex = -1;
+    const ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
 
     function showResults() {
       const content = document.getElementById('browserContent');
-      const query = lastSearchQuery;
+      const query = lastSearchQuery || 'kedi';
 
       content.innerHTML = `
-        <div style="display: flex; align-items: center; padding: 20px 30px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0;">
-          <div class="search-box" style="max-width: 600px; margin: 0;">
+        <div style="display: flex; align-items: center; padding: 20px 30px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0; flex-wrap: wrap; gap: 10px;">
+          <div class="search-box" style="max-width: 500px; margin: 0; flex: 1;">
             <input type="text" class="search-input" value="${query}" onkeypress="handleSearch(event)" style="max-width: none;" />
             <button class="search-button" onclick="performSearch()">Ara</button>
+          </div>
+          <div style="font-size: 13px; color: #999;">
+            🐱 ${CONFIG.totalImages} görsel · 🎬 ${CONFIG.totalVideos} video
           </div>
         </div>
 
@@ -893,36 +886,36 @@
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
                 <div class="result-url">whiskersearch.com › arama › ${query}</div>
-                <div class="result-title">WhiskerSearch'ın En İyi Sonucu</div>
-                <div class="result-description">WhiskerSearch sizin için özel olarak seçtiği bu kaynağı incelemenizi tavsiye eder.</div>
+                <div class="result-title">🐱 WhiskerSearch Karakter Kedisi</div>
+                <div class="result-description">WhiskerSearch'ın özel koleksiyonundan sevimli bir kedi karakteri!</div>
               </div>
             </div>
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
-                <div class="result-url">whiskersearch.com › sonuç › ${query}</div>
-                <div class="result-title">Başka Bir WhiskerSearch Önerisi</div>
-                <div class="result-description">WhiskerSearch'ın dış dünyaya bakışını sizin de deneyimlemenizi çok isterim.</div>
+                <div class="result-url">whiskersearch.com › video › ${query}</div>
+                <div class="result-title">🎬 Kedi Videosu</div>
+                <div class="result-description">WhiskerSearch özel arşivinden komik bir kedi videosu.</div>
               </div>
             </div>
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
-                <div class="result-url">whiskersearch.com › tavsiye › ${query}</div>
-                <div class="result-title">WhiskerSearch'ın Özel Seçimi</div>
-                <div class="result-description">Bu bağlantı WhiskerSearch tarafından titizlikle incelendi ve onaylandı!</div>
+                <div class="result-url">whiskersearch.com › oyuncak › ${query}</div>
+                <div class="result-title">🧸 Kedi Oyuncakları</div>
+                <div class="result-description">WhiskerSearch mağazasından sevimli kedi oyuncakları.</div>
               </div>
             </div>
           </div>
         </div>
 
         <div id="images-content" class="tab-content">
-          <div id="imagesGridContainer">
-            <div class="loading-spinner">🐱 Görseller yükleniyor...</div>
+          <div id="imagesContainer">
+            ${buildRandomImages()}
           </div>
         </div>
 
         <div id="videos-content" class="tab-content">
-          <div id="videosGridContainer">
-            <div class="loading-spinner">🎬 Videolar yükleniyor...</div>
+          <div id="videosContainer">
+            ${buildRandomVideos()}
           </div>
         </div>
 
@@ -951,25 +944,6 @@
       history.push({ type: 'results', query: query });
       historyIndex = history.length - 1;
 
-      // Görselleri yükle
-      loadImagesFromAPI().then(images => {
-        cachedImages = images;
-        const container = document.getElementById('imagesGridContainer');
-        if (container) {
-          container.innerHTML = buildImagesGrid(images);
-        }
-      });
-
-      // Videoları yükle
-      loadVideosFromAPI().then(videos => {
-        cachedVideos = videos;
-        const container = document.getElementById('videosGridContainer');
-        if (container) {
-          container.innerHTML = buildVideosGrid(videos);
-        }
-      });
-
-      // AI Modunu yükle
       loadChats();
       if (Object.keys(chats).length === 0) {
         newChat();
@@ -986,9 +960,43 @@
     }
 
     // ================================================================
-    // 🐱 WHISKER AI DATA İLE GERÇEK CEVAP SİSTEMİ
+    // 🔄 TAB GEÇİŞİ (GÜNCELLENMİŞ)
     // ================================================================
+    function switchTab(tabName) {
+      const tabs = document.querySelectorAll('.tab');
+      const contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      
+      const tabMap = { 
+        'all': 'Tümü', 
+        'images': 'Görseller', 
+        'videos': 'Videolar', 
+        'shopping': 'Alışveriş', 
+        'ai': 'AI Modu' 
+      };
+      
+      const activeTab = Array.from(tabs).find(t => t.textContent.includes(tabMap[tabName]));
+      if (activeTab) activeTab.classList.add('active');
+      
+      const content = document.getElementById(`${tabName}-content`);
+      if (content) content.classList.add('active');
 
+      if (tabName === 'ai') {
+        loadChats();
+        if (Object.keys(chats).length === 0) {
+          newChat();
+        } else {
+          const keys = Object.keys(chats);
+          loadChat(keys[keys.length - 1]);
+        }
+        updateHistoryUI();
+      }
+    }
+
+    // ================================================================
+    // 🐱 WHISKER AI (whisker_ai_data.js'den)
+    // ================================================================
     function getWhiskerAIResponse(userMessage) {
       if (typeof whiskerAIData === 'undefined' || !Array.isArray(whiskerAIData) || whiskerAIData.length === 0) {
         return 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen daha sonra tekrar deneyin. 😿';
@@ -999,37 +1007,18 @@
         return 'Bir şey yazmadınız. Size nasıl yardımcı olabilirim? 😊';
       }
 
-      const generalResponses = {
-        'merhaba': 'Merhaba! Size nasıl yardımcı olabilirim? 😊',
-        'selam': 'Selam! Hoş geldiniz. Size nasıl yardımcı olabilirim? 🐱',
-        'teşekkürler': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
-        'sağol': 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏',
-        'iyi günler': 'İyi günler! Size yardımcı olmaktan mutluluk duyarım. ☀️'
-      };
-
-      const statusResponses = {
-        'iyiyim': 'Ne güzel! İyi olmanıza çok sevindim. Size nasıl yardımcı olabilirim? 😊',
-        'kötüyüm': 'Üzgünüm duyduğuma. Size nasıl yardımcı olabilirim? Belki konuşmak iyi gelir. 🐱',
-        'fena değil': 'Fena değil olmanız iyi. Size nasıl yardımcı olabilirim? 😺',
-        'çok iyiyim': 'Harika! Çok iyi olmanıza sevindim. Size nasıl yardımcı olabilirim? 🎉'
-      };
-
-      if (cleanMsg.includes('nasılsın') || cleanMsg.includes('nasıl sın') || cleanMsg.includes('naber')) {
+      // Basit yanıtlar
+      if (cleanMsg.includes('nasılsın') || cleanMsg.includes('naber')) {
         return 'Ben bir yapay zeka asistanıyım, her zaman iyiyim! Siz nasılsınız? 😺';
       }
-
-      for (const [key, response] of Object.entries(statusResponses)) {
-        if (cleanMsg.includes(key) || cleanMsg === key) {
-          return response;
-        }
+      if (cleanMsg === 'merhaba' || cleanMsg === 'selam') {
+        return 'Merhaba! Size nasıl yardımcı olabilirim? 😊';
+      }
+      if (cleanMsg.includes('teşekkür')) {
+        return 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏';
       }
 
-      for (const [key, response] of Object.entries(generalResponses)) {
-        if (cleanMsg.includes(key)) {
-          return response;
-        }
-      }
-
+      // whiskerAIData içinde arama
       let bestMatch = null;
       let bestScore = 0;
 
@@ -1045,11 +1034,6 @@
         const words = cleanMsg.split(/\s+/);
         for (const word of words) {
           if (word.length > 2 && instruction.includes(word)) score += 10;
-        }
-
-        const brands = ['whiskerhub', 'whiskersearch', 'whiskershop', 'whiskercalc', 'cat-desktop', 'whiskerterminal'];
-        for (const brand of brands) {
-          if (cleanMsg.includes(brand) && instruction.includes(brand)) score += 20;
         }
 
         if (score > bestScore) {
@@ -1074,33 +1058,19 @@
     function loadChats() {
       try {
         const saved = localStorage.getItem('whisker_chats');
-        if (saved) {
-          chats = JSON.parse(saved);
-        } else {
-          chats = {};
-        }
-      } catch (e) {
-        chats = {};
-      }
+        if (saved) chats = JSON.parse(saved);
+        else chats = {};
+      } catch (e) { chats = {}; }
     }
 
     function saveChats() {
-      try {
-        localStorage.setItem('whisker_chats', JSON.stringify(chats));
-      } catch (e) {
-        console.warn('Chat kaydedilemedi:', e);
-      }
+      try { localStorage.setItem('whisker_chats', JSON.stringify(chats)); } catch (e) {}
     }
 
     function getCurrentChatId() {
       if (!currentChatId || !chats[currentChatId]) {
         currentChatId = 'chat_' + Date.now();
-        chats[currentChatId] = {
-          id: currentChatId,
-          messages: [],
-          created: new Date().toISOString(),
-          title: 'Yeni Sohbet'
-        };
+        chats[currentChatId] = { id: currentChatId, messages: [], created: new Date().toISOString(), title: 'Yeni Sohbet' };
         saveChats();
       }
       return currentChatId;
@@ -1122,14 +1092,12 @@
         const container = document.getElementById('aiMessages');
         if (!container) return;
         container.innerHTML = '';
-        
         chats[chatId].messages.forEach(msg => {
           const div = document.createElement('div');
           div.className = `message ${msg.role}`;
           div.innerHTML = `<div class="message-bubble">${msg.content}</div>`;
           container.appendChild(div);
         });
-        
         container.scrollTop = container.scrollHeight;
         updateHistoryUI();
       }
@@ -1137,21 +1105,15 @@
 
     function newChat() {
       currentChatId = 'chat_' + Date.now();
-      chats[currentChatId] = {
-        id: currentChatId,
-        messages: [],
-        created: new Date().toISOString(),
-        title: 'Yeni Sohbet'
-      };
+      chats[currentChatId] = { id: currentChatId, messages: [], created: new Date().toISOString(), title: 'Yeni Sohbet' };
       saveChats();
-      
       const container = document.getElementById('aiMessages');
       if (!container) return;
       container.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: center; height: 100%; flex-direction: column; gap: 20px;">
-          <div style="font-size: 80px;">🤖</div>
-          <div style="font-size: 32px; font-weight: 700; color: #333;">WhiskerAI</div>
-          <div style="font-size: 16px; color: #666; max-width: 400px; text-align: center;">Yeni bir sohbete başladınız. Bir soru sorun!</div>
+        <div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:20px;">
+          <div style="font-size:80px;">🤖</div>
+          <div style="font-size:32px;font-weight:700;color:#333;">WhiskerAI</div>
+          <div style="font-size:16px;color:#666;max-width:400px;text-align:center;">Yeni bir sohbete başladınız. Bir soru sorun!</div>
         </div>
       `;
       updateHistoryUI();
@@ -1162,11 +1124,8 @@
         delete chats[chatId];
         saveChats();
         const keys = Object.keys(chats);
-        if (keys.length > 0) {
-          loadChat(keys[keys.length - 1]);
-        } else {
-          newChat();
-        }
+        if (keys.length > 0) loadChat(keys[keys.length - 1]);
+        else newChat();
         updateHistoryUI();
       }
     }
@@ -1174,27 +1133,23 @@
     function updateHistoryUI() {
       const container = document.getElementById('chatHistoryList');
       if (!container) return;
-      
       const keys = Object.keys(chats);
       if (keys.length === 0) {
         container.innerHTML = '<div class="no-history">Henüz sohbet yok</div>';
         return;
       }
-      
       container.innerHTML = keys.map(key => {
         const chat = chats[key];
         const isActive = key === currentChatId;
         return `<div class="history-item ${isActive ? 'active' : ''}" onclick="loadChat('${key}')">
           ${chat.title}
-          <span onclick="event.stopPropagation(); deleteChat('${key}')" style="margin-left: 8px; color: #ff6b6b; cursor: pointer;">✕</span>
+          <span onclick="event.stopPropagation(); deleteChat('${key}')" style="margin-left:8px;color:#ff6b6b;cursor:pointer;">✕</span>
         </div>`;
       }).join('');
     }
 
     function handleAIMessage(event) {
-      if (event.key === 'Enter') {
-        sendAIMessage();
-      }
+      if (event.key === 'Enter') sendAIMessage();
     }
 
     async function sendAIMessage() {
@@ -1207,12 +1162,10 @@
       if (!container) return;
 
       saveMessage('user', message);
-
       const userDiv = document.createElement('div');
       userDiv.className = 'message user';
       userDiv.innerHTML = `<div class="message-bubble">${message}</div>`;
       container.appendChild(userDiv);
-
       input.value = '';
 
       const aiDiv = document.createElement('div');
@@ -1233,12 +1186,6 @@
     // ================================================================
     // 📌 ANA FONKSİYONLAR
     // ================================================================
-    let lastSearchQuery = '';
-    let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
-    let history = [];
-    let historyIndex = -1;
-    const ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
-
     function handleAddress(event) {
       if (event.key === 'Enter') {
         const input = document.getElementById('addressInput');
@@ -1248,19 +1195,14 @@
           url = 'https://' + url;
         }
         const isOwn = ownSites.some(site => url.includes(site));
-        if (isOwn) {
-          loadPage(url);
-        } else {
-          window.open(url, '_blank', 'noopener,noreferrer');
-        }
+        if (isOwn) loadPage(url);
+        else window.open(url, '_blank', 'noopener,noreferrer');
       }
     }
 
     function loadPage(url) {
       const content = document.getElementById('browserContent');
-      content.innerHTML = `
-        <iframe class="page-frame" src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
-      `;
+      content.innerHTML = `<iframe class="page-frame" src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>`;
       document.getElementById('addressInput').value = url;
       history.push({ type: 'page', url: url });
       historyIndex = history.length - 1;
@@ -1270,9 +1212,7 @@
       const content = document.getElementById('browserContent');
       content.innerHTML = `
         <div class="search-page">
-          <div class="search-logo">
-            <img src="1.png" alt="WhiskerSearch Logo" />
-          </div>
+          <div class="search-logo"><img src="1.png" alt="WhiskerSearch Logo" /></div>
           <div class="search-box">
             <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'te ara..." onkeypress="handleSearch(event)" />
             <button class="search-button" onclick="performSearch()">Ara</button>
@@ -1288,12 +1228,8 @@
       if (historyIndex > 0) {
         historyIndex--;
         const entry = history[historyIndex];
-        if (entry.type === 'results') {
-          lastSearchQuery = entry.query;
-          showResults();
-        } else if (entry.type === 'page') {
-          loadPage(entry.url);
-        }
+        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); } 
+        else if (entry.type === 'page') loadPage(entry.url);
       }
     }
 
@@ -1301,19 +1237,13 @@
       if (historyIndex < history.length - 1) {
         historyIndex++;
         const entry = history[historyIndex];
-        if (entry.type === 'results') {
-          lastSearchQuery = entry.query;
-          showResults();
-        } else if (entry.type === 'page') {
-          loadPage(entry.url);
-        }
+        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); } 
+        else if (entry.type === 'page') loadPage(entry.url);
       }
     }
 
     function handleSearch(event) {
-      if (event.key === 'Enter') {
-        performSearch();
-      }
+      if (event.key === 'Enter') performSearch();
     }
 
     function performSearch() {
@@ -1340,31 +1270,9 @@
       window.open(canvaLink, '_blank', 'noopener,noreferrer');
     }
 
-    function switchTab(tabName) {
-      const tabs = document.querySelectorAll('.tab');
-      const contents = document.querySelectorAll('.tab-content');
-      tabs.forEach(t => t.classList.remove('active'));
-      contents.forEach(c => c.classList.remove('active'));
-      
-      const tabMap = { 'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 'shopping': 'Alışveriş', 'ai': 'AI Modu' };
-      const activeTab = Array.from(tabs).find(t => t.textContent.includes(tabMap[tabName]));
-      if (activeTab) activeTab.classList.add('active');
-      
-      const content = document.getElementById(`${tabName}-content`);
-      if (content) content.classList.add('active');
-
-      if (tabName === 'ai') {
-        loadChats();
-        if (Object.keys(chats).length === 0) {
-          newChat();
-        } else {
-          const keys = Object.keys(chats);
-          loadChat(keys[keys.length - 1]);
-        }
-        updateHistoryUI();
-      }
-    }
-
+    // ================================================================
+    // 🚀 BAŞLAT
+    // ================================================================
     window.onload = function() {
       const addrInput = document.getElementById('addressInput');
       if (addrInput) addrInput.value = 'https://ayse-create.github.io/WhiskerSearch';
@@ -1372,10 +1280,9 @@
         console.log(`✅ Whisker AI Data yüklendi: ${whiskerAIData.length} örnek`);
       }
       loadChats();
-      if (Object.keys(chats).length === 0) {
-        newChat();
-      }
+      if (Object.keys(chats).length === 0) newChat();
+      console.log(`🐱 ${CONFIG.totalImages} görsel, 🎬 ${CONFIG.totalVideos} video hazır!`);
     };
   </script>
- </body>
+</body>
 </html>
