@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WhiskerAI - Yapay Zeka Asistanı</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            background: #f0f0f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        .container {
+            height: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* HEADER */
+        .header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            flex-shrink: 0;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            color: #333;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .new-chat-btn {
+            padding: 8px 16px;
+            background: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        /* CHAT HISTORY */
+        .chat-history {
+            padding: 10px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            flex-shrink: 0;
+            min-height: 48px;
+            align-items: center;
+        }
+
+        .history-item {
+            padding: 6px 14px;
+            background: white;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #333;
+            border: 1px solid #e0e0e0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .history-item:hover {
+            background: #e8e8e8;
+            border-color: #D8C7FF;
+        }
+
+        .history-item.active {
+            background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+            color: #333;
+            border-color: #D8C7FF;
+        }
+
+        .history-delete {
+            cursor: pointer;
+            color: #ff6b6b;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+
+        .history-delete:hover {
+            opacity: 1;
+        }
+
+        .no-history {
+            color: #999;
+            font-size: 13px;
+        }
+
+        /* MESSAGES */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message.ai {
+            justify-content: flex-start;
+        }
+
+        .message-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            word-wrap: break-word;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+            color: #333;
+        }
+
+        .message.ai .message-bubble {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        /* EMPTY STATE */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 20px;
+            color: #666;
+        }
+
+        .empty-state .icon {
+            font-size: 80px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .empty-state h2 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            max-width: 400px;
+            text-align: center;
+            color: #666;
+        }
+
+        /* INPUT AREA */
+        .input-area {
+            padding: 16px 24px 20px;
+            border-top: 1px solid #e0e0e0;
+            background: white;
+            display: flex;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-area input:focus {
+            border-color: #D8C7FF;
+        }
+
+        .send-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
+            color: #333;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* TYPING INDICATOR */
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            background: #f0f0f0;
+            border-radius: 16px;
+            align-self: flex-start;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: #999;
+            border-radius: 50%;
+            animation: typing 1.2s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 600px) {
+            .container { max-width: 100%; }
+            .header h1 { font-size: 17px; }
+            .message-bubble { font-size: 13px; max-width: 85%; }
+            .input-area { padding: 12px 16px 16px; }
+            .input-area input { font-size: 13px; padding: 10px 14px; }
+            .send-btn { padding: 10px 16px; font-size: 13px; }
+            .chat-history { padding: 8px 12px; min-height: 40px; }
+            .history-item { font-size: 11px; padding: 4px 10px; }
+            .messages { padding: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>🤖 WhiskerAI</h1>
+            <div class="header-actions">
+                <button class="new-chat-btn" onclick="newChat()">➕ Yeni Sohbet</button>
+            </div>
+        </div>
+
+        <!-- CHAT HISTORY -->
+        <div class="chat-history" id="chatHistory">
+            <span class="no-history">Henüz sohbet yok</span>
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="messages" id="messages">
+            <div class="empty-state">
+                <div class="icon">🤖</div>
+                <h2>WhiskerAI</h2>
+                <p>Size nasıl yardımcı olabilirim?<br>WhiskerHub hakkında soru sorabilirsiniz.</p>
+            </div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-area">
+            <input type="text" id="userInput" placeholder="Bir soru sor..." onkeypress="handleKey(event)" />
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Gönder</button>
+        </div>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- 📦 JS DOSYASINDAN ÇAĞIR (whisker_ai_data.js) -->
+    <!-- ============================================================ -->
+    <script src="whisker_ai_data.js"></script>
+    
+    <!-- ============================================================ -->
+    <!-- 📦 ANA JS KODU -->
+    <!-- ============================================================ -->
+    <script>
+        // ================================================================
+        // 💬 CHAT YÖNETİMİ
+        // ================================================================
+        let chats = {};
+        let currentChatId = null;
+
+        // ================================================================
+        // 📦 WHISKER AI YANIT (whiskerAIData'dan eşleştirme)
+        // ================================================================
+        function getWhiskerAIResponse(userMessage) {
+            if (typeof whiskerAIData === 'undefined' || !Array.isArray(whiskerAIData) || whiskerAIData.length === 0) {
+                return 'Üzgünüm, şu anda yanıt veremiyorum. Lütfen daha sonra tekrar deneyin. 😿';
+            }
+
+            const cleanMsg = userMessage.toLowerCase().trim();
+            if (!cleanMsg) {
+                return 'Bir şey yazmadınız. Size nasıl yardımcı olabilirim? 😊';
+            }
+
+            // Basit selamlaşmalar
+            if (cleanMsg.includes('nasılsın') || cleanMsg.includes('naber')) {
+                return 'Ben bir yapay zeka asistanıyım, her zaman iyiyim! Siz nasılsınız? 😺';
+            }
+            if (cleanMsg === 'merhaba' || cleanMsg === 'selam' || cleanMsg === 'hey') {
+                return 'Merhaba! Size nasıl yardımcı olabilirim? 😊';
+            }
+            if (cleanMsg.includes('teşekkür')) {
+                return 'Rica ederim! Ne zaman yardımcı olabilirim, buradayım. 🙏';
+            }
+
+            // whiskerAIData içinde en iyi eşleşmeyi bul
+            let bestMatch = null;
+            let bestScore = 0;
+
+            for (const item of whiskerAIData) {
+                if (!item.instruction || !item.output) continue;
+                const instruction = item.instruction.toLowerCase();
+                let score = 0;
+
+                // Tam eşleşme
+                if (instruction === cleanMsg) score += 100;
+                else if (cleanMsg.includes(instruction)) score += 50;
+                else if (instruction.includes(cleanMsg)) score += 30;
+
+                // Kelime bazlı eşleşme
+                const words = cleanMsg.split(/\s+/);
+                for (const word of words) {
+                    if (word.length > 2 && instruction.includes(word)) score += 10;
+                }
+
+                if (score > bestScore) {
+                    bestScore = score;
+                    bestMatch = item.output;
+                }
+            }
+
+            if (bestMatch && bestScore >= 10) {
+                return bestMatch;
+            }
+
+            return 'Üzgünüm, bu konuda henüz bir bilgim yok. WhiskerHub hakkında farklı bir şey sormak ister misiniz? 😿';
+        }
+
+        // ================================================================
+        // 💬 CHAT FONKSİYONLARI
+        // ================================================================
+        function loadChats() {
+            try {
+                const saved = localStorage.getItem('whisker_chats');
+                if (saved) chats = JSON.parse(saved);
+                else chats = {};
+            } catch (e) { chats = {}; }
+        }
+
+        function saveChats() {
+            try { localStorage.setItem('whisker_chats', JSON.stringify(chats)); } catch (e) {}
+        }
+
+        function getCurrentChatId() {
+            if (!currentChatId || !chats[currentChatId]) {
+                currentChatId = 'chat_' + Date.now();
+                chats[currentChatId] = { 
+                    id: currentChatId, 
+                    messages: [], 
+                    created: new Date().toISOString(), 
+                    title: 'Yeni Sohbet' 
+                };
+                saveChats();
+            }
+            return currentChatId;
+        }
+
+        function saveMessage(role, content) {
+            const chatId = getCurrentChatId();
+            chats[chatId].messages.push({ role, content, timestamp: new Date().toISOString() });
+            if (chats[chatId].messages.length === 1 && role === 'user') {
+                const title = content.length > 30 ? content.substring(0, 30) + '...' : content;
+                chats[chatId].title = title;
+            }
+            saveChats();
+        }
+
+        function loadChat(chatId) {
+            if (chats[chatId]) {
+                currentChatId = chatId;
+                const container = document.getElementById('messages');
+                if (!container) return;
+                container.innerHTML = '';
+                
+                if (chats[chatId].messages.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <div class="icon">🤖</div>
+                            <h2>WhiskerAI</h2>
+                            <p>Size nasıl yardımcı olabilirim?<br>WhiskerHub hakkında soru sorabilirsiniz.</p>
+                        </div>
+                    `;
+                } else {
+                    chats[chatId].messages.forEach(msg => {
+                        const div = document.createElement('div');
+                        div.className = `message ${msg.role}`;
+                        div.innerHTML = `<div class="message-bubble">${msg.content}</div>`;
+                        container.appendChild(div);
+                    });
+                }
+                container.scrollTop = container.scrollHeight;
+                updateHistoryUI();
+            }
+        }
+
+        function newChat() {
+            currentChatId = 'chat_' + Date.now();
+            chats[currentChatId] = { 
+                id: currentChatId, 
+                messages: [], 
+                created: new Date().toISOString(), 
+                title: 'Yeni Sohbet' 
+            };
+            saveChats();
+            const container = document.getElementById('messages');
+            if (!container) return;
+            container.innerHTML = `
+                <div class="empty-state">
+                    <div class="icon">🤖</div>
+                    <h2>WhiskerAI</h2>
+                    <p>Yeni bir sohbete başladınız.<br>Bir soru sorun!</p>
+                </div>
+            `;
+            updateHistoryUI();
+            document.getElementById('userInput').focus();
+        }
+
+        function deleteChat(chatId) {
+            if (chats[chatId]) {
+                delete chats[chatId];
+                saveChats();
+                const keys = Object.keys(chats);
+                if (keys.length > 0) loadChat(keys[keys.length - 1]);
+                else newChat();
+                updateHistoryUI();
+            }
+        }
+
+        function updateHistoryUI() {
+            const container = document.getElementById('chatHistory');
+            if (!container) return;
+            const keys = Object.keys(chats);
+            if (keys.length === 0) {
+                container.innerHTML = '<span class="no-history">Henüz sohbet yok</span>';
+                return;
+            }
+            container.innerHTML = keys.map(key => {
+                const chat = chats[key];
+                const isActive = key === currentChatId;
+                return `<div class="history-item ${isActive ? 'active' : ''}" onclick="loadChat('${key}')">
+                    ${chat.title}
+                    <span class="history-delete" onclick="event.stopPropagation(); deleteChat('${key}')">✕</span>
+                </div>`;
+            }).join('');
+        }
+
+        // ================================================================
+        // 📨 MESAJ GÖNDERME
+        // ================================================================
+        function handleKey(event) {
+            if (event.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            if (!input) return;
+            const message = input.value.trim();
+            if (!message) return;
+
+            const container = document.getElementById('messages');
+            if (!container) return;
+
+            // Empty state'i temizle
+            const emptyState = container.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+
+            // Kullanıcı mesajını ekle
+            saveMessage('user', message);
+            const userDiv = document.createElement('div');
+            userDiv.className = 'message user';
+            userDiv.innerHTML = `<div class="message-bubble">${message}</div>`;
+            container.appendChild(userDiv);
+            input.value = '';
+
+            // Typing indicator
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'typing-indicator';
+            typingDiv.innerHTML = `<span></span><span></span><span></span>`;
+            container.appendChild(typingDiv);
+            container.scrollTop = container.scrollHeight;
+
+            // Send butonunu devre dışı bırak
+            document.getElementById('sendBtn').disabled = true;
+
+            // AI yanıtı
+            setTimeout(() => {
+                // Typing indicator'ı kaldır
+                typingDiv.remove();
+
+                const response = getWhiskerAIResponse(message);
+                saveMessage('ai', response);
+                
+                const aiDiv = document.createElement('div');
+                aiDiv.className = 'message ai';
+                aiDiv.innerHTML = `<div class="message-bubble">${response}</div>`;
+                container.appendChild(aiDiv);
+                container.scrollTop = container.scrollHeight;
+                
+                updateHistoryUI();
+                document.getElementById('sendBtn').disabled = false;
+            }, 500);
+        }
+
+        // ================================================================
+        // 🚀 BAŞLAT
+        // ================================================================
+        window.onload = function() {
+            loadChats();
+            const keys = Object.keys(chats);
+            if (keys.length > 0) {
+                loadChat(keys[keys.length - 1]);
+            } else {
+                newChat();
+            }
+            document.getElementById('userInput').focus();
+        };
+    </script>
+</body>
+</html>
