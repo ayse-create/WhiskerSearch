@@ -726,10 +726,15 @@
         min-height: 500px;
       }
     }
+
+    /* IFRAME MODU - Arama barı gizli */
+    .iframe-mode .browser-header {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
-  <div class="browser-container">
+  <div class="browser-container" id="browserContainer">
     <div class="demo-warning">
       ⚠️ Bu bir demo/tarayıcı simülasyonudur - Eğlence amaçlıdır
     </div>
@@ -772,7 +777,7 @@
     // ================================================================
     // KONFİGÜRASYON
     // ================================================================
-    const CONFIG = {
+    var CONFIG = {
       totalImages: 24,
       totalVideos: 9,
       imagesToShow: 10,
@@ -781,30 +786,21 @@
       videoPath: 'videos/'
     };
 
-    // Tüm Whisker siteleri (sonuçlarda görünecek)
-    const whiskerSites = [
-      { name: 'WhiskerShop', url: 'https://ayse-create.github.io/WhiskerShop', icon: '🛍️', desc: 'Kedi alışveriş marketi' },
-      { name: 'WhiskerCalc', url: 'https://ayse-create.github.io/WhiskerCalc', icon: '🧮', desc: 'Kedi hesap makinesi' },
-      { name: 'WhiskerAI', url: 'https://ayse-create.github.io/WhiskerAI', icon: '🤖', desc: 'Yapay zeka asistanı' },
-      { name: 'WhiskerAirport', url: 'https://ayse-create.github.io/WhiskerAirport', icon: '✈️', desc: 'Kedi havaalanı' },
-      { name: 'WhiskerStagram', url: 'https://ayse-create.github.io/WhiskerStagram', icon: '📸', desc: 'Kedi sosyal medyası' },
-      { name: 'Cat-Desktop', url: 'https://ayse-create.github.io/WhiskerSearch/Cat-Desktop', icon: '🖥️', desc: 'Kedi masaüstü' }
-    ];
-
-    let lastSearchQuery = '';
-    let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
-    let history = [];
-    let historyIndex = -1;
-    const ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
+    var lastSearchQuery = '';
+    var canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
+    var history = [];
+    var historyIndex = -1;
+    var ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
 
     // ================================================================
     // YARDIMCI FONKSİYONLAR
     // ================================================================
     function getRandomNumbers(count, max) {
-      const numbers = [];
-      const available = Array.from({ length: max }, (_, i) => i + 1);
-      for (let i = 0; i < Math.min(count, max); i++) {
-        const randomIndex = Math.floor(Math.random() * available.length);
+      var numbers = [];
+      var available = [];
+      for (var i = 1; i <= max; i++) available.push(i);
+      for (var j = 0; j < Math.min(count, max); j++) {
+        var randomIndex = Math.floor(Math.random() * available.length);
         numbers.push(available[randomIndex]);
         available.splice(randomIndex, 1);
       }
@@ -815,186 +811,123 @@
     // GÖRSEL ve VİDEO OLUŞTURUCULAR
     // ================================================================
     function buildRandomImages() {
-      const randomNumbers = getRandomNumbers(CONFIG.imagesToShow, CONFIG.totalImages);
-      return `
-        <div class="grid-header">
-          <h3>🐱 Rastgele Kediler</h3>
-          <div>
-            <span class="count">${randomNumbers.length} / ${CONFIG.totalImages} görsel</span>
-            <button class="refresh-btn" onclick="refreshImages()">🔄 Yenile</button>
-          </div>
-        </div>
-        <div class="images-grid">
-          ${randomNumbers.map(num => `
-            <div class="image-item" onclick="openImage(${num})" title="Kedi ${num}">
-              <img src="${CONFIG.imagePath}${num}.png" alt="Kedi ${num}" loading="lazy"
-                   onerror="this.parentElement.innerHTML='<span class=\\'image-placeholder\\'>🐱</span><span class=\\'image-number\\'>#${num}</span>'">
-              <span class="image-number">#${num}</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
+      var randomNumbers = getRandomNumbers(CONFIG.imagesToShow, CONFIG.totalImages);
+      var html = '<div class="grid-header"><h3>🐱 Rastgele Kediler</h3><div><span class="count">' + randomNumbers.length + ' / ' + CONFIG.totalImages + ' görsel</span><button class="refresh-btn" onclick="refreshImages()">🔄 Yenile</button></div></div><div class="images-grid">';
+      for (var i = 0; i < randomNumbers.length; i++) {
+        var num = randomNumbers[i];
+        html += '<div class="image-item" onclick="openImage(' + num + ')" title="Kedi ' + num + '">';
+        html += '<img src="' + CONFIG.imagePath + num + '.png" alt="Kedi ' + num + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=\\\\\\'image-placeholder\\\\\\'>🐱</span><span class=\\\\\\'image-number\\\\\\'>#' + num + '</span>\'">';
+        html += '<span class="image-number">#' + num + '</span></div>';
+      }
+      html += '</div>';
+      return html;
     }
 
     function buildRandomVideos() {
-      const randomNumbers = getRandomNumbers(CONFIG.videosToShow, CONFIG.totalVideos);
-      return `
-        <div class="grid-header">
-          <h3>🎬 Rastgele Videolar</h3>
-          <div>
-            <span class="count">${randomNumbers.length} / ${CONFIG.totalVideos} video</span>
-            <button class="refresh-btn" onclick="refreshVideos()">🔄 Yenile</button>
-          </div>
-        </div>
-        <div class="videos-grid">
-          ${randomNumbers.map(num => `
-            <div class="video-item" onclick="openVideo(${num})" title="Video ${num}">
-              <video src="${CONFIG.videoPath}${num}.mp4" muted loop preload="metadata"
-                     onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;"
-                     onerror="this.parentElement.innerHTML='<span class=\\'video-play-icon\\'>🎬</span><span class=\\'video-number\\'>#${num}</span>'">
-              </video>
-              <span class="video-play-icon">▶️</span>
-              <span class="video-number">#${num}</span>
-            </div>
-          `).join('')}
-        </div>
-      `;
+      var randomNumbers = getRandomNumbers(CONFIG.videosToShow, CONFIG.totalVideos);
+      var html = '<div class="grid-header"><h3>🎬 Rastgele Videolar</h3><div><span class="count">' + randomNumbers.length + ' / ' + CONFIG.totalVideos + ' video</span><button class="refresh-btn" onclick="refreshVideos()">🔄 Yenile</button></div></div><div class="videos-grid">';
+      for (var i = 0; i < randomNumbers.length; i++) {
+        var num = randomNumbers[i];
+        html += '<div class="video-item" onclick="openVideo(' + num + ')" title="Video ' + num + '">';
+        html += '<video src="' + CONFIG.videoPath + num + '.mp4" muted loop preload="metadata" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;" onerror="this.parentElement.innerHTML=\'<span class=\\\\\\'video-play-icon\\\\\\'>🎬</span><span class=\\\\\\'video-number\\\\\\'>#' + num + '</span>\'"></video>';
+        html += '<span class="video-play-icon">▶️</span>';
+        html += '<span class="video-number">#' + num + '</span></div>';
+      }
+      html += '</div>';
+      return html;
     }
 
     function refreshImages() {
-      const container = document.getElementById('imagesContainer');
+      var container = document.getElementById('imagesContainer');
       if (container) container.innerHTML = buildRandomImages();
     }
 
     function refreshVideos() {
-      const container = document.getElementById('videosContainer');
+      var container = document.getElementById('videosContainer');
       if (container) container.innerHTML = buildRandomVideos();
     }
 
     function openImage(num) {
-      window.open(`${CONFIG.imagePath}${num}.png`, '_blank', 'noopener,noreferrer');
+      window.open(CONFIG.imagePath + num + '.png', '_blank', 'noopener,noreferrer');
     }
 
     function openVideo(num) {
-      window.open(`${CONFIG.videoPath}${num}.mp4`, '_blank', 'noopener,noreferrer');
+      window.open(CONFIG.videoPath + num + '.mp4', '_blank', 'noopener,noreferrer');
     }
 
     // ================================================================
     // IFRAME İÇERİĞİ - SADECE GERİ BUTONU
     // ================================================================
     function loadIframeFullscreen(src, title) {
-      return `
-        <div class="iframe-fullscreen">
-          <div class="iframe-nav">
-            <button class="back-btn" onclick="goHome()">← Geri</button>
-            <span class="iframe-title">${title}</span>
-          </div>
-          <iframe src="${src}" 
-                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
-                  loading="lazy"
-                  allow="autoplay; encrypted-media; fullscreen">
-          </iframe>
-        </div>
-      `;
+      return '<div class="iframe-fullscreen"><div class="iframe-nav"><button class="back-btn" onclick="goHome()">← Geri</button><span class="iframe-title">' + title + '</span></div><iframe src="' + src + '" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" loading="lazy" allow="autoplay; encrypted-media; fullscreen"></iframe></div>';
     }
 
     // ================================================================
     // SONUÇLARI GÖSTER
     // ================================================================
     function showResults() {
-      const content = document.getElementById('browserContent');
-      const query = lastSearchQuery || 'kedi';
+      var content = document.getElementById('browserContent');
+      var query = lastSearchQuery || 'kedi';
 
-      // Sonuçları oluştur - 1 ana sonuç + Whisker siteleri
-      let resultsHTML = `
-        <div class="results-container">
-          <div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "${query}" için</div>
-          
-          <!-- Ana sonuç -->
-          <div class="result-item" onclick="openResult()">
-            <div class="result-content">
-              <div class="result-url">whiskersearch.com › arama › ${query}</div>
-              <div class="result-title">🐱 WhiskerSearch'ün En Özel Seçimi</div>
-              <div class="result-description">WhiskerSearch bu sonucu titizlikle seçti!</div>
-            </div>
-          </div>
-      `;
+      var resultsHTML = '<div class="results-container"><div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "' + query + '" için</div>';
+      
+      // Ana sonuç
+      resultsHTML += '<div class="result-item" onclick="openResult()"><div class="result-content"><div class="result-url">whiskersearch.com › arama › ' + query + '</div><div class="result-title">🐱 WhiskerSearch\'ün En Özel Seçimi</div><div class="result-description">WhiskerSearch bu sonucu titizlikle seçti!</div></div></div>';
+      
+      // Whisker siteleri (5 site)
+      var sites = [
+        { name: 'WhiskerShop', url: 'https://ayse-create.github.io/WhiskerShopMini', icon: '🛍️', desc: 'Kedi alışveriş marketi' },
+        { name: 'WhiskerCalc', url: 'https://ayse-create.github.io/WhiskerCalcMini', icon: '🧮', desc: 'Kedi hesap makinesi' },
+        { name: 'WhiskerAI', url: 'https://ayse-create.github.io/WhiskerAI', icon: '🤖', desc: 'Yapay zeka asistanı' },
+        { name: 'WhiskerAirport', url: 'https://ayse-create.github.io/WhiskerAirport', icon: '✈️', desc: 'Kedi havaalanı' },
+        { name: 'WhiskerStagram', url: 'https://ayse-create.github.io/WhiskerStagram', icon: '📸', desc: 'Kedi sosyal medyası' }
+      ];
 
-      // Whisker sitelerini sonuç olarak ekle
-      whiskerSites.forEach(function(site) {
-        resultsHTML += `
-          <div class="result-item" onclick="window.open('${site.url}', '_blank', 'noopener,noreferrer')">
-            <div class="result-content">
-              <div class="result-url">${site.url.replace('https://', '')}</div>
-              <div class="result-title">${site.icon} ${site.name}</div>
-              <div class="result-description">${site.desc}</div>
-            </div>
-          </div>
-        `;
-      });
+      for (var i = 0; i < sites.length; i++) {
+        var site = sites[i];
+        resultsHTML += '<div class="result-item" onclick="window.open(\'' + site.url + '\', \'_blank\', \'noopener,noreferrer\')"><div class="result-content"><div class="result-url">' + site.url.replace('https://', '') + '</div><div class="result-title">' + site.icon + ' ' + site.name + '</div><div class="result-description">' + site.desc + '</div></div></div>';
+      }
 
-      resultsHTML += `</div>`;
+      resultsHTML += '</div>';
 
-      content.innerHTML = `
-        <div class="results-header">
-          <div class="search-box">
-            <input type="text" class="search-input" value="${query}" onkeypress="handleSearch(event)" />
-            <button class="search-button" onclick="performSearch()">Ara</button>
-          </div>
-          <div class="info-text">🐱 ${CONFIG.totalImages} görsel · 🎬 ${CONFIG.totalVideos} video</div>
-        </div>
-
-        <div class="tabs-container">
-          <button class="tab active" onclick="switchTab('all')">🔍 Tümü</button>
-          <button class="tab" onclick="switchTab('images')">🖼️ Görseller</button>
-          <button class="tab" onclick="switchTab('videos')">🎬 Videolar</button>
-          <button class="tab" onclick="switchTab('shopping')">🛍️ Alışveriş</button>
-          <button class="tab" onclick="switchTab('calculator')">🧮 Hesap Makinesi</button>
-          <button class="tab" onclick="switchTab('ai')">🤖 WhiskerAI</button>
-          <button class="tab" onclick="switchTab('airport')">✈️ Airport</button>
-          <button class="tab" onclick="switchTab('stagram')">📸 Stagram</button>
-          <button class="tab" onclick="switchTab('desktop')">🖥️ Desktop</button>
-        </div>
-
-        <div id="all-content" class="tab-content active">
-          ${resultsHTML}
-        </div>
-
-        <div id="images-content" class="tab-content">
-          <div id="imagesContainer">${buildRandomImages()}</div>
-        </div>
-
-        <div id="videos-content" class="tab-content">
-          <div id="videosContainer">${buildRandomVideos()}</div>
-        </div>
-
-        <div id="shopping-content" class="tab-content">
-          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerShop', '🛍️ WhiskerShop')}
-        </div>
-
-        <div id="calculator-content" class="tab-content">
-          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerCalc', '🧮 WhiskerCalc')}
-        </div>
-
-        <div id="ai-content" class="tab-content">
-          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerAI', '🤖 WhiskerAI')}
-        </div>
-
-        <div id="airport-content" class="tab-content">
-          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerAirport', '✈️ WhiskerAirport')}
-        </div>
-
-        <div id="stagram-content" class="tab-content">
-          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerStagram', '📸 WhiskerStagram')}
-        </div>
-
-        <div id="desktop-content" class="tab-content">
-          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerSearch/Cat-Desktop', '🖥️ Cat-Desktop')}
-        </div>
-      `;
+      content.innerHTML = 
+        '<div class="results-header"><div class="search-box"><input type="text" class="search-input" value="' + query + '" onkeypress="handleSearch(event)" /><button class="search-button" onclick="performSearch()">Ara</button></div><div class="info-text">🐱 ' + CONFIG.totalImages + ' görsel · 🎬 ' + CONFIG.totalVideos + ' video</div></div>' +
+        '<div class="tabs-container">' +
+          '<button class="tab active" onclick="switchTab(\'all\')">🔍 Tümü</button>' +
+          '<button class="tab" onclick="switchTab(\'images\')">🖼️ Görseller</button>' +
+          '<button class="tab" onclick="switchTab(\'videos\')">🎬 Videolar</button>' +
+          '<button class="tab" onclick="switchTab(\'shopping\')">🛍️ Alışveriş</button>' +
+          '<button class="tab" onclick="switchTab(\'calculator\')">🧮 Hesap Makinesi</button>' +
+          '<button class="tab" onclick="switchTab(\'ai\')">🤖 AI Modu</button>' +
+        '</div>' +
+        '<div id="all-content" class="tab-content active">' + resultsHTML + '</div>' +
+        '<div id="images-content" class="tab-content"><div id="imagesContainer">' + buildRandomImages() + '</div></div>' +
+        '<div id="videos-content" class="tab-content"><div id="videosContainer">' + buildRandomVideos() + '</div></div>' +
+        '<div id="shopping-content" class="tab-content">' + loadIframeFullscreen('https://ayse-create.github.io/WhiskerShopMini', '🛍️ WhiskerShop') + '</div>' +
+        '<div id="calculator-content" class="tab-content">' + loadIframeFullscreen('https://ayse-create.github.io/WhiskerCalcMini', '🧮 WhiskerCalc') + '</div>' +
+        '<div id="ai-content" class="tab-content">' + loadIframeFullscreen('https://ayse-create.github.io/WhiskerAI', '🤖 WhiskerAI') + '</div>';
 
       history.push({ type: 'results', query: query });
       historyIndex = history.length - 1;
+
+      // Iframe modunda header'ı gizle
+      checkIframeMode();
+    }
+
+    // ================================================================
+    // IFRAME MODU KONTROLÜ
+    // ================================================================
+    function checkIframeMode() {
+      var container = document.getElementById('browserContainer');
+      var activeContent = document.querySelector('.tab-content.active');
+      if (activeContent) {
+        var hasIframe = activeContent.querySelector('.iframe-fullscreen');
+        if (hasIframe) {
+          container.classList.add('iframe-mode');
+        } else {
+          container.classList.remove('iframe-mode');
+        }
+      }
     }
 
     // ================================================================
@@ -1003,19 +936,24 @@
     function switchTab(tabName) {
       var tabs = document.querySelectorAll('.tab');
       var contents = document.querySelectorAll('.tab-content');
-      tabs.forEach(function(t) { t.classList.remove('active'); });
-      contents.forEach(function(c) { c.classList.remove('active'); });
+      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+      for (var j = 0; j < contents.length; j++) contents[j].classList.remove('active');
 
-      var tabMap = { 
-        'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 
-        'shopping': 'Alışveriş', 'calculator': 'Hesap Makinesi', 'ai': 'WhiskerAI',
-        'airport': 'Airport', 'stagram': 'Stagram', 'desktop': 'Desktop'
-      };
-      var activeTab = Array.from(tabs).find(function(t) { return t.textContent.includes(tabMap[tabName]); });
+      var tabMap = { 'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 'shopping': 'Alışveriş', 'calculator': 'Hesap Makinesi', 'ai': 'AI Modu' };
+      var activeTab = null;
+      var allTabs = document.querySelectorAll('.tab');
+      for (var k = 0; k < allTabs.length; k++) {
+        if (allTabs[k].textContent.includes(tabMap[tabName])) {
+          activeTab = allTabs[k];
+          break;
+        }
+      }
       if (activeTab) activeTab.classList.add('active');
 
       var content = document.getElementById(tabName + '-content');
       if (content) content.classList.add('active');
+
+      checkIframeMode();
     }
 
     // ================================================================
@@ -1027,7 +965,10 @@
         var url = input.value.trim();
         if (!url) return;
         if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
-        var isOwn = ownSites.some(function(site) { return url.includes(site); });
+        var isOwn = false;
+        for (var i = 0; i < ownSites.length; i++) {
+          if (url.includes(ownSites[i])) { isOwn = true; break; }
+        }
         if (isOwn) loadPage(url);
         else window.open(url, '_blank', 'noopener,noreferrer');
       }
@@ -1043,18 +984,11 @@
 
     function goHome() {
       var content = document.getElementById('browserContent');
-      content.innerHTML = `
-        <div class="search-page">
-          <div class="search-logo"><img src="1.png" alt="WhiskerSearch Logo" /></div>
-          <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'te ara..." onkeypress="handleSearch(event)" />
-            <button class="search-button" onclick="performSearch()">Ara</button>
-          </div>
-        </div>
-      `;
+      content.innerHTML = '<div class="search-page"><div class="search-logo"><img src="1.png" alt="WhiskerSearch Logo" /></div><div class="search-box"><input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch\'te ara..." onkeypress="handleSearch(event)" /><button class="search-button" onclick="performSearch()">Ara</button></div></div>';
       document.getElementById('addressInput').value = 'https://ayse-create.github.io/WhiskerSearch';
       history = [];
       historyIndex = -1;
+      document.getElementById('browserContainer').classList.remove('iframe-mode');
     }
 
     function goBack() {
