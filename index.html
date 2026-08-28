@@ -27,7 +27,6 @@
       background: white;
     }
 
-    /* === UYARI MESAJI - SADECE ANA SAYFA VE SONUÇLARDA === */
     .demo-warning {
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
       color: #ffffff;
@@ -39,7 +38,6 @@
       flex-shrink: 0;
     }
 
-    /* === HEADER - SADECE ANA SAYFA VE SONUÇLARDA === */
     .browser-header {
       background: #f8f9fa;
       border-bottom: 1px solid #e0e0e0;
@@ -132,7 +130,6 @@
       overflow-y: auto;
     }
 
-    /* LOGO - BÜYÜK */
     .search-logo {
       width: 300px;
       max-width: 80%;
@@ -492,8 +489,7 @@
 
     .iframe-fullscreen .iframe-nav {
       padding: 10px 15px;
-      background: #f8f9fa;
-      border-bottom: 1px solid #e0e0e0;
+      background: rgba(0,0,0,0.05);
       flex-shrink: 0;
       display: flex;
       align-items: center;
@@ -607,6 +603,21 @@
     .iframe-mode .browser-header {
       display: none !important;
     }
+    .iframe-mode .tabs-container {
+      display: none !important;
+    }
+    .iframe-mode .results-header {
+      display: none !important;
+    }
+    .iframe-mode .tab-content {
+      display: none !important;
+    }
+    .iframe-mode .tab-content.active {
+      display: flex !important;
+    }
+    .iframe-mode .browser-content {
+      overflow: hidden !important;
+    }
 
     /* === MOBİL === */
     @media (max-width: 600px) {
@@ -631,7 +642,6 @@
         padding: 4px 0;
       }
       
-      /* MOBİLDE LOGO KÜÇÜLÜR AMA YİNE BÜYÜK */
       .search-logo {
         width: 200px;
       }
@@ -794,6 +804,7 @@
     var history = [];
     var historyIndex = -1;
     var ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
+    var isIframeMode = false;
 
     // ================================================================
     // YARDIMCI FONKSİYONLAR
@@ -867,24 +878,25 @@
     // ================================================================
     // IFRAME - TAM EKRAN (SADECE GERİ BUTONU)
     // ================================================================
-    function loadIframeFullscreen(src, title) {
-      return '<div class="iframe-fullscreen"><div class="iframe-nav"><button class="back-btn" onclick="goHome()">← Geri</button></div><iframe src="' + src + '" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" loading="lazy" allow="autoplay; encrypted-media; fullscreen"></iframe></div>';
+    function loadIframeFullscreen(src) {
+      return '<div class="iframe-fullscreen"><div class="iframe-nav"><button class="back-btn" onclick="exitIframeMode()">← Geri</button></div><iframe src="' + src + '" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" loading="lazy" allow="autoplay; encrypted-media; fullscreen"></iframe></div>';
     }
 
     // ================================================================
-    // IFRAME MODU KONTROLÜ
+    // IFRAME MODU - GİR/ÇIK
     // ================================================================
-    function checkIframeMode() {
+    function enterIframeMode() {
       var container = document.getElementById('browserContainer');
-      var activeContent = document.querySelector('.tab-content.active');
-      if (activeContent) {
-        var hasIframe = activeContent.querySelector('.iframe-fullscreen');
-        if (hasIframe) {
-          container.classList.add('iframe-mode');
-        } else {
-          container.classList.remove('iframe-mode');
-        }
-      }
+      container.classList.add('iframe-mode');
+      isIframeMode = true;
+    }
+
+    function exitIframeMode() {
+      var container = document.getElementById('browserContainer');
+      container.classList.remove('iframe-mode');
+      isIframeMode = false;
+      // Sonuç sayfasına dön
+      showResults();
     }
 
     // ================================================================
@@ -928,18 +940,16 @@
         '<div id="all-content" class="tab-content active">' + resultsHTML + '</div>' +
         '<div id="images-content" class="tab-content"><div id="imagesContainer">' + buildRandomImages() + '</div></div>' +
         '<div id="videos-content" class="tab-content"><div id="videosContainer">' + buildRandomVideos() + '</div></div>' +
-        '<div id="shopping-content" class="tab-content">' + loadIframeFullscreen('https://ayse-create.github.io/WhiskerShopMini', '🛍️ WhiskerShop') + '</div>' +
-        '<div id="calculator-content" class="tab-content">' + loadIframeFullscreen('https://ayse-create.github.io/WhiskerCalcMini', '🧮 WhiskerCalc') + '</div>' +
-        '<div id="ai-content" class="tab-content">' + loadIframeFullscreen('https://ayse-create.github.io/WhiskerAI', '🤖 WhiskerAI') + '</div>';
+        '<div id="shopping-content" class="tab-content"></div>' +
+        '<div id="calculator-content" class="tab-content"></div>' +
+        '<div id="ai-content" class="tab-content"></div>';
 
       history.push({ type: 'results', query: query });
       historyIndex = history.length - 1;
-
-      checkIframeMode();
     }
 
     // ================================================================
-    // TAB GEÇİŞİ
+    // TAB GEÇİŞİ - IFRAME MODUNA GEÇ
     // ================================================================
     function switchTab(tabName) {
       var tabs = document.querySelectorAll('.tab');
@@ -978,7 +988,34 @@
         content.classList.add('active');
       }
 
-      checkIframeMode();
+      // Eğer shopping, calculator veya ai ise IFRAME MODUNA GEÇ
+      if (tabName === 'shopping' || tabName === 'calculator' || tabName === 'ai') {
+        var contentDiv = document.getElementById('browserContent');
+        var iframeSrc = '';
+        var iframeTitle = '';
+        
+        if (tabName === 'shopping') {
+          iframeSrc = 'https://ayse-create.github.io/WhiskerShopMini';
+          iframeTitle = '🛍️ WhiskerShop';
+        } else if (tabName === 'calculator') {
+          iframeSrc = 'https://ayse-create.github.io/WhiskerCalcMini';
+          iframeTitle = '🧮 WhiskerCalc';
+        } else if (tabName === 'ai') {
+          iframeSrc = 'https://ayse-create.github.io/WhiskerAI';
+          iframeTitle = '🤖 WhiskerAI';
+        }
+        
+        // Tüm içeriği temizle ve iframe koy
+        contentDiv.innerHTML = '<div class="iframe-fullscreen"><div class="iframe-nav"><button class="back-btn" onclick="exitIframeMode()">← Geri</button></div><iframe src="' + iframeSrc + '" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" loading="lazy" allow="autoplay; encrypted-media; fullscreen" style="flex:1;width:100%;border:none;min-height:400px;"></iframe></div>';
+        
+        // IFRAME MODUNA GEÇ
+        enterIframeMode();
+      } else {
+        // Normal modda, eğer iframe modundaysak çık
+        if (isIframeMode) {
+          exitIframeMode();
+        }
+      }
     }
 
     // ================================================================
@@ -1022,9 +1059,14 @@
       history = [];
       historyIndex = -1;
       document.getElementById('browserContainer').classList.remove('iframe-mode');
+      isIframeMode = false;
     }
 
     function goBack() {
+      if (isIframeMode) {
+        exitIframeMode();
+        return;
+      }
       if (historyIndex > 0) {
         historyIndex--;
         var entry = history[historyIndex];
