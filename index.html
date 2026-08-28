@@ -328,39 +328,6 @@
       flex: 1;
     }
 
-    /* Diğer siteler listesi */
-    .other-sites {
-      margin-top: 10px;
-      padding: 15px;
-      background: #f5f5f5;
-      border-radius: 8px;
-    }
-
-    .other-sites h4 {
-      font-size: 14px;
-      color: #666;
-      margin-bottom: 10px;
-    }
-
-    .other-sites a {
-      display: inline-block;
-      margin: 4px 8px 4px 0;
-      padding: 6px 14px;
-      background: white;
-      border-radius: 20px;
-      color: #436691;
-      text-decoration: none;
-      font-size: 13px;
-      border: 1px solid #e0e0e0;
-      transition: all 0.3s;
-    }
-
-    .other-sites a:hover {
-      background: #436691;
-      color: white;
-      border-color: #436691;
-    }
-
     /* === SEKMELER === */
     .tabs-container {
       display: flex;
@@ -802,6 +769,9 @@
   </div>
 
   <script>
+    // ================================================================
+    // KONFİGÜRASYON
+    // ================================================================
     const CONFIG = {
       totalImages: 24,
       totalVideos: 9,
@@ -811,16 +781,25 @@
       videoPath: 'videos/'
     };
 
-    // Tüm Whisker siteleri
+    // Tüm Whisker siteleri (sonuçlarda görünecek)
     const whiskerSites = [
-      { name: 'WhiskerShop', url: 'https://ayse-create.github.io/WhiskerShop', icon: '🛍️' },
-      { name: 'WhiskerCalc', url: 'https://ayse-create.github.io/WhiskerCalc', icon: '🧮' },
-      { name: 'WhiskerAI', url: 'https://ayse-create.github.io/WhiskerAI', icon: '🤖' },
-      { name: 'WhiskerAirport', url: 'https://ayse-create.github.io/WhiskerAirport', icon: '✈️' },
-      { name: 'WhiskerStagram', url: 'https://ayse-create.github.io/WhiskerStagram', icon: '📸' },
-      { name: 'Cat-Desktop', url: 'https://ayse-create.github.io/WhiskerSearch/Cat-Desktop', icon: '🖥️' }
+      { name: 'WhiskerShop', url: 'https://ayse-create.github.io/WhiskerShop', icon: '🛍️', desc: 'Kedi alışveriş marketi' },
+      { name: 'WhiskerCalc', url: 'https://ayse-create.github.io/WhiskerCalc', icon: '🧮', desc: 'Kedi hesap makinesi' },
+      { name: 'WhiskerAI', url: 'https://ayse-create.github.io/WhiskerAI', icon: '🤖', desc: 'Yapay zeka asistanı' },
+      { name: 'WhiskerAirport', url: 'https://ayse-create.github.io/WhiskerAirport', icon: '✈️', desc: 'Kedi havaalanı' },
+      { name: 'WhiskerStagram', url: 'https://ayse-create.github.io/WhiskerStagram', icon: '📸', desc: 'Kedi sosyal medyası' },
+      { name: 'Cat-Desktop', url: 'https://ayse-create.github.io/WhiskerSearch/Cat-Desktop', icon: '🖥️', desc: 'Kedi masaüstü' }
     ];
 
+    let lastSearchQuery = '';
+    let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
+    let history = [];
+    let historyIndex = -1;
+    const ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
+
+    // ================================================================
+    // YARDIMCI FONKSİYONLAR
+    // ================================================================
     function getRandomNumbers(count, max) {
       const numbers = [];
       const available = Array.from({ length: max }, (_, i) => i + 1);
@@ -832,6 +811,9 @@
       return numbers;
     }
 
+    // ================================================================
+    // GÖRSEL ve VİDEO OLUŞTURUCULAR
+    // ================================================================
     function buildRandomImages() {
       const randomNumbers = getRandomNumbers(CONFIG.imagesToShow, CONFIG.totalImages);
       return `
@@ -916,15 +898,42 @@
       `;
     }
 
-    let lastSearchQuery = '';
-    let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
-    let history = [];
-    let historyIndex = -1;
-    const ownSites = ['ayse-create.github.io', 'professorcatsearch.com', 'whiskersearch.com'];
-
+    // ================================================================
+    // SONUÇLARI GÖSTER
+    // ================================================================
     function showResults() {
       const content = document.getElementById('browserContent');
       const query = lastSearchQuery || 'kedi';
+
+      // Sonuçları oluştur - 1 ana sonuç + Whisker siteleri
+      let resultsHTML = `
+        <div class="results-container">
+          <div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "${query}" için</div>
+          
+          <!-- Ana sonuç -->
+          <div class="result-item" onclick="openResult()">
+            <div class="result-content">
+              <div class="result-url">whiskersearch.com › arama › ${query}</div>
+              <div class="result-title">🐱 WhiskerSearch'ün En Özel Seçimi</div>
+              <div class="result-description">WhiskerSearch bu sonucu titizlikle seçti!</div>
+            </div>
+          </div>
+      `;
+
+      // Whisker sitelerini sonuç olarak ekle
+      whiskerSites.forEach(function(site) {
+        resultsHTML += `
+          <div class="result-item" onclick="window.open('${site.url}', '_blank', 'noopener,noreferrer')">
+            <div class="result-content">
+              <div class="result-url">${site.url.replace('https://', '')}</div>
+              <div class="result-title">${site.icon} ${site.name}</div>
+              <div class="result-description">${site.desc}</div>
+            </div>
+          </div>
+        `;
+      });
+
+      resultsHTML += `</div>`;
 
       content.innerHTML = `
         <div class="results-header">
@@ -948,26 +957,7 @@
         </div>
 
         <div id="all-content" class="tab-content active">
-          <div class="results-container">
-            <div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "${query}" için</div>
-            
-            <!-- Tek sonuç -->
-            <div class="result-item" onclick="openResult()">
-              <div class="result-content">
-                <div class="result-url">whiskersearch.com › arama › ${query}</div>
-                <div class="result-title">🐱 WhiskerSearch'ün En Özel Seçimi</div>
-                <div class="result-description">WhiskerSearch bu sonucu titizlikle seçti!</div>
-              </div>
-            </div>
-
-            <!-- Diğer siteler -->
-            <div class="other-sites">
-              <h4>🐾 Diğer Whisker Siteleri</h4>
-              ${whiskerSites.map(site => `
-                <a href="${site.url}" target="_blank" rel="noopener noreferrer">${site.icon} ${site.name}</a>
-              `).join('')}
-            </div>
-          </div>
+          ${resultsHTML}
         </div>
 
         <div id="images-content" class="tab-content">
@@ -1007,42 +997,123 @@
       historyIndex = history.length - 1;
     }
 
+    // ================================================================
+    // TAB GEÇİŞİ
+    // ================================================================
     function switchTab(tabName) {
-      const tabs = document.querySelectorAll('.tab');
-      const contents = document.querySelectorAll('.tab-content');
-      tabs.forEach(t => t.classList.remove('active'));
-      contents.forEach(c => c.classList.remove('active'));
+      var tabs = document.querySelectorAll('.tab');
+      var contents = document.querySelectorAll('.tab-content');
+      tabs.forEach(function(t) { t.classList.remove('active'); });
+      contents.forEach(function(c) { c.classList.remove('active'); });
 
-      const tabMap = { 
+      var tabMap = { 
         'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 
         'shopping': 'Alışveriş', 'calculator': 'Hesap Makinesi', 'ai': 'WhiskerAI',
         'airport': 'Airport', 'stagram': 'Stagram', 'desktop': 'Desktop'
       };
-      const activeTab = Array.from(tabs).find(t => t.textContent.includes(tabMap[tabName]));
+      var activeTab = Array.from(tabs).find(function(t) { return t.textContent.includes(tabMap[tabName]); });
       if (activeTab) activeTab.classList.add('active');
 
-      const content = document.getElementById(`${tabName}-content`);
+      var content = document.getElementById(tabName + '-content');
       if (content) content.classList.add('active');
     }
 
+    // ================================================================
+    // GEZİNME FONKSİYONLARI
+    // ================================================================
     function handleAddress(event) {
       if (event.key === 'Enter') {
-        const input = document.getElementById('addressInput');
-        let url = input.value.trim();
+        var input = document.getElementById('addressInput');
+        var url = input.value.trim();
         if (!url) return;
         if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
-        const isOwn = ownSites.some(site => url.includes(site));
+        var isOwn = ownSites.some(function(site) { return url.includes(site); });
         if (isOwn) loadPage(url);
         else window.open(url, '_blank', 'noopener,noreferrer');
       }
     }
 
     function loadPage(url) {
-      const content = document.getElementById('browserContent');
-      content.innerHTML = `<iframe class="page-frame" src="${url}" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" style="width:100%;height:100%;border:none;"></iframe>`;
+      var content = document.getElementById('browserContent');
+      content.innerHTML = '<iframe class="page-frame" src="' + url + '" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals" style="width:100%;height:100%;border:none;"></iframe>';
       document.getElementById('addressInput').value = url;
       history.push({ type: 'page', url: url });
       historyIndex = history.length - 1;
     }
 
     function goHome() {
+      var content = document.getElementById('browserContent');
+      content.innerHTML = `
+        <div class="search-page">
+          <div class="search-logo"><img src="1.png" alt="WhiskerSearch Logo" /></div>
+          <div class="search-box">
+            <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'te ara..." onkeypress="handleSearch(event)" />
+            <button class="search-button" onclick="performSearch()">Ara</button>
+          </div>
+        </div>
+      `;
+      document.getElementById('addressInput').value = 'https://ayse-create.github.io/WhiskerSearch';
+      history = [];
+      historyIndex = -1;
+    }
+
+    function goBack() {
+      if (historyIndex > 0) {
+        historyIndex--;
+        var entry = history[historyIndex];
+        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); }
+        else if (entry.type === 'page') loadPage(entry.url);
+      }
+    }
+
+    function goForward() {
+      if (historyIndex < history.length - 1) {
+        historyIndex++;
+        var entry = history[historyIndex];
+        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); }
+        else if (entry.type === 'page') loadPage(entry.url);
+      }
+    }
+
+    // ================================================================
+    // ARAMA ve ALERT
+    // ================================================================
+    function handleSearch(event) {
+      if (event.key === 'Enter') performSearch();
+    }
+
+    function performSearch() {
+      var input = document.getElementById('searchInput');
+      if (!input) return;
+      var query = input.value.trim();
+      if (query) {
+        lastSearchQuery = query;
+        document.getElementById('addressInput').value = 'https://ayse-create.github.io/WhiskerSearch/search?q=' + encodeURIComponent(query);
+        showAlert();
+      }
+    }
+
+    function showAlert() {
+      document.getElementById('alertOverlay').style.display = 'flex';
+    }
+
+    function confirmAlert() {
+      document.getElementById('alertOverlay').style.display = 'none';
+      showResults();
+    }
+
+    function openResult() {
+      window.open(canvaLink, '_blank', 'noopener,noreferrer');
+    }
+
+    // ================================================================
+    // BAŞLAT
+    // ================================================================
+    window.onload = function() {
+      var addrInput = document.getElementById('addressInput');
+      if (addrInput) addrInput.value = 'https://ayse-create.github.io/WhiskerSearch';
+      console.log('🐱 WhiskerSearch hazır!');
+    };
+  </script>
+</body>
+</html>
