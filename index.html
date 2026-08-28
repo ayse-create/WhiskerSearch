@@ -131,8 +131,8 @@
     }
 
     .search-logo {
-      width: 180px;
-      max-width: 60%;
+      width: 220px;
+      max-width: 70%;
       height: auto;
       margin-bottom: 30px;
       display: flex;
@@ -152,7 +152,7 @@
       50% { transform: translateY(-10px); }
     }
 
-    /* === ARAMA KUTUSU - ESKİ HALİ === */
+    /* === ARAMA KUTUSU === */
     .search-box {
       display: flex;
       width: 100%;
@@ -286,7 +286,7 @@
       padding: 20px 15px;
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 15px;
       background: white;
     }
 
@@ -326,6 +326,39 @@
 
     .result-content {
       flex: 1;
+    }
+
+    /* Diğer siteler listesi */
+    .other-sites {
+      margin-top: 10px;
+      padding: 15px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+
+    .other-sites h4 {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .other-sites a {
+      display: inline-block;
+      margin: 4px 8px 4px 0;
+      padding: 6px 14px;
+      background: white;
+      border-radius: 20px;
+      color: #436691;
+      text-decoration: none;
+      font-size: 13px;
+      border: 1px solid #e0e0e0;
+      transition: all 0.3s;
+    }
+
+    .other-sites a:hover {
+      background: #436691;
+      color: white;
+      border-color: #436691;
     }
 
     /* === SEKMELER === */
@@ -420,10 +453,10 @@
       opacity: 0.3;
     }
 
-    /* === VİDEOLAR === */
+    /* === VİDEOLAR - TEK SÜTUN === */
     .videos-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 20px;
       padding: 15px;
       background: white;
@@ -441,6 +474,9 @@
       overflow: hidden;
       position: relative;
       border: 3px solid transparent;
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     .video-item video {
@@ -475,23 +511,53 @@
       font-family: monospace;
     }
 
-    /* === IFRAME KONTEYNERLER === */
-    .iframe-container {
+    /* === IFRAME SAYFALARI - SADECE GERİ BUTONU === */
+    .iframe-fullscreen {
       flex: 1;
       width: 100%;
       height: 100%;
-      min-height: 500px;
       background: white;
       display: flex;
       flex-direction: column;
     }
 
-    .iframe-container iframe {
-      width: 100%;
+    .iframe-fullscreen .iframe-nav {
+      padding: 10px 15px;
+      background: #f8f9fa;
+      border-bottom: 1px solid #e0e0e0;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .iframe-fullscreen .iframe-nav .back-btn {
+      padding: 6px 16px;
+      background: #e8e8e8;
+      border: 1px solid #d0d0d0;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      color: #333;
+      transition: all 0.2s;
+    }
+
+    .iframe-fullscreen .iframe-nav .back-btn:hover {
+      background: #d0d0d0;
+    }
+
+    .iframe-fullscreen .iframe-nav .iframe-title {
+      font-size: 14px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .iframe-fullscreen iframe {
       flex: 1;
+      width: 100%;
       border: none;
       display: block;
-      min-height: 500px;
+      min-height: 400px;
     }
 
     .tab-content {
@@ -595,7 +661,7 @@
       }
       
       .search-logo {
-        width: 120px;
+        width: 160px;
       }
       
       .search-input {
@@ -631,9 +697,12 @@
       }
       
       .videos-grid {
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 15px;
         padding: 10px;
+      }
+      
+      .video-item {
+        max-width: 100%;
       }
       
       .results-header {
@@ -656,18 +725,14 @@
         font-size: 16px;
       }
       
-      .iframe-container {
-        min-height: 400px;
-      }
-      
-      .iframe-container iframe {
-        min-height: 400px;
+      .iframe-fullscreen iframe {
+        min-height: 300px;
       }
     }
 
     @media (max-width: 400px) {
       .search-logo {
-        width: 100px;
+        width: 120px;
       }
       
       .images-grid {
@@ -675,16 +740,8 @@
         padding: 8px;
       }
       
-      .videos-grid {
-        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-      }
-      
-      .iframe-container {
-        min-height: 300px;
-      }
-      
-      .iframe-container iframe {
-        min-height: 300px;
+      .iframe-fullscreen iframe {
+        min-height: 250px;
       }
     }
 
@@ -698,11 +755,7 @@
         flex: 1;
       }
       
-      .iframe-container {
-        min-height: 500px;
-      }
-      
-      .iframe-container iframe {
+      .iframe-fullscreen iframe {
         min-height: 500px;
       }
     }
@@ -714,7 +767,7 @@
       ⚠️ Bu bir demo/tarayıcı simülasyonudur - Eğlence amaçlıdır
     </div>
 
-    <div class="browser-header">
+    <div class="browser-header" id="mainHeader">
       <div class="browser-buttons">
         <button class="nav-button" onclick="goBack()" title="Geri">←</button>
         <button class="nav-button" onclick="goForward()" title="İleri">→</button>
@@ -757,6 +810,16 @@
       imagePath: 'images/',
       videoPath: 'videos/'
     };
+
+    // Tüm Whisker siteleri
+    const whiskerSites = [
+      { name: 'WhiskerShop', url: 'https://ayse-create.github.io/WhiskerShop', icon: '🛍️' },
+      { name: 'WhiskerCalc', url: 'https://ayse-create.github.io/WhiskerCalc', icon: '🧮' },
+      { name: 'WhiskerAI', url: 'https://ayse-create.github.io/WhiskerAI', icon: '🤖' },
+      { name: 'WhiskerAirport', url: 'https://ayse-create.github.io/WhiskerAirport', icon: '✈️' },
+      { name: 'WhiskerStagram', url: 'https://ayse-create.github.io/WhiskerStagram', icon: '📸' },
+      { name: 'Cat-Desktop', url: 'https://ayse-create.github.io/WhiskerSearch/Cat-Desktop', icon: '🖥️' }
+    ];
 
     function getRandomNumbers(count, max) {
       const numbers = [];
@@ -834,12 +897,16 @@
       window.open(`${CONFIG.videoPath}${num}.mp4`, '_blank', 'noopener,noreferrer');
     }
 
-    function loadIframeContent(src, title) {
+    // ================================================================
+    // IFRAME İÇERİĞİ - SADECE GERİ BUTONU
+    // ================================================================
+    function loadIframeFullscreen(src, title) {
       return `
-        <div style="padding: 10px 15px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0; flex-shrink: 0;">
-          <h3 style="font-size: 16px; color: #333;">${title}</h3>
-        </div>
-        <div class="iframe-container">
+        <div class="iframe-fullscreen">
+          <div class="iframe-nav">
+            <button class="back-btn" onclick="goHome()">← Geri</button>
+            <span class="iframe-title">${title}</span>
+          </div>
           <iframe src="${src}" 
                   sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
                   loading="lazy"
@@ -875,11 +942,16 @@
           <button class="tab" onclick="switchTab('shopping')">🛍️ Alışveriş</button>
           <button class="tab" onclick="switchTab('calculator')">🧮 Hesap Makinesi</button>
           <button class="tab" onclick="switchTab('ai')">🤖 WhiskerAI</button>
+          <button class="tab" onclick="switchTab('airport')">✈️ Airport</button>
+          <button class="tab" onclick="switchTab('stagram')">📸 Stagram</button>
+          <button class="tab" onclick="switchTab('desktop')">🖥️ Desktop</button>
         </div>
 
         <div id="all-content" class="tab-content active">
           <div class="results-container">
             <div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "${query}" için</div>
+            
+            <!-- Tek sonuç -->
             <div class="result-item" onclick="openResult()">
               <div class="result-content">
                 <div class="result-url">whiskersearch.com › arama › ${query}</div>
@@ -887,19 +959,13 @@
                 <div class="result-description">WhiskerSearch bu sonucu titizlikle seçti!</div>
               </div>
             </div>
-            <div class="result-item" onclick="openResult()">
-              <div class="result-content">
-                <div class="result-url">whiskersearch.com › tavsiye › ${query}</div>
-                <div class="result-title">😽 WhiskerSearch'ün Tavsiye Ettiği Sonuç</div>
-                <div class="result-description">WhiskerSearch bu sonucu inceledi ve onayladı.</div>
-              </div>
-            </div>
-            <div class="result-item" onclick="openResult()">
-              <div class="result-content">
-                <div class="result-url">whiskersearch.com › öneri › ${query}</div>
-                <div class="result-title">😺 Bir Diğer WhiskerSearch Önerisi</div>
-                <div class="result-description">WhiskerSearch bunu sana öneriyor.</div>
-              </div>
+
+            <!-- Diğer siteler -->
+            <div class="other-sites">
+              <h4>🐾 Diğer Whisker Siteleri</h4>
+              ${whiskerSites.map(site => `
+                <a href="${site.url}" target="_blank" rel="noopener noreferrer">${site.icon} ${site.name}</a>
+              `).join('')}
             </div>
           </div>
         </div>
@@ -913,15 +979,27 @@
         </div>
 
         <div id="shopping-content" class="tab-content">
-          ${loadIframeContent('https://ayse-create.github.io/WhiskerShopMini/', '🛍️ WhiskerShop')}
+          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerShop', '🛍️ WhiskerShop')}
         </div>
 
         <div id="calculator-content" class="tab-content">
-          ${loadIframeContent('https://ayse-create.github.io/WhiskerCalcMini', '🧮 WhiskerCalc')}
+          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerCalc', '🧮 WhiskerCalc')}
         </div>
 
         <div id="ai-content" class="tab-content">
-          ${loadIframeContent('https://ayse-create.github.io/WhiskerAI', '🤖 WhiskerAI')}
+          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerAI', '🤖 WhiskerAI')}
+        </div>
+
+        <div id="airport-content" class="tab-content">
+          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerAirport', '✈️ WhiskerAirport')}
+        </div>
+
+        <div id="stagram-content" class="tab-content">
+          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerStagram', '📸 WhiskerStagram')}
+        </div>
+
+        <div id="desktop-content" class="tab-content">
+          ${loadIframeFullscreen('https://ayse-create.github.io/WhiskerSearch/Cat-Desktop', '🖥️ Cat-Desktop')}
         </div>
       `;
 
@@ -935,7 +1013,11 @@
       tabs.forEach(t => t.classList.remove('active'));
       contents.forEach(c => c.classList.remove('active'));
 
-      const tabMap = { 'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 'shopping': 'Alışveriş', 'calculator': 'Hesap Makinesi', 'ai': 'WhiskerAI' };
+      const tabMap = { 
+        'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 
+        'shopping': 'Alışveriş', 'calculator': 'Hesap Makinesi', 'ai': 'WhiskerAI',
+        'airport': 'Airport', 'stagram': 'Stagram', 'desktop': 'Desktop'
+      };
       const activeTab = Array.from(tabs).find(t => t.textContent.includes(tabMap[tabName]));
       if (activeTab) activeTab.classList.add('active');
 
@@ -964,72 +1046,3 @@
     }
 
     function goHome() {
-      const content = document.getElementById('browserContent');
-      content.innerHTML = `
-        <div class="search-page">
-          <div class="search-logo"><img src="1.png" alt="WhiskerSearch Logo" /></div>
-          <div class="search-box">
-            <input type="text" class="search-input" id="searchInput" placeholder="WhiskerSearch'te ara..." onkeypress="handleSearch(event)" />
-            <button class="search-button" onclick="performSearch()">Ara</button>
-          </div>
-        </div>
-      `;
-      document.getElementById('addressInput').value = 'https://ayse-create.github.io/WhiskerSearch';
-      history = [];
-      historyIndex = -1;
-    }
-
-    function goBack() {
-      if (historyIndex > 0) {
-        historyIndex--;
-        const entry = history[historyIndex];
-        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); }
-        else if (entry.type === 'page') loadPage(entry.url);
-      }
-    }
-
-    function goForward() {
-      if (historyIndex < history.length - 1) {
-        historyIndex++;
-        const entry = history[historyIndex];
-        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); }
-        else if (entry.type === 'page') loadPage(entry.url);
-      }
-    }
-
-    function handleSearch(event) {
-      if (event.key === 'Enter') performSearch();
-    }
-
-    function performSearch() {
-      const input = document.getElementById('searchInput');
-      if (!input) return;
-      const query = input.value.trim();
-      if (query) {
-        lastSearchQuery = query;
-        document.getElementById('addressInput').value = `https://ayse-create.github.io/WhiskerSearch/search?q=${encodeURIComponent(query)}`;
-        showAlert();
-      }
-    }
-
-    function showAlert() {
-      document.getElementById('alertOverlay').style.display = 'flex';
-    }
-
-    function confirmAlert() {
-      document.getElementById('alertOverlay').style.display = 'none';
-      showResults();
-    }
-
-    function openResult() {
-      window.open(canvaLink, '_blank', 'noopener,noreferrer');
-    }
-
-    window.onload = function() {
-      const addrInput = document.getElementById('addressInput');
-      if (addrInput) addrInput.value = 'https://ayse-create.github.io/WhiskerSearch';
-      console.log(`🐱 ${CONFIG.totalImages} görsel, 🎬 ${CONFIG.totalVideos} video hazır!`);
-    };
-  </script>
-</body>
-</html>
