@@ -117,7 +117,7 @@
       min-height: 0;
     }
 
-    /* === ANA SAYFA (ESKİ HALİ) === */
+    /* === ANA SAYFA === */
     .search-page {
       height: 100%;
       width: 100%;
@@ -152,6 +152,7 @@
       50% { transform: translateY(-10px); }
     }
 
+    /* === ARAMA KUTUSU - ESKİ HALİ === */
     .search-box {
       display: flex;
       width: 100%;
@@ -624,7 +625,6 @@
         font-size: 13px;
       }
       
-      /* Görseller 2'li sütun kalıyor */
       .images-grid {
         gap: 10px;
         padding: 10px;
@@ -668,23 +668,6 @@
     @media (max-width: 400px) {
       .search-logo {
         width: 100px;
-      }
-      
-      .search-box {
-        flex-wrap: wrap;
-      }
-      
-      .search-input {
-        border-radius: 50px;
-        border-bottom-right-radius: 0;
-        border-bottom-left-radius: 0;
-      }
-      
-      .search-button {
-        border-radius: 50px;
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        width: 100%;
       }
       
       .images-grid {
