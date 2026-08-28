@@ -5,15 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
   <title>WhiskerSearch🐱🔎</title>
   <style>
-    /* === MEVCUT STILLER (SADECE GEREKENLER EKLENDİ) === */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     html, body {
       height: 100%;
       width: 100%;
       background: #f0f0f0;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      overflow: hidden; /* Taşmayı engelle */
+      overflow: hidden;
     }
 
     .browser-container {
@@ -32,7 +35,7 @@
       font-size: 14px;
       font-weight: 500;
       letter-spacing: 0.5px;
-      flex-shrink: 0; /* Daralmaması için */
+      flex-shrink: 0;
     }
 
     .browser-header {
@@ -43,7 +46,7 @@
       gap: 8px;
       align-items: center;
       flex-shrink: 0;
-      flex-wrap: wrap; /* Mobil için sarma */
+      flex-wrap: wrap;
     }
 
     .browser-buttons {
@@ -66,11 +69,14 @@
       transition: all 0.2s;
       flex-shrink: 0;
     }
-    .nav-button:hover { background: #e8e8e8; }
+
+    .nav-button:hover {
+      background: #e8e8e8;
+    }
 
     .address-bar {
       flex: 1;
-      min-width: 120px; /* Mobilde çok küçülmesin */
+      min-width: 120px;
       background: #f0f0f0;
       border: 1px solid #d0d0d0;
       border-radius: 8px;
@@ -79,7 +85,13 @@
       align-items: center;
       gap: 8px;
     }
-    .address-bar-icon { color: #666; font-size: 14px; flex-shrink: 0; }
+
+    .address-bar-icon {
+      color: #666;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
     .address-bar input {
       flex: 1;
       background: transparent;
@@ -89,9 +101,12 @@
       color: #333;
       outline: none;
       min-width: 50px;
-      width: 100%; /* Mobil için */
+      width: 100%;
     }
-    .address-bar input::placeholder { color: #999; }
+
+    .address-bar input::placeholder {
+      color: #999;
+    }
 
     .browser-content {
       flex: 1;
@@ -99,10 +114,10 @@
       flex-direction: column;
       overflow: hidden;
       position: relative;
-      min-height: 0; /* Flex taşmasını engelle */
+      min-height: 0;
     }
 
-    /* === ANA SAYFA (SEARCH) === */
+    /* === ANA SAYFA (ESKİ HALİ) === */
     .search-page {
       height: 100%;
       width: 100%;
@@ -112,11 +127,12 @@
       align-items: center;
       padding: 40px 20px;
       background: linear-gradient(135deg, #fafafa 0%, #ffffff 100%);
-      overflow-y: auto; /* Mobilde taşma olursa */
+      overflow-y: auto;
     }
+
     .search-logo {
       width: 180px;
-      max-width: 60%; /* Mobil için */
+      max-width: 60%;
       height: auto;
       margin-bottom: 30px;
       display: flex;
@@ -124,7 +140,12 @@
       justify-content: center;
       animation: bounce 2s infinite;
     }
-    .search-logo img { width: 100%; height: auto; object-fit: contain; }
+
+    .search-logo img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
 
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
@@ -137,6 +158,7 @@
       max-width: 500px;
       margin-bottom: 30px;
     }
+
     .search-input {
       flex: 1;
       padding: 14px 18px;
@@ -145,9 +167,13 @@
       font-size: 16px;
       outline: none;
       transition: border-color 0.3s;
-      min-width: 0; /* Mobilde taşmayı engelle */
+      min-width: 0;
     }
-    .search-input:focus { border-color: #acd1fc; }
+
+    .search-input:focus {
+      border-color: #acd1fc;
+    }
+
     .search-button {
       padding: 14px 28px;
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
@@ -160,6 +186,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
+
     .search-button:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
@@ -168,7 +195,10 @@
     /* === ALERT === */
     .alert-overlay {
       position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0, 0, 0, 0.5);
       display: flex;
       justify-content: center;
@@ -177,7 +207,12 @@
       animation: fadeIn 0.3s;
       padding: 20px;
     }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     .alert-box {
       background: white;
       border-radius: 12px;
@@ -188,19 +223,62 @@
       box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
       animation: slideUp 0.4s;
     }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .alert-icon { font-size: 80px; margin-bottom: 20px; animation: wobble 0.6s; }
-    @keyframes wobble { 0%, 100% { transform: rotate(0deg); } 25% { transform: rotate(-5deg); } 75% { transform: rotate(5deg); } }
-    .alert-title { font-size: 28px; font-weight: 700; color: #333; margin-bottom: 10px; }
-    .alert-message { font-size: 16px; color: #666; margin-bottom: 30px; line-height: 1.5; }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(30px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .alert-icon {
+      font-size: 80px;
+      margin-bottom: 20px;
+      animation: wobble 0.6s;
+    }
+
+    @keyframes wobble {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-5deg); }
+      75% { transform: rotate(5deg); }
+    }
+
+    .alert-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .alert-message {
+      font-size: 16px;
+      color: #666;
+      margin-bottom: 30px;
+      line-height: 1.5;
+    }
+
     .alert-button {
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-      color: white; border: none; padding: 12px 40px; border-radius: 8px;
-      font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s;
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
     }
-    .alert-button:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4); }
 
-    /* === SONUÇLAR (RESULTS) === */
+    .alert-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    }
+
+    /* === SONUÇLAR === */
     .results-container {
       flex: 1;
       overflow-y: auto;
@@ -210,6 +288,7 @@
       gap: 20px;
       background: white;
     }
+
     .result-item {
       padding: 20px;
       background: #f9f9f9;
@@ -218,13 +297,37 @@
       cursor: pointer;
       transition: all 0.3s;
     }
-    .result-item:hover { background: #f0f0f0; transform: translateX(5px); }
-    .result-url { font-size: 13px; color: #436691; margin-bottom: 8px; word-break: break-all; }
-    .result-title { font-size: 18px; color: #333; font-weight: 600; margin-bottom: 8px; }
-    .result-description { font-size: 14px; color: #666; line-height: 1.5; }
-    .result-content { flex: 1; }
 
-    /* === SEKMELER (TABS) === */
+    .result-item:hover {
+      background: #f0f0f0;
+      transform: translateX(5px);
+    }
+
+    .result-url {
+      font-size: 13px;
+      color: #436691;
+      margin-bottom: 8px;
+      word-break: break-all;
+    }
+
+    .result-title {
+      font-size: 18px;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .result-description {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .result-content {
+      flex: 1;
+    }
+
+    /* === SEKMELER === */
     .tabs-container {
       display: flex;
       gap: 15px;
@@ -234,9 +337,13 @@
       overflow-x: auto;
       flex-shrink: 0;
       -webkit-overflow-scrolling: touch;
-      scrollbar-width: none; /* Firefox */
+      scrollbar-width: none;
     }
-    .tabs-container::-webkit-scrollbar { display: none; }
+
+    .tabs-container::-webkit-scrollbar {
+      display: none;
+    }
+
     .tab {
       padding: 8px 0;
       border: none;
@@ -250,17 +357,25 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .tab.active { color: #436691; border-bottom-color: #436691; }
-    .tab:hover { color: #333; }
 
-    /* === GÖRSELLER GRİD === */
+    .tab.active {
+      color: #436691;
+      border-bottom-color: #436691;
+    }
+
+    .tab:hover {
+      color: #333;
+    }
+
+    /* === GÖRSELLER - 2'Lİ SÜTUN === */
     .images-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      grid-template-columns: repeat(2, 1fr);
       gap: 15px;
       padding: 15px;
       background: white;
     }
+
     .image-item {
       aspect-ratio: 1;
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
@@ -274,16 +389,37 @@
       overflow: hidden;
       position: relative;
     }
-    .image-item img { width: 100%; height: 100%; object-fit: cover; }
-    .image-item:hover { transform: scale(1.05) rotate(-2deg); border-color: #D8C7FF; box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3); }
-    .image-item .image-number {
-      position: absolute; bottom: 8px; right: 8px;
-      background: rgba(0,0,0,0.5); color: white; font-size: 11px;
-      padding: 2px 8px; border-radius: 10px; font-family: monospace;
-    }
-    .image-placeholder { font-size: 50px; opacity: 0.3; }
 
-    /* === VİDEOLAR GRİD === */
+    .image-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .image-item:hover {
+      transform: scale(1.05) rotate(-2deg);
+      border-color: #D8C7FF;
+      box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+    }
+
+    .image-item .image-number {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+
+    .image-placeholder {
+      font-size: 50px;
+      opacity: 0.3;
+    }
+
+    /* === VİDEOLAR === */
     .videos-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -291,6 +427,7 @@
       padding: 15px;
       background: white;
     }
+
     .video-item {
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
       border-radius: 12px;
@@ -304,31 +441,56 @@
       position: relative;
       border: 3px solid transparent;
     }
-    .video-item video { width: 100%; height: 100%; object-fit: cover; }
-    .video-item:hover { transform: translateY(-5px) scale(1.02); border-color: #D8C7FF; box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3); }
-    .video-play-icon {
-      position: absolute; font-size: 48px; color: white;
-      text-shadow: 0 2px 10px rgba(0,0,0,0.5); pointer-events: none;
-    }
-    .video-item .video-number {
-      position: absolute; bottom: 8px; right: 8px;
-      background: rgba(0,0,0,0.5); color: white; font-size: 11px;
-      padding: 2px 8px; border-radius: 10px; font-family: monospace;
+
+    .video-item video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
-    /* === IFRAME KONTEYNERLER (AI, SHOP, CALC) === */
+    .video-item:hover {
+      transform: translateY(-5px) scale(1.02);
+      border-color: #D8C7FF;
+      box-shadow: 0 12px 30px rgba(102, 126, 234, 0.3);
+    }
+
+    .video-play-icon {
+      position: absolute;
+      font-size: 48px;
+      color: white;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+
+    .video-item .video-number {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-family: monospace;
+    }
+
+    /* === IFRAME KONTEYNERLER === */
     .iframe-container {
       flex: 1;
       width: 100%;
       height: 100%;
-      min-height: 400px; /* Mobil için yeterli yükseklik */
+      min-height: 500px;
       background: white;
+      display: flex;
+      flex-direction: column;
     }
+
     .iframe-container iframe {
       width: 100%;
-      height: 100%;
+      flex: 1;
       border: none;
-      display: block; /* Fazla boşlukları engeller */
+      display: block;
+      min-height: 500px;
     }
 
     .tab-content {
@@ -337,9 +499,12 @@
       overflow-y: auto;
       flex-direction: column;
     }
-    .tab-content.active { display: flex; }
 
-    /* === HEADER (Sonuç sayfasındaki arama kutusu) === */
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* === HEADER === */
     .results-header {
       display: flex;
       align-items: center;
@@ -350,13 +515,18 @@
       gap: 10px;
       flex-shrink: 0;
     }
+
     .results-header .search-box {
       max-width: 500px;
       margin: 0;
       flex: 1;
       min-width: 180px;
     }
-    .results-header .search-box .search-input { max-width: none; }
+
+    .results-header .search-box .search-input {
+      max-width: none;
+    }
+
     .results-header .info-text {
       font-size: 13px;
       color: #999;
@@ -372,53 +542,186 @@
       flex-wrap: wrap;
       gap: 10px;
     }
-    .grid-header h3 { font-size: 16px; color: #333; }
-    .grid-header .count { font-size: 13px; color: #999; }
+
+    .grid-header h3 {
+      font-size: 16px;
+      color: #333;
+    }
+
+    .grid-header .count {
+      font-size: 13px;
+      color: #999;
+    }
+
     .refresh-btn {
       padding: 6px 14px;
       background: linear-gradient(135deg, #CFEFFF, #D8C7FF, #FFD1E8);
-      color: white; border: none; border-radius: 8px; cursor: pointer;
-      font-weight: 600; transition: all 0.3s; font-size: 13px;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s;
+      font-size: 13px;
     }
-    .refresh-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); }
 
-    /* === MOBİL UYUMLULUK İYİLEŞTİRMELERİ === */
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    /* === MOBİL === */
     @media (max-width: 600px) {
-      .browser-header { padding: 10px; gap: 6px; }
-      .nav-button { width: 28px; height: 28px; font-size: 14px; }
-      .address-bar { padding: 2px 8px; min-width: 80px; }
-      .address-bar input { font-size: 12px; padding: 4px 0; }
-      .search-logo { width: 120px; }
-      .search-input { padding: 12px 14px; font-size: 14px; }
-      .search-button { padding: 12px 18px; font-size: 14px; }
-      .alert-box { padding: 30px 20px; }
-      .alert-title { font-size: 24px; }
-      .tabs-container { gap: 10px; padding: 10px 12px; }
-      .tab { font-size: 13px; }
-      .images-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; padding: 10px; }
-      .videos-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; padding: 10px; }
-      .results-header { padding: 10px; }
-      .results-header .search-box { min-width: 140px; }
-      .results-header .info-text { font-size: 11px; }
-      .result-item { padding: 15px; }
-      .result-title { font-size: 16px; }
-      .iframe-container { min-height: 300px; }
+      .browser-header {
+        padding: 10px;
+        gap: 6px;
+      }
+      
+      .nav-button {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+      }
+      
+      .address-bar {
+        padding: 2px 8px;
+        min-width: 80px;
+      }
+      
+      .address-bar input {
+        font-size: 12px;
+        padding: 4px 0;
+      }
+      
+      .search-logo {
+        width: 120px;
+      }
+      
+      .search-input {
+        padding: 12px 14px;
+        font-size: 14px;
+      }
+      
+      .search-button {
+        padding: 12px 18px;
+        font-size: 14px;
+      }
+      
+      .alert-box {
+        padding: 30px 20px;
+      }
+      
+      .alert-title {
+        font-size: 24px;
+      }
+      
+      .tabs-container {
+        gap: 10px;
+        padding: 10px 12px;
+      }
+      
+      .tab {
+        font-size: 13px;
+      }
+      
+      /* Görseller 2'li sütun kalıyor */
+      .images-grid {
+        gap: 10px;
+        padding: 10px;
+      }
+      
+      .videos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        padding: 10px;
+      }
+      
+      .results-header {
+        padding: 10px;
+      }
+      
+      .results-header .search-box {
+        min-width: 140px;
+      }
+      
+      .results-header .info-text {
+        font-size: 11px;
+      }
+      
+      .result-item {
+        padding: 15px;
+      }
+      
+      .result-title {
+        font-size: 16px;
+      }
+      
+      .iframe-container {
+        min-height: 400px;
+      }
+      
+      .iframe-container iframe {
+        min-height: 400px;
+      }
     }
 
     @media (max-width: 400px) {
-      .search-logo { width: 100px; }
-      .search-box { flex-wrap: wrap; }
-      .search-input { border-radius: 50px; border-bottom-right-radius: 0; border-bottom-left-radius: 0; }
-      .search-button { border-radius: 50px; border-top-left-radius: 0; border-top-right-radius: 0; width: 100%; }
-      .images-grid { grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); }
-      .videos-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+      .search-logo {
+        width: 100px;
+      }
+      
+      .search-box {
+        flex-wrap: wrap;
+      }
+      
+      .search-input {
+        border-radius: 50px;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+      
+      .search-button {
+        border-radius: 50px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+        width: 100%;
+      }
+      
+      .images-grid {
+        gap: 8px;
+        padding: 8px;
+      }
+      
+      .videos-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      }
+      
+      .iframe-container {
+        min-height: 300px;
+      }
+      
+      .iframe-container iframe {
+        min-height: 300px;
+      }
     }
 
-    /* Masaüstü görünümü koru */
+    /* Masaüstü */
     @media (min-width: 601px) {
-      .browser-header { flex-wrap: nowrap; }
-      .results-header .search-box { flex: 1; }
-      .iframe-container { min-height: 500px; }
+      .browser-header {
+        flex-wrap: nowrap;
+      }
+      
+      .results-header .search-box {
+        flex: 1;
+      }
+      
+      .iframe-container {
+        min-height: 500px;
+      }
+      
+      .iframe-container iframe {
+        min-height: 500px;
+      }
     }
   </style>
 </head>
@@ -441,7 +744,6 @@
     </div>
 
     <div class="browser-content" id="browserContent">
-      <!-- Ana Sayfa -->
       <div class="search-page" id="homePage">
         <div class="search-logo">
           <img src="1.png" alt="WhiskerSearch Logo" />
@@ -454,7 +756,6 @@
     </div>
   </div>
 
-  <!-- Alert -->
   <div class="alert-overlay" id="alertOverlay" style="display: none;">
     <div class="alert-box">
       <div class="alert-icon">🐱</div>
@@ -464,12 +765,7 @@
     </div>
   </div>
 
-  <!-- whisker_ai_data.js burada yükleniyor (AI sekmesi için gerekli değil ama hata vermemesi için) -->
-  <script src="whisker_ai_data.js"></script>
   <script>
-    // ================================================================
-    // KONFİGÜRASYON
-    // ================================================================
     const CONFIG = {
       totalImages: 24,
       totalVideos: 9,
@@ -479,9 +775,6 @@
       videoPath: 'videos/'
     };
 
-    // ================================================================
-    // YARDIMCI FONKSİYONLAR
-    // ================================================================
     function getRandomNumbers(count, max) {
       const numbers = [];
       const available = Array.from({ length: max }, (_, i) => i + 1);
@@ -493,9 +786,6 @@
       return numbers;
     }
 
-    // ================================================================
-    // GÖRSEL ve VİDEO OLUŞTURUCULAR
-    // ================================================================
     function buildRandomImages() {
       const randomNumbers = getRandomNumbers(CONFIG.imagesToShow, CONFIG.totalImages);
       return `
@@ -547,17 +837,20 @@
       const container = document.getElementById('imagesContainer');
       if (container) container.innerHTML = buildRandomImages();
     }
+
     function refreshVideos() {
       const container = document.getElementById('videosContainer');
       if (container) container.innerHTML = buildRandomVideos();
     }
 
-    function openImage(num) { window.open(`${CONFIG.imagePath}${num}.png`, '_blank', 'noopener,noreferrer'); }
-    function openVideo(num) { window.open(`${CONFIG.videoPath}${num}.mp4`, '_blank', 'noopener,noreferrer'); }
+    function openImage(num) {
+      window.open(`${CONFIG.imagePath}${num}.png`, '_blank', 'noopener,noreferrer');
+    }
 
-    // ================================================================
-    // IFRAME YÜKLEYİCİ (AI, SHOP, CALC)
-    // ================================================================
+    function openVideo(num) {
+      window.open(`${CONFIG.videoPath}${num}.mp4`, '_blank', 'noopener,noreferrer');
+    }
+
     function loadIframeContent(src, title) {
       return `
         <div style="padding: 10px 15px; background: #f9f9f9; border-bottom: 1px solid #e0e0e0; flex-shrink: 0;">
@@ -573,9 +866,6 @@
       `;
     }
 
-    // ================================================================
-    // SONUÇLARI GÖSTER (GÜNCELLENMİŞ - AI IFRAME İLE)
-    // ================================================================
     let lastSearchQuery = '';
     let canvaLink = 'https://www.canva.com/design/DAGrke6nXUY/OdOciaHr0CxE1haEmn-IeA/view?utm_content=DAGrke6nXUY&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h31ec2b4051';
     let history = [];
@@ -587,7 +877,6 @@
       const query = lastSearchQuery || 'kedi';
 
       content.innerHTML = `
-        <!-- Header with search -->
         <div class="results-header">
           <div class="search-box">
             <input type="text" class="search-input" value="${query}" onkeypress="handleSearch(event)" />
@@ -596,7 +885,6 @@
           <div class="info-text">🐱 ${CONFIG.totalImages} görsel · 🎬 ${CONFIG.totalVideos} video</div>
         </div>
 
-        <!-- Tabs -->
         <div class="tabs-container">
           <button class="tab active" onclick="switchTab('all')">🔍 Tümü</button>
           <button class="tab" onclick="switchTab('images')">🖼️ Görseller</button>
@@ -606,7 +894,6 @@
           <button class="tab" onclick="switchTab('ai')">🤖 WhiskerAI</button>
         </div>
 
-        <!-- İçerikler -->
         <div id="all-content" class="tab-content active">
           <div class="results-container">
             <div style="margin-bottom: 10px; color: #999; font-size: 14px;">Sonuçlar: "${query}" için</div>
@@ -655,14 +942,10 @@
         </div>
       `;
 
-      // Geçmişe ekle
       history.push({ type: 'results', query: query });
       historyIndex = history.length - 1;
     }
 
-    // ================================================================
-    // TAB GEÇİŞİ
-    // ================================================================
     function switchTab(tabName) {
       const tabs = document.querySelectorAll('.tab');
       const contents = document.querySelectorAll('.tab-content');
@@ -677,9 +960,6 @@
       if (content) content.classList.add('active');
     }
 
-    // ================================================================
-    // GEZİNME FONKSİYONLARI
-    // ================================================================
     function handleAddress(event) {
       if (event.key === 'Enter') {
         const input = document.getElementById('addressInput');
@@ -734,9 +1014,6 @@
       }
     }
 
-    // ================================================================
-    // ARAMA ve ALERT
-    // ================================================================
     function handleSearch(event) {
       if (event.key === 'Enter') performSearch();
     }
@@ -752,18 +1029,23 @@
       }
     }
 
-    function showAlert() { document.getElementById('alertOverlay').style.display = 'flex'; }
-    function confirmAlert() { document.getElementById('alertOverlay').style.display = 'none'; showResults(); }
-    function openResult() { window.open(canvaLink, '_blank', 'noopener,noreferrer'); }
+    function showAlert() {
+      document.getElementById('alertOverlay').style.display = 'flex';
+    }
 
-    // ================================================================
-    // BAŞLAT
-    // ================================================================
+    function confirmAlert() {
+      document.getElementById('alertOverlay').style.display = 'none';
+      showResults();
+    }
+
+    function openResult() {
+      window.open(canvaLink, '_blank', 'noopener,noreferrer');
+    }
+
     window.onload = function() {
       const addrInput = document.getElementById('addressInput');
       if (addrInput) addrInput.value = 'https://ayse-create.github.io/WhiskerSearch';
       console.log(`🐱 ${CONFIG.totalImages} görsel, 🎬 ${CONFIG.totalVideos} video hazır!`);
-      console.log('🤖 WhiskerAI entegre edildi: https://ayse-create.github.io/WhiskerAI');
     };
   </script>
 </body>
