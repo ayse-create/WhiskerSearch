@@ -604,6 +604,11 @@
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
     }
 
+    /* IFRAME MODU - Arama barı gizli */
+    .iframe-mode .browser-header {
+      display: none !important;
+    }
+
     /* === MOBİL === */
     @media (max-width: 600px) {
       .browser-header {
@@ -726,11 +731,6 @@
         min-height: 500px;
       }
     }
-
-    /* IFRAME MODU - Arama barı gizli */
-    .iframe-mode .browser-header {
-      display: none !important;
-    }
   </style>
 </head>
 <body>
@@ -798,7 +798,9 @@
     function getRandomNumbers(count, max) {
       var numbers = [];
       var available = [];
-      for (var i = 1; i <= max; i++) available.push(i);
+      for (var i = 1; i <= max; i++) {
+        available.push(i);
+      }
       for (var j = 0; j < Math.min(count, max); j++) {
         var randomIndex = Math.floor(Math.random() * available.length);
         numbers.push(available[randomIndex]);
@@ -816,7 +818,7 @@
       for (var i = 0; i < randomNumbers.length; i++) {
         var num = randomNumbers[i];
         html += '<div class="image-item" onclick="openImage(' + num + ')" title="Kedi ' + num + '">';
-        html += '<img src="' + CONFIG.imagePath + num + '.png" alt="Kedi ' + num + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=\\\\\\'image-placeholder\\\\\\'>🐱</span><span class=\\\\\\'image-number\\\\\\'>#' + num + '</span>\'">';
+        html += '<img src="' + CONFIG.imagePath + num + '.png" alt="Kedi ' + num + '" loading="lazy" onerror="this.parentElement.innerHTML=\'<span class=\\"image-placeholder\\">🐱</span><span class=\\"image-number\\">#' + num + '</span>\'">';
         html += '<span class="image-number">#' + num + '</span></div>';
       }
       html += '</div>';
@@ -829,7 +831,7 @@
       for (var i = 0; i < randomNumbers.length; i++) {
         var num = randomNumbers[i];
         html += '<div class="video-item" onclick="openVideo(' + num + ')" title="Video ' + num + '">';
-        html += '<video src="' + CONFIG.videoPath + num + '.mp4" muted loop preload="metadata" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;" onerror="this.parentElement.innerHTML=\'<span class=\\\\\\'video-play-icon\\\\\\'>🎬</span><span class=\\\\\\'video-number\\\\\\'>#' + num + '</span>\'"></video>';
+        html += '<video src="' + CONFIG.videoPath + num + '.mp4" muted loop preload="metadata" onmouseover="this.play()" onmouseout="this.pause(); this.currentTime=0;" onerror="this.parentElement.innerHTML=\'<span class=\\"video-play-icon\\">🎬</span><span class=\\"video-number\\">#' + num + '</span>\'"></video>';
         html += '<span class="video-play-icon">▶️</span>';
         html += '<span class="video-number">#' + num + '</span></div>';
       }
@@ -839,12 +841,16 @@
 
     function refreshImages() {
       var container = document.getElementById('imagesContainer');
-      if (container) container.innerHTML = buildRandomImages();
+      if (container) {
+        container.innerHTML = buildRandomImages();
+      }
     }
 
     function refreshVideos() {
       var container = document.getElementById('videosContainer');
-      if (container) container.innerHTML = buildRandomVideos();
+      if (container) {
+        container.innerHTML = buildRandomVideos();
+      }
     }
 
     function openImage(num) {
@@ -863,6 +869,22 @@
     }
 
     // ================================================================
+    // IFRAME MODU KONTROLÜ
+    // ================================================================
+    function checkIframeMode() {
+      var container = document.getElementById('browserContainer');
+      var activeContent = document.querySelector('.tab-content.active');
+      if (activeContent) {
+        var hasIframe = activeContent.querySelector('.iframe-fullscreen');
+        if (hasIframe) {
+          container.classList.add('iframe-mode');
+        } else {
+          container.classList.remove('iframe-mode');
+        }
+      }
+    }
+
+    // ================================================================
     // SONUÇLARI GÖSTER
     // ================================================================
     function showResults() {
@@ -874,7 +896,7 @@
       // Ana sonuç
       resultsHTML += '<div class="result-item" onclick="openResult()"><div class="result-content"><div class="result-url">whiskersearch.com › arama › ' + query + '</div><div class="result-title">🐱 WhiskerSearch\'ün En Özel Seçimi</div><div class="result-description">WhiskerSearch bu sonucu titizlikle seçti!</div></div></div>';
       
-      // Whisker siteleri (5 site)
+      // Whisker siteleri
       var sites = [
         { name: 'WhiskerShop', url: 'https://ayse-create.github.io/WhiskerShopMini', icon: '🛍️', desc: 'Kedi alışveriş marketi' },
         { name: 'WhiskerCalc', url: 'https://ayse-create.github.io/WhiskerCalcMini', icon: '🧮', desc: 'Kedi hesap makinesi' },
@@ -915,31 +937,28 @@
     }
 
     // ================================================================
-    // IFRAME MODU KONTROLÜ
-    // ================================================================
-    function checkIframeMode() {
-      var container = document.getElementById('browserContainer');
-      var activeContent = document.querySelector('.tab-content.active');
-      if (activeContent) {
-        var hasIframe = activeContent.querySelector('.iframe-fullscreen');
-        if (hasIframe) {
-          container.classList.add('iframe-mode');
-        } else {
-          container.classList.remove('iframe-mode');
-        }
-      }
-    }
-
-    // ================================================================
     // TAB GEÇİŞİ
     // ================================================================
     function switchTab(tabName) {
       var tabs = document.querySelectorAll('.tab');
       var contents = document.querySelectorAll('.tab-content');
-      for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
-      for (var j = 0; j < contents.length; j++) contents[j].classList.remove('active');
+      
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].classList.remove('active');
+      }
+      for (var j = 0; j < contents.length; j++) {
+        contents[j].classList.remove('active');
+      }
 
-      var tabMap = { 'all': 'Tümü', 'images': 'Görseller', 'videos': 'Videolar', 'shopping': 'Alışveriş', 'calculator': 'Hesap Makinesi', 'ai': 'AI Modu' };
+      var tabMap = { 
+        'all': 'Tümü', 
+        'images': 'Görseller', 
+        'videos': 'Videolar', 
+        'shopping': 'Alışveriş', 
+        'calculator': 'Hesap Makinesi', 
+        'ai': 'AI Modu' 
+      };
+      
       var activeTab = null;
       var allTabs = document.querySelectorAll('.tab');
       for (var k = 0; k < allTabs.length; k++) {
@@ -948,10 +967,14 @@
           break;
         }
       }
-      if (activeTab) activeTab.classList.add('active');
+      if (activeTab) {
+        activeTab.classList.add('active');
+      }
 
       var content = document.getElementById(tabName + '-content');
-      if (content) content.classList.add('active');
+      if (content) {
+        content.classList.add('active');
+      }
 
       checkIframeMode();
     }
@@ -964,13 +987,21 @@
         var input = document.getElementById('addressInput');
         var url = input.value.trim();
         if (!url) return;
-        if (!url.startsWith('http://') && !url.startsWith('https://')) url = 'https://' + url;
+        if (!url.startsWith('http://') && !url.startsWith('https://')) {
+          url = 'https://' + url;
+        }
         var isOwn = false;
         for (var i = 0; i < ownSites.length; i++) {
-          if (url.includes(ownSites[i])) { isOwn = true; break; }
+          if (url.includes(ownSites[i])) {
+            isOwn = true;
+            break;
+          }
         }
-        if (isOwn) loadPage(url);
-        else window.open(url, '_blank', 'noopener,noreferrer');
+        if (isOwn) {
+          loadPage(url);
+        } else {
+          window.open(url, '_blank', 'noopener,noreferrer');
+        }
       }
     }
 
@@ -995,8 +1026,12 @@
       if (historyIndex > 0) {
         historyIndex--;
         var entry = history[historyIndex];
-        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); }
-        else if (entry.type === 'page') loadPage(entry.url);
+        if (entry.type === 'results') {
+          lastSearchQuery = entry.query;
+          showResults();
+        } else if (entry.type === 'page') {
+          loadPage(entry.url);
+        }
       }
     }
 
@@ -1004,8 +1039,12 @@
       if (historyIndex < history.length - 1) {
         historyIndex++;
         var entry = history[historyIndex];
-        if (entry.type === 'results') { lastSearchQuery = entry.query; showResults(); }
-        else if (entry.type === 'page') loadPage(entry.url);
+        if (entry.type === 'results') {
+          lastSearchQuery = entry.query;
+          showResults();
+        } else if (entry.type === 'page') {
+          loadPage(entry.url);
+        }
       }
     }
 
@@ -1013,7 +1052,9 @@
     // ARAMA ve ALERT
     // ================================================================
     function handleSearch(event) {
-      if (event.key === 'Enter') performSearch();
+      if (event.key === 'Enter') {
+        performSearch();
+      }
     }
 
     function performSearch() {
@@ -1045,7 +1086,9 @@
     // ================================================================
     window.onload = function() {
       var addrInput = document.getElementById('addressInput');
-      if (addrInput) addrInput.value = 'https://ayse-create.github.io/WhiskerSearch';
+      if (addrInput) {
+        addrInput.value = 'https://ayse-create.github.io/WhiskerSearch';
+      }
       console.log('🐱 WhiskerSearch hazır!');
     };
   </script>
