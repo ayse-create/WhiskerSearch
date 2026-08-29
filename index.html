@@ -289,14 +289,24 @@
       background: white;
     }
 
-    .result-item {
+.result-item {
+  position: relative;
   padding: 20px;
   background: #f9f9f9;
   border-radius: 8px;
-  border-left: 4px solid transparent;
-  border-image: linear-gradient(to bottom, #CFEFFF, #D8C7FF) 1;
   cursor: pointer;
   transition: all 0.3s;
+}
+
+.result-item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 8px 0 0 8px;
+  background: linear-gradient(to bottom, #CFEFFF, #D8C7FF);
 }
 
     .result-item:hover {
