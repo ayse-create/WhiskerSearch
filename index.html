@@ -290,13 +290,14 @@
     }
 
     .result-item {
-      padding: 20px;
-      background: #f9f9f9;
-      border-radius: 8px;
-      border-left: 4px solid #D8C7FF;
-      cursor: pointer;
-      transition: all 0.3s;
-    }
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid transparent;
+  border-image: linear-gradient(to bottom, #CFEFFF, #D8C7FF) 1;
+  cursor: pointer;
+  transition: all 0.3s;
+}
 
     .result-item:hover {
       background: #f0f0f0;
